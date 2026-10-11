@@ -1531,6 +1531,65 @@
         }
     }
 });
+
+        <div class="backup-section" style="margin: 20px 0; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center;">
+    <h4 style="margin-bottom: 5px; color: #1e293b; font-size: 14px;">Sauvegarde & Sécurité des Données</h4>
+    <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Téléchargez une copie de vos données pour éviter toute perte.</p>
+    
+    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <!-- Bouton d'exportation -->
+        <button onclick="exporterDonnees()" style="background: #0284c7; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">
+            📥 Exporter les données
+        </button>
+
+        <!-- Bouton d'importation -->
+        <label for="inputFichierBackup" style="background: #10b981; color: white; padding: 8px 14px; border-radius: 6px; cursor: pointer; display: inline-block; font-size: 13px; font-weight: 500;">
+            📤 Restaurer une sauvegarde
+        </label>
+        <input type="file" id="inputFichierBackup" accept=".json" onchange="importerDonnees(event)" style="display: none;">
+    </div>
+</div>
+
+        // --- EXPORTER LES DONNÉES (Sauvegarde) ---
+function exporterDonnees() {
+    const donneesApp = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const cle = localStorage.key(i);
+        donneesApp[cle] = localStorage.getItem(cle);
+    }
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(donneesApp));
+    const dateDuJour = new Date().toISOString().split('T')[0];
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `sauvegarde_gb_casual_${dateDuJour}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+}
+
+// --- IMPORTER LES DONNÉES (Restauration) ---
+function importerDonnees(event) {
+    const fichier = event.target.files[0];
+    if (!fichier) return;
+
+    const lecteur = new FileReader();
+    lecteur.onload = function(e) {
+        try {
+            const donneesImportees = JSON.parse(e.target.result);
+            if (confirm("Voulez-vous vraiment restaurer ces données ? Cela remplacera les données actuelles.")) {
+                for (const cle in donneesImportees) {
+                    localStorage.setItem(cle, donneesImportees[cle]);
+                }
+                alert("Sauvegarde restaurée avec succès ! L'application va se recharger.");
+                location.reload();
+            }
+        } catch (erreur) {
+            alert("Erreur : Le fichier sélectionné n'est pas valide.");
+        }
+    };
+    lecteur.readAsText(fichier);
+}
         
     </script>
 </body>
