@@ -92,6 +92,8 @@
 
         /* Formulaires */
         .form-group { margin-bottom: 12px; }
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 600px) { .form-grid-2 { grid-template-columns: 1fr; } }
         label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #334155; }
         input[type="text"], input[type="password"], input[type="number"], select, textarea { width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
         textarea { resize: vertical; min-height: 60px; }
@@ -152,6 +154,7 @@
         .patient-card-result { background: #ffffff; border-left: 5px solid #15803d; border-radius: 8px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.04); border-top: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
         .sale-item { background: #ffffff; border-left: 4px solid #be185d; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #f1f5f9; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
         .sale-item.gh { border-left-color: #15803d; }
+        .sale-item.emp { border-left-color: #7e22ce; }
         .depense-item { background: #ffffff; border-left: 4px solid #dc2626; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #f1f5f9; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
         .stock-item { background: #ffffff; border-left: 4px solid #0284c7; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #f1f5f9; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
         .stock-item.low { border-left-color: #ef4444; background: #fef2f2; }
@@ -249,7 +252,6 @@
 
             <!-- TAB 1: VENTES & CAISSE GLOBALE -->
             <div id="paneVentes" class="section-pane active">
-                <!-- DASHBOARD FINANCIER RESERVÉ À L'ADMIN -->
                 <div id="adminFinanceCards" style="display:none;">
                     <div class="period-filter-bar">
                         <button class="period-btn active" id="pBtnJour" onclick="filtrerPeriode('jour')">Aujourd'hui</button>
@@ -343,7 +345,7 @@
                 <div id="salesContainer">Chargement des ventes...</div>
             </div>
 
-            <!-- TAB 2 : GESTION DES DÉPENSES (ACCÈS ADMINISTRATEUR SEULEMENT) -->
+            <!-- TAB 2 : GESTION DES DÉPENSES -->
             <div id="paneDepenses" class="section-pane">
                 <h2 style="font-size:15px; margin-bottom:10px; color:#dc2626;">Enregistrer une Sortie d'Argent / Dépense</h2>
                 <form id="depenseForm">
@@ -387,14 +389,12 @@
                     <button class="sub-tab-btn" id="btnSubList" onclick="switchSubTab('list')">📂 Liste & Fiches Patients</button>
                 </div>
 
-                <!-- FORMULAIRE PATIENT -->
                 <div id="subPaneForm" style="display:block;">
                     <h2 id="formTitle" style="font-size:15px; margin-bottom:12px; color:#15803d;">Saisie de la Fiche du Patient (Glory Herbal)</h2>
                     
                     <form id="patientForm">
                         <input type="hidden" id="editingPatientId" value="">
 
-                        <!-- COUVERTURE VERTE -->
                         <div class="patient-cover-card">
                             <div class="cover-badge">GLORYHERBAL</div>
                             <div class="cover-subtitle">Clinique de Médecine Naturelle à Base de Plantes Médicinales<br><i>Notre apprentissage par la nature est infini</i></div>
@@ -448,7 +448,6 @@
                             </div>
                         </div>
 
-                        <!-- FICHE MÉDICALE -->
                         <div class="medical-sheet">
                             <div class="medical-header">
                                 <h3>CLINIQUE DE MÉDECINE NATURELLE À BASE DE PLANTES MÉDICINALES</h3>
@@ -531,7 +530,6 @@
                                 </div>
                             </div>
 
-                            <!-- DATE DE PROCHAIN RDV -->
                             <div class="med-box" style="border-color:#15803d; background:#f0fdf4;">
                                 <div class="med-box-title" style="background:#dcfce7; color:#166534;">🔔 Prochain Rendez-vous de Suivi / Contrôle</div>
                                 <div class="med-box-content">
@@ -557,7 +555,6 @@
                     </form>
                 </div>
 
-                <!-- LISTE ET SUIVI DES PATIENTS -->
                 <div id="subPaneList" style="display:none;">
                     <h2 style="font-size:15px; margin-bottom:12px; color:#15803d;">Fiches Patients & Carnets de Suivi</h2>
                     <div class="form-group">
@@ -567,18 +564,16 @@
                 </div>
             </div>
 
-            <!-- TAB 4: GESTION DU STOCK (MODIFIÉ POUR SÉCURITÉ EMPLOIÉS) -->
+            <!-- TAB 4: GESTION DU STOCK -->
             <div id="paneStock" class="section-pane">
                 <h2 style="font-size:16px; color:#0284c7; margin-bottom:12px;">Alertes & Gestion des Stocks</h2>
                 
-                <!-- BLOC 1 : ALERTE STOCK CRITIQUE (VISIBLE POUR TOUS : ADMIN + EMPLOYES) -->
                 <div id="stockDashboardBanner" class="stock-dashboard-alert" style="display:none;">
                     <h3>⚠️ PRODUITS EN ALERTE (Reste 3 unités ou moins)</h3>
                     <p style="font-size:11px; color:#7f1d1d; margin-bottom:8px;">📢 <i>Veuillez signaler immédiatement ces articles à l'employeur pour réapprovisionnement.</i></p>
                     <div id="stockDashboardListContainer"></div>
                 </div>
 
-                <!-- BLOC 2 : FORMULAIRE D'AJOUT ET STOCK GLOBAL (RESERVÉ À L'ADMINISTRATEUR) -->
                 <div id="adminStockSection" style="display:none;">
                     <form id="stockForm">
                         <div class="form-group">
@@ -615,18 +610,7 @@
                 </div>
             </div>
 
-            <!-- TAB 5: ADMIN ET EMPLOYES -->
-            <!-- Bloc Réinitialisation pour le client -->
-<div style="margin-top: 20px; padding: 15px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px;">
-    <h3 style="font-size: 13px; color: #dc2626; margin-bottom: 8px;">⚠️ Zone de réinitialisation</h3>
-    <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">
-        Cliquez ci-dessous pour effacer toutes les données de test et remettre l'application à zéro.
-    </p>
-    <button type="button" id="resetAppBtn" style="background-color: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 12px;">
-        🔄 Réinitialiser l'application (Remettre à zéro)
-    </button>
-</div>
-            
+            <!-- TAB 5: ADMIN & GESTION DU PERSONNEL (COMPLÈTE) -->
             <div id="paneAdmin" class="section-pane">
                 <div style="background:#f3e8ff; border:1px solid #d8b4fe; border-radius:8px; padding:15px; margin-bottom:20px;">
                     <h2 style="font-size:15px; color:#7e22ce; margin-bottom:8px;">🔒 Sécurité Administrateur</h2>
@@ -639,21 +623,87 @@
                     </form>
                 </div>
 
-                <h2 style="font-size:16px; color:#7e22ce; margin-bottom:12px;">Gestion des Employés & Rôles</h2>
-                <form id="employeForm">
-                    <div class="form-group">
-                        <label>Nom de l'employé(e) :</label>
-                        <input type="text" id="empNom" placeholder="Ex: Sarah Kodjo" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Code Secret d'Accès :</label>
-                        <input type="text" id="empCode" placeholder="Ex: 1234" required>
-                    </div>
-                    <button type="submit" class="btn-valider" style="background-color:#7e22ce;">Créer le Compte Employé</button>
-                </form>
+                <!-- FORMULAIRE COMPLET DE GESTION / CREATION / EDIT DES EMPLOYES -->
+                <div style="background:#ffffff; border:2px solid #7e22ce; border-radius:8px; padding:15px; margin-bottom:20px;">
+                    <h2 id="employeFormTitle" style="font-size:16px; color:#7e22ce; margin-bottom:12px;">👔 Fiche & Inscription de l'Employé(e)</h2>
+                    <form id="employeForm">
+                        <input type="hidden" id="editingEmpId" value="">
+                        
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Nom & Prénom :</label>
+                                <input type="text" id="empNom" placeholder="Ex: Sarah Kodjo" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Âge :</label>
+                                <input type="number" id="empAge" placeholder="Ex: 26">
+                            </div>
+                        </div>
 
-                <h3 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;">Liste des Employés Utilisateurs</h3>
-                <div id="employesContainer">Chargement...</div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Situation matrimoniale :</label>
+                                <select id="empSituation">
+                                    <option value="Célibataire">Célibataire</option>
+                                    <option value="Marié(e)">Marié(e)</option>
+                                    <option value="Fiancé(e)">Fiancé(e)</option>
+                                    <option value="Divorcé(e)">Divorcé(e)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Numéro de Téléphone :</label>
+                                <input type="text" id="empTel" placeholder="Ex: 97000000" required>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Lieu de Résidence / Localisation :</label>
+                                <input type="text" id="empLieu" placeholder="Ex: Porto-Novo, Quartier Avakpa">
+                            </div>
+                            <div class="form-group">
+                                <label>Code Secret d'Accès Connexion :</label>
+                                <input type="text" id="empCode" placeholder="Ex: 1234" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btnSubmitEmp" class="btn-valider" style="background-color:#7e22ce;">Créer la Fiche Employé</button>
+                        <button type="button" id="btnCancelEditEmp" class="btn-action" style="background:#64748b; display:none; margin-top:8px; width:100%; padding:10px;" onclick="annulerEditEmploye()">Annuler la modification</button>
+                    </form>
+                </div>
+
+                <h3 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;">👥 Registre des Employés</h3>
+                <div id="employesContainer">Chargement des employés...</div>
+
+                <!-- SECTION SAUVEGARDE & RESTAURATION (VISIBLE UNIQUEMENT PAR L'ADMIN) -->
+                <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:15px; margin-top:25px; margin-bottom:20px;">
+                    <h2 style="font-size:15px; color:#166534; margin-bottom:8px;">💾 Sauvegarde & Restauration de Sécurité</h2>
+                    <p style="font-size:11px; color:#166534; margin-bottom:10px;">
+                        Téléchargez une sauvegarde locale de vos données ou restaurez vos informations à partir d'un fichier de sauvegarde pour ne jamais perdre vos données lors d'un changement de téléphone.
+                    </p>
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <button type="button" id="btnExporterDonnees" style="background:#0284c7; color:white; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; flex:1;">
+                            📥 Exporter les données (Sauvegarde)
+                        </button>
+                    </div>
+                    <div>
+                        <label for="inputFichierBackup" style="background:#15803d; color:white; padding:8px 12px; border-radius:6px; font-weight:bold; display:inline-block; cursor:pointer; font-size:12px; text-align:center; width:100%;">
+                            📂 Restaurer une sauvegarde (Fichier JSON)
+                        </label>
+                        <input type="file" id="inputFichierBackup" accept=".json" style="display:none;">
+                    </div>
+                </div>
+
+                <!-- ZONE DE RÉINITIALISATION -->
+                <div style="padding: 15px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; margin-bottom:20px;">
+                    <h3 style="font-size: 13px; color: #dc2626; margin-bottom: 8px;">⚠️ Zone de réinitialisation</h3>
+                    <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">
+                        Cliquez ci-dessous pour effacer les données locales et remettre l'application à zéro.
+                    </p>
+                    <button type="button" id="resetAppBtn" style="background-color: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 12px;">
+                        🔄 Réinitialiser l'application
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -692,6 +742,7 @@
         let localStock = [];
         let localVentes = [];
         let localDepenses = [];
+        let localEmployes = [];
         let currentPeriod = 'jour';
         let currentReceiptText = "";
 
@@ -767,7 +818,6 @@
             document.getElementById('appScreen').classList.add('active');
             document.getElementById('userInfoDisplay').textContent = currentUser.nom + " (" + (currentUser.role === 'admin' ? 'Entrepreneur' : 'Employé') + ")";
             
-            // CONFIGURATION DES MASQUES DE SÉCURITÉ SELON RÔLE
             if(currentUser.role === 'admin') {
                 document.getElementById('btnTabAdmin').style.display = "inline-block";
                 document.getElementById('btnTabDepenses').style.display = "inline-block";
@@ -831,7 +881,6 @@
             if(sub === 'list') chargerPatients();
         };
 
-        // Filtrer Périodes Financières
         window.filtrerPeriode = (p) => {
             currentPeriod = p;
             document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
@@ -899,7 +948,6 @@
                     selectOptions += '<option value="' + st.id + '">' + st.nom + ' - ' + st.prix + ' FCFA (Stock: ' + st.qte + ')</option>';
                 });
 
-                // RENDU DES ALERTES
                 const banner = document.getElementById('stockDashboardBanner');
                 const listContainer = document.getElementById('stockDashboardListContainer');
 
@@ -1083,7 +1131,6 @@
             }
         };
 
-        // Chargement Ventes
         async function chargerVentes() {
             try {
                 const snap = await getDocs(query(collection(db, "ventes"), orderBy("dateCreation", "desc")));
@@ -1201,7 +1248,6 @@
             document.getElementById('salesContainer').innerHTML = html || "<p style='text-align:center; color:#64748b;'>Aucune recette trouvée pour cette sélection.</p>";
         }
 
-        // GENERATEUR DE REÇU
         window.ouvrirModalRecu = (id) => {
             const v = localVentes.find(i => i.id === id);
             if (!v) return;
@@ -1215,7 +1261,6 @@
             document.getElementById('receiptModal').classList.add('active');
         };
 
-        // HISTORIQUE SUIVI PATIENT EXPORTABLE
         window.ouvrirModalSuiviPatient = (id) => {
             const p = localPatients.find(i => i.id === id);
             if (!p) return;
@@ -1481,57 +1526,162 @@
             afficherPatients(filtres);
         };
 
-        // Gestion des employés
+        // GESTION ET COMPTE COMPLET DES EMPLOYES (AJOUT, ÉDITION, SUPPRESSION)
         document.getElementById('employeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if(currentUser.role !== 'admin') return;
 
+            const editId = document.getElementById('editingEmpId').value;
+            const empData = {
+                nom: document.getElementById('empNom').value.trim(),
+                age: document.getElementById('empAge').value.trim(),
+                situation: document.getElementById('empSituation').value,
+                tel: document.getElementById('empTel').value.trim(),
+                lieu: document.getElementById('empLieu').value.trim(),
+                code: document.getElementById('empCode').value.trim()
+            };
+
             try {
-                await addDoc(collection(db, "employes"), {
-                    nom: document.getElementById('empNom').value.trim(),
-                    code: document.getElementById('empCode').value.trim()
-                });
-                alert("Employé créé !");
-                e.target.reset();
+                if (editId) {
+                    await setDoc(doc(db, "employes", editId), empData, { merge: true });
+                    alert("Fiche employé mise à jour avec succès !");
+                } else {
+                    empData.createdAt = serverTimestamp();
+                    await addDoc(collection(db, "employes"), empData);
+                    alert("Employé(e) enregistré(e) avec succès !");
+                }
+                
+                annulerEditEmploye();
                 chargerEmployes();
-            } catch (err) { alert("Erreur de création."); }
+            } catch (err) { alert("Erreur d'enregistrement : " + err.message); }
         });
 
         async function chargerEmployes() {
             if(currentUser.role !== 'admin') return;
             try {
                 const snap = await getDocs(collection(db, "employes"));
+                localEmployes = [];
                 let html = "";
                 snap.forEach(d => {
-                    const emp = d.data();
-                    html += '<div class="sale-item" style="border-left-color:#7e22ce;"><div><strong>' + emp.nom + '</strong><br><small style="color:#64748b;">Code d\'accès : ' + emp.code + '</small></div><button class="btn-action" style="background:#ef4444;" onclick="supprimerEmploye(\'' + d.id + '\')">Supprimer</button></div>';
+                    const emp = { id: d.id, ...d.data() };
+                    localEmployes.push(emp);
+
+                    html += `
+                        <div class="sale-item emp">
+                            <div>
+                                <strong style="color:#7e22ce; font-size:14px;">${emp.nom}</strong> (${emp.age ? emp.age + ' ans' : 'Âge N/A'}, ${emp.situation || 'Célibataire'})<br>
+                                <small style="color:#475569;">📞 <strong>${emp.tel || 'N/A'}</strong> | 📍 Residence: ${emp.lieu || 'N/A'}</small><br>
+                                <small style="color:#64748b;">🔑 Code Secret d'accès : <strong>${emp.code}</strong></small>
+                            </div>
+                            <div style="text-align:right;">
+                                <button class="btn-edit-patient" style="font-size:10px; padding:4px 8px; margin:0 0 4px 0;" onclick="editerEmploye('${emp.id}')">✏️ Modifier</button><br>
+                                <button class="btn-action" style="background:#ef4444; font-size:10px; padding:4px 8px; margin:0;" onclick="supprimerEmploye('${emp.id}')">Supprimer</button>
+                            </div>
+                        </div>
+                    `;
                 });
-                document.getElementById('employesContainer').innerHTML = html || "<p style='text-align:center;'>Aucun employé enregistré.</p>";
+                document.getElementById('employesContainer').innerHTML = html || "<p style='text-align:center; color:#64748b;'>Aucun employé enregistré dans le système.</p>";
             } catch (err) {}
         }
 
+        window.editerEmploye = (id) => {
+            const emp = localEmployes.find(e => e.id === id);
+            if (!emp) return;
+
+            document.getElementById('editingEmpId').value = emp.id;
+            document.getElementById('empNom').value = emp.nom || '';
+            document.getElementById('empAge').value = emp.age || '';
+            document.getElementById('empSituation').value = emp.situation || 'Célibataire';
+            document.getElementById('empTel').value = emp.tel || '';
+            document.getElementById('empLieu').value = emp.lieu || '';
+            document.getElementById('empCode').value = emp.code || '';
+
+            document.getElementById('employeFormTitle').textContent = "✏️ Modification de la Fiche de " + emp.nom;
+            document.getElementById('btnSubmitEmp').textContent = "Mettre à jour la Fiche";
+            document.getElementById('btnSubmitEmp').className = "btn-update";
+            document.getElementById('btnCancelEditEmp').style.display = "block";
+
+            window.scrollTo({ top: document.getElementById('paneAdmin').offsetTop, behavior: 'smooth' });
+        };
+
+        window.annulerEditEmploye = () => {
+            document.getElementById('editingEmpId').value = '';
+            document.getElementById('employeForm').reset();
+            document.getElementById('employeFormTitle').textContent = "👔 Fiche & Inscription de l'Employé(e)";
+            document.getElementById('btnSubmitEmp').textContent = "Créer la Fiche Employé";
+            document.getElementById('btnSubmitEmp').className = "btn-valider";
+            document.getElementById('btnSubmitEmp').style.backgroundColor = "#7e22ce";
+            document.getElementById('btnCancelEditEmp').style.display = "none";
+        };
+
         window.supprimerEmploye = async (id) => {
             if(currentUser.role !== 'admin') return;
-            if (confirm("Voulez-vous supprimer cet employé ?")) {
+            if (confirm("Voulez-vous vraiment supprimer cet employé ? Son accès sera révoqué.")) {
                 await deleteDoc(doc(db, "employes", id));
                 chargerEmployes();
             }
         };
+
+        // GESTION EXPORT & RESTAURATION LOCALSTORAGE (PROTEGÉ ADMIN)
+        document.getElementById('btnExporterDonnees')?.addEventListener('click', () => {
+            if(currentUser.role !== 'admin') return;
+            try {
+                const sauvegarde = {
+                    localStorageData: { ...localStorage },
+                    dateSauvegarde: new Date().toISOString()
+                };
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sauvegarde, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", "gb_casual_backup_" + new Date().toISOString().split('T')[0] + ".json");
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+                alert("✅ Sauvegarde exportée avec succès !");
+            } catch (error) {
+                alert("Erreur lors de l'exportation des données.");
+            }
+        });
+
+        document.getElementById('inputFichierBackup')?.addEventListener('change', (event) => {
+            if(currentUser.role !== 'admin') return;
+            const fichier = event.target.files[0];
+            if (!fichier) return;
+
+            const lecteur = new FileReader();
+            lecteur.onload = function(e) {
+                try {
+                    const donneesImportees = JSON.parse(e.target.result);
+                    if (confirm("Voulez-vous vraiment restaurer cette sauvegarde ?")) {
+                        if (donneesImportees.localStorageData) {
+                            for (const cle in donneesImportees.localStorageData) {
+                                localStorage.setItem(cle, donneesImportees.localStorageData[cle]);
+                            }
+                        }
+                        alert("Sauvegarde restaurée avec succès !");
+                        location.reload();
+                    }
+                } catch (erreur) {
+                    alert("Erreur : Le fichier sélectionné n'est pas un fichier de sauvegarde valide.");
+                }
+            };
+            lecteur.readAsText(fichier);
+        });
+
         document.getElementById('resetAppBtn')?.addEventListener('click', async () => {
-    const confirmation = confirm("⚠️ ATTENTION : Voulez-vous vraiment réinitialiser l'application ? Toutes les données de test seront effacées.");
-    if (confirmation) {
-        try {
-            localStorage.clear();
-            sessionStorage.clear();
-            alert("✅ L'application a été réinitialisée avec succès !");
-            location.reload();
-        } catch (error) {
-            console.error("Erreur de réinitialisation :", error);
-            alert("Une erreur est survenue lors de la réinitialisation.");
-        }
-    }
-});
-        
+            if(currentUser.role !== 'admin') return;
+            const confirmation = confirm("⚠️ ATTENTION : Voulez-vous vraiment réinitialiser l'application ? Toutes les données locales seront effacées.");
+            if (confirmation) {
+                try {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    alert("✅ L'application a été réinitialisée avec succès !");
+                    location.reload();
+                } catch (error) {
+                    alert("Une erreur est survenue lors de la réinitialisation.");
+                }
+            }
+        });
     </script>
 </body>
 </html>
