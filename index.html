@@ -616,6 +616,17 @@
             </div>
 
             <!-- TAB 5: ADMIN ET EMPLOYES -->
+            <!-- Bloc Réinitialisation pour le client -->
+<div style="margin-top: 20px; padding: 15px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px;">
+    <h3 style="font-size: 13px; color: #dc2626; margin-bottom: 8px;">⚠️ Zone de réinitialisation</h3>
+    <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">
+        Cliquez ci-dessous pour effacer toutes les données de test et remettre l'application à zéro.
+    </p>
+    <button type="button" id="resetAppBtn" style="background-color: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 12px;">
+        🔄 Réinitialiser l'application (Remettre à zéro)
+    </button>
+</div>
+            
             <div id="paneAdmin" class="section-pane">
                 <div style="background:#f3e8ff; border:1px solid #d8b4fe; border-radius:8px; padding:15px; margin-bottom:20px;">
                     <h2 style="font-size:15px; color:#7e22ce; margin-bottom:8px;">🔒 Sécurité Administrateur</h2>
@@ -1506,6 +1517,21 @@
                 chargerEmployes();
             }
         };
+        document.getElementById('resetAppBtn')?.addEventListener('click', async () => {
+    const confirmation = confirm("⚠️ ATTENTION : Voulez-vous vraiment réinitialiser l'application ? Toutes les données de test seront effacées.");
+    if (confirmation) {
+        try {
+            localStorage.clear();
+            sessionStorage.clear();
+            alert("✅ L'application a été réinitialisée avec succès !");
+            location.reload();
+        } catch (error) {
+            console.error("Erreur de réinitialisation :", error);
+            alert("Une erreur est survenue lors de la réinitialisation.");
+        }
+    }
+});
+        
     </script>
 </body>
 </html>
