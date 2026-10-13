@@ -658,14 +658,14 @@
                     </div>
                 </div>
 
-                <!-- ZONE DE RÉINITIALISATION -->
+                <!-- ZONE DE RÉINITIALISATION CLOUD -->
                 <div style="padding: 15px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; margin-bottom:20px;">
-                    <h3 style="font-size: 13px; color: #dc2626; margin-bottom: 8px;">⚠️ Zone de réinitialisation</h3>
+                    <h3 style="font-size: 13px; color: #dc2626; margin-bottom: 8px;">⚠️ Remise à zéro pour Livraison Client</h3>
                     <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">
-                        Effacer les données locales et remettre l'application à zéro.
+                        Effacer toutes les ventes, dépenses, patients, stocks et employés de la base cloud pour livrer une application propre.
                     </p>
-                    <button type="button" id="resetAppBtn" style="background-color: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 12px;">
-                        🔄 Réinitialiser l'application
+                    <button type="button" id="resetCloudBtn" style="background-color: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 12px;">
+                        🗑️ Vider toutes les données de test (Cloud)
                     </button>
                 </div>
             </div>
@@ -685,7 +685,7 @@
         </div>
     </div>
 
-    <!-- Script JavaScript Firebase avec gestion des images -->
+    <!-- Script JavaScript Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, updateDoc, deleteDoc, orderBy, query, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -858,7 +858,6 @@
             chargerVentes();
         };
 
-        // Gestion Ajout Stock avec Image convertie en base64
         document.getElementById('stockForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if(currentUser.role !== 'admin') return;
@@ -1640,13 +1639,27 @@
             lecteur.readAsText(fichier);
         });
 
-        document.getElementById('resetAppBtn')?.addEventListener('click', async () => {
+        // Fonction pour vider complètement le Cloud Firebase
+        document.getElementById('resetCloudBtn')?.addEventListener('click', async () => {
             if(currentUser.role !== 'admin') return;
-            if (confirm("⚠️ Réinitialiser l'application ?")) {
-                localStorage.clear();
-                sessionStorage.clear();
-                alert("✅ Réinitialisé !");
-                location.reload();
+            if (confirm("⚠️ Êtes-vous sûr de vouloir EFFACER TOUTES LES DONNÉES DU CLOUD (ventes, dépenses, patients, stock, employés) ? Cette action est irréversible pour préparer la livraison.")) {
+                try {
+                    const collectionsToClean = ["ventes", "depenses", "fiches_patients", "stock", "employes", "mouvements_stock"];
+                    
+                    for (const colName of collectionsToClean) {
+                        const snap = await getDocs(collection(db, colName));
+                        for (const d of snap.docs) {
+                            await deleteDoc(doc(db, colName, d.id));
+                        }
+                    }
+
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    alert("✅ Base de données Cloud nettoyée avec succès ! L'application est maintenant vierge.");
+                    location.reload();
+                } catch (err) {
+                    alert("Erreur lors de la réinitialisation cloud : " + err.message);
+                }
             }
         });
     </script>
