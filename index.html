@@ -121,7 +121,7 @@
         
         .stock-item { background: #ffffff; border-left: 4px solid #0284c7; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #f1f5f9; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
         .stock-item.low { border-left-color: #ef4444; background: #fef2f2; }
-        .stock-img-thumb { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; border: 1px solid #cbd5e1; margin-right: 10px; }
+        .stock-img-thumb { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; margin-right: 10px; }
 
         .stock-dashboard-alert { background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
         .stock-dashboard-alert h3 { font-size: 13px; color: #991b1b; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
@@ -536,6 +536,8 @@
 
                 <div id="adminStockSection" style="display:none;">
                     <form id="stockForm">
+                        <input type="hidden" id="editingStockId" value="">
+                        
                         <div class="form-group">
                             <label>Pôle d'activité :</label>
                             <select id="stockPole" required>
@@ -552,14 +554,16 @@
                             <input type="number" id="stockPrix" placeholder="Ex: 12000" required>
                         </div>
                         <div class="form-group">
-                            <label>Quantité initiale en stock :</label>
+                            <label>Quantité en stock :</label>
                             <input type="number" id="stockQte" placeholder="Ex: 20" required>
                         </div>
                         <div class="form-group">
-                            <label>📷 Photo du Produit (Optionnel) :</label>
+                            <label id="lblStockImage">📷 Photo du Produit (Optionnel) :</label>
                             <input type="file" id="stockImageInput" accept="image/*" style="font-size:12px; padding:5px;">
+                            <small id="txtImageNote" style="display:none; color:#d97706; font-size:11px;"><i>Laissez vide si vous souhaitez conserver la photo actuelle.</i></small>
                         </div>
-                        <button type="submit" class="btn-valider stock-btn">Ajouter au Catalogue</button>
+                        <button type="submit" id="btnSubmitStock" class="btn-valider stock-btn">Ajouter au Catalogue</button>
+                        <button type="button" id="btnCancelEditStock" class="btn-action" style="background:#64748b; display:none; margin-top:8px; width:100%; padding:10px;" onclick="annulerEditStock()">Annuler la modification</button>
                     </form>
 
                     <h3 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;">Stock Disponible (Vue d'ensemble)</h3>
@@ -858,41 +862,114 @@
             chargerVentes();
         };
 
+        // Enregistrement & Modification de Stock
         document.getElementById('stockForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if(currentUser.role !== 'admin') return;
 
-            const nomP = document.getElementById('stockNom').value;
+            const editId = document.getElementById('editingStockId').value;
+            const nomP = document.getElementById('stockNom').value.trim();
+            const poleP = document.getElementById('stockPole').value;
+            const prixP = Number(document.getElementById('stockPrix').value);
             const qteP = Number(document.getElementById('stockQte').value);
             const imageInput = document.getElementById('stockImageInput');
 
             let imageBase64 = "";
             if (imageInput.files && imageInput.files[0]) {
-                const file = imageInput.files[0];
-                imageBase64 = await convertirImageEnBase64(file);
+                imageBase64 = await convertirImageEnBase64(imageInput.files[0]);
             }
 
             try {
-                await addDoc(collection(db, "stock"), {
-                    pole: document.getElementById('stockPole').value,
-                    nom: nomP,
-                    prix: Number(document.getElementById('stockPrix').value),
-                    qte: qteP,
-                    image: imageBase64
-                });
+                if (editId) {
+                    const existingItem = localStock.find(i => i.id === editId);
+                    const stockDataToUpdate = {
+                        pole: poleP,
+                        nom: nomP,
+                        prix: prixP,
+                        qte: qteP,
+                        image: imageBase64 || (existingItem ? existingItem.image || "" : "")
+                    };
 
-                await addDoc(collection(db, "mouvements_stock"), {
-                    texte: "➕ Ajout de " + qteP + " unités de " + nomP,
-                    date: new Date().toLocaleString('fr-FR'),
-                    createdAt: serverTimestamp()
-                });
+                    await setDoc(doc(db, "stock", editId), stockDataToUpdate, { merge: true });
 
-                alert("Produit et image ajoutés au stock !");
-                e.target.reset();
+                    await addDoc(collection(db, "mouvements_stock"), {
+                        texte: "✏️ Modification de l'article " + nomP + " (Nouveau prix: " + prixP + " F, Qte: " + qteP + ")",
+                        date: new Date().toLocaleString('fr-FR'),
+                        createdAt: serverTimestamp()
+                    });
+
+                    alert("Article mis à jour avec succès !");
+                } else {
+                    await addDoc(collection(db, "stock"), {
+                        pole: poleP,
+                        nom: nomP,
+                        prix: prixP,
+                        qte: qteP,
+                        image: imageBase64
+                    });
+
+                    await addDoc(collection(db, "mouvements_stock"), {
+                        texte: "➕ Ajout de " + qteP + " unités de " + nomP,
+                        date: new Date().toLocaleString('fr-FR'),
+                        createdAt: serverTimestamp()
+                    });
+
+                    alert("Produit ajouté au stock !");
+                }
+
+                annulerEditStock();
                 chargerStock();
                 chargerMouvementsStock();
-            } catch (err) { alert("Erreur d'ajout au stock : " + err.message); }
+            } catch (err) { alert("Erreur : " + err.message); }
         });
+
+        window.editerStock = (id) => {
+            const item = localStock.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('editingStockId').value = item.id;
+            document.getElementById('stockPole').value = item.pole || 'gb';
+            document.getElementById('stockNom').value = item.nom || '';
+            document.getElementById('stockPrix').value = item.prix || '';
+            document.getElementById('stockQte').value = item.qte || 0;
+
+            document.getElementById('btnSubmitStock').textContent = "Enregistrer la modification";
+            document.getElementById('btnSubmitStock').className = "btn-update";
+            document.getElementById('btnCancelEditStock').style.display = "block";
+            document.getElementById('txtImageNote').style.display = "block";
+
+            window.scrollTo({ top: document.getElementById('adminStockSection').offsetTop, behavior: 'smooth' });
+        };
+
+        window.annulerEditStock = () => {
+            document.getElementById('editingStockId').value = '';
+            document.getElementById('stockForm').reset();
+            document.getElementById('btnSubmitStock').textContent = "Ajouter au Catalogue";
+            document.getElementById('btnSubmitStock').className = "btn-valider stock-btn";
+            document.getElementById('btnCancelEditStock').style.display = "none";
+            document.getElementById('txtImageNote').style.display = "none";
+        };
+
+        window.supprimerStock = async (id, nom) => {
+            if(currentUser.role !== 'admin') return;
+            if (confirm("Voulez-vous vraiment SUPPRIMER définitivement l'article '" + nom + "' du catalogue ?")) {
+                try {
+                    await deleteDoc(doc(db, "stock", id));
+
+                    await addDoc(collection(db, "mouvements_stock"), {
+                        texte: "🗑️ Suppression de l'article " + nom + " du catalogue",
+                        date: new Date().toLocaleString('fr-FR'),
+                        createdAt: serverTimestamp()
+                    });
+
+                    alert("Article supprimé du stock.");
+                    chargerStock();
+                    chargerMouvementsStock();
+                } catch (err) {
+                    alert("Erreur lors de la suppression.");
+                }
+            }
+        };
 
         function convertirImageEnBase64(file) {
             return new Promise((resolve, reject) => {
@@ -922,9 +999,16 @@
                     const badgeText = isLow ? '⚠️ Stock Critique (' + st.qte + ' restants)' : '🟢 En Stock (' + st.qte + ')';
                     const itemClass = isLow ? 'stock-item low' : 'stock-item';
                     
-                    const imgTag = st.image ? `<img src="${st.image}" class="stock-img-thumb" alt="produit">` : `<div style="width:40px; height:40px; background:#e2e8f0; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:16px; margin-right:10px;">📦</div>`;
+                    const imgTag = st.image ? `<img src="${st.image}" class="stock-img-thumb" alt="produit">` : `<div style="width:45px; height:45px; background:#e2e8f0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-right:10px;">📦</div>`;
 
-                    html += `<div class="${itemClass}"><div style="display:flex; align-items:center;">${imgTag}<div><strong>${st.nom}</strong> (${st.pole === 'gb' ? '🛍️ GB Casual' : '🌿 Glory Herbal'})<br><small style="color:#64748b;">Prix : ${st.prix.toLocaleString()} F</small></div></div><div><span class="${badgeClass}">${badgeText}</span></div></div>`;
+                    const adminActions = currentUser.role === 'admin' ? `
+                        <div style="margin-top:6px;">
+                            <button type="button" class="btn-edit-patient" style="font-size:10px; padding:3px 7px;" onclick="editerStock('${st.id}')">✏️ Modifier / Photo</button>
+                            <button type="button" class="btn-action" style="background:#ef4444; font-size:10px; padding:3px 7px;" onclick="supprimerStock('${st.id}', '${st.nom}')">🗑️ Supprimer</button>
+                        </div>
+                    ` : '';
+
+                    html += `<div class="${itemClass}"><div style="display:flex; align-items:center;">${imgTag}<div><strong>${st.nom}</strong> (${st.pole === 'gb' ? '🛍️ GB Casual' : '🌿 Glory Herbal'})<br><small style="color:#64748b;">Prix : ${st.prix.toLocaleString()} F</small>${adminActions}</div></div><div><span class="${badgeClass}">${badgeText}</span></div></div>`;
 
                     selectOptions += `<option value="${st.id}">${st.nom} - ${st.prix} FCFA (Stock: ${st.qte})</option>`;
                 });
