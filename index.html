@@ -7,6 +7,8 @@
     <!-- Favicon & Icône mobile -->
     <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="apple-touch-icon" href="logo.jpg">
+    <!-- Librairie de Scanner Code-Barres / QR Code -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f1f5f9; padding: 15px; color: #1e293b; }
@@ -258,9 +260,16 @@
                 </div>
 
                 <h2 style="font-size:15px; margin-bottom:10px; color:#be185d;">Nouvelle Vente GB Casual</h2>
+                
+                <!-- SCANNER CAMERA POUR VENTE -->
+                <div style="margin-bottom:12px; background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:8px; text-align:center;">
+                    <button type="button" class="btn-action" style="background:#15803d; width:100%; padding:10px; font-size:12px; margin:0;" onclick="lancerScannerVente()">📷 Scanner un article pour la vente</button>
+                    <div id="readerVente" style="width:100%; margin-top:10px; display:none;"></div>
+                </div>
+
                 <form id="venteForm">
                     <div class="form-group">
-                        <label>Sélectionner un produit du stock (Optionnel) :</label>
+                        <label>Sélectionner un produit du stock :</label>
                         <select id="selectStockVente" onchange="remplirPrixStock()" style="font-size:12px;">
                             <option value="">-- Choix libre / Hors stock --</option>
                         </select>
@@ -546,8 +555,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Nom du Produit / Soin :</label>
-                            <input type="text" id="stockNom" placeholder="Ex: Gaine Minceur Latex ou Tisane Détox" required>
+                            <label>Nom ou Code-Barres du Produit :</label>
+                            <input type="text" id="stockNom" placeholder="Ex: Gaine Minceur ou Code-barres" required>
                         </div>
                         <div class="form-group">
                             <label>Prix Unitaire (FCFA) :</label>
@@ -689,7 +698,7 @@
         </div>
     </div>
 
-    <!-- Script JavaScript Firebase -->
+    <!-- Script JavaScript Firebase & Scanner -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, updateDoc, deleteDoc, orderBy, query, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -714,6 +723,7 @@
         let localEmployes = [];
         let currentPeriod = 'jour';
         let currentReceiptText = "";
+        let html5QrCodeScanner = null;
 
         document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
 
@@ -860,6 +870,39 @@
         window.reinitialiserFiltreDate = () => {
             document.getElementById('filtreDateSpecifique').value = '';
             chargerVentes();
+        };
+
+        // --- SCANNER DE CODE-BARRES PAR CAMERA ---
+        window.lancerScannerVente = () => {
+            const readerDiv = document.getElementById('readerVente');
+            if (readerDiv.style.display === 'none') {
+                readerDiv.style.display = 'block';
+                const html5QrCode = new Html5Qrcode("readerVente");
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    { fps: 10, qrbox: { width: 250, height: 150 } },
+                    (decodedText, decodedResult) => {
+                        // Trouvé ! On cherche le produit dans le stock par son nom ou code
+                        const matchedItem = localStock.find(i => i.nom.toLowerCase() === decodedText.toLowerCase() || i.id === decodedText);
+                        if (matchedItem) {
+                            document.getElementById('selectStockVente').value = matchedItem.id;
+                            remplirPrixStock();
+                            alert("✅ Article scanné et sélectionné : " + matchedItem.nom);
+                        } else {
+                            alert("⚠️ Code scanné : " + decodedText + " (Aucun article correspondant exact dans le stock)");
+                        }
+                        html5QrCode.stop().then(() => { readerDiv.style.display = 'none'; }).catch(err => {});
+                    },
+                    (errorMessage) => {
+                        // Erreurs de scan en direct (ignorées pour ne pas saturer)
+                    }
+                ).catch(err => {
+                    alert("Erreur d'accès à la caméra : " + err);
+                    readerDiv.style.display = 'none';
+                });
+            } else {
+                readerDiv.style.display = 'none';
+            }
         };
 
         // Enregistrement & Modification de Stock
