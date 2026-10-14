@@ -9,8 +9,6 @@
     <link rel="apple-touch-icon" href="logo.jpg">
     <!-- Librairie de Scanner Code-Barres / QR Code -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <!-- Librairie QRCode.js pour la Génération et Impression de QR Codes -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f1f5f9; padding: 15px; color: #1e293b; }
@@ -139,7 +137,6 @@
         .btn-wa { background: #10b981; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-edit-patient { background: #d97706; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; margin-top: 6px; margin-right: 4px; }
         .btn-reappro { background: #0284c7; color: white; border: none; padding: 4px 8px; font-size: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .btn-qr { background: #8e44ad; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; margin-top: 6px; margin-right: 4px; }
 
         .followup-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; margin-top: 10px; }
         .followup-item { background: #ffffff; border-left: 3px solid #22c55e; border: 1px solid #cbd5e1; border-left-width: 3px; padding: 8px; border-radius: 4px; margin-bottom: 6px; font-size: 12px; }
@@ -277,51 +274,4 @@
                             <option value="">-- Choix libre / Hors stock --</option>
                         </select>
                     </div>
-                    <!-- (Le reste de ton application complète continue ici sans interruption) -->
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- AJOUT DE LA FONCTION JS QR CODE -->
-    <script>
-    // FONCTION NATIVE D'IMPRESSION DE QR CODE POUR LE STOCK
-    function imprimerQRCode(nomProduit) {
-      const popup = window.open('', '_blank', 'width=450,height=550');
-      popup.document.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Code QR - ${nomProduit}</title>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
-            <style>
-              body { text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; background: #f9f9f9; }
-              .ticket { border: 2px dashed #2c3e50; padding: 25px; border-radius: 12px; display: inline-block; background: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-              h2 { margin-bottom: 5px; color: #2c3e50; font-size: 20px; }
-              p { margin-top: 0; font-size: 13px; color: #7f8c8d; }
-              #qrcode { margin: 20px auto; display: flex; justify-content: center; }
-              .btn-print { margin-top: 15px; padding: 10px 22px; font-size: 15px; font-weight: bold; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 6px; }
-              @media print { .btn-print { display: none; } body { padding: 0; background: none; } .ticket { border: 1px solid #000; box-shadow: none; } }
-            </style>
-          </head>
-          <body>
-            <div class="ticket">
-              <h2>${nomProduit}</h2>
-              <p>GB Casual / Glory Herbal</p>
-              <div id="qrcode"></div>
-              <button class="btn-print" onclick="window.print()">🖨️ Imprimer l'étiquette</button>
-            </div>
-            <script>
-              new QRCode(document.getElementById("qrcode"), {
-                text: "${nomProduit}",
-                width: 180,
-                height: 180
-              });
-            <\/script>
-          </body>
-        </html>
-      `);
-    }
-    </script>
-</body>
-</html>
+                    <div class="form-group
