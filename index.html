@@ -756,6 +756,14 @@
             if (code === currentAdminCode) {
                 currentUser = { nom: "Administrateur", role: "admin" };
                 lancerApplication();
+                    if (currentUser && currentUser.role === 'admin') {
+        const btnOuvriers = document.getElementById('btnTabOuvriers');
+        if (btnOuvriers) btnOuvriers.style.display = 'inline-block';
+    } else {
+        const btnOuvriers = document.getElementById('btnTabOuvriers');
+        if (btnOuvriers) btnOuvriers.style.display = 'none';
+                    }
+                
                 return;
             }
 
@@ -764,13 +772,16 @@
                 let userFound = null;
                 empSnap.forEach(d => {
                     if (d.data().code === code) {
-                        userFound = { nom: d.data().nom, role: "employe" };
+                      userFound = { nom: d.data().nom, role: "employe" };
                     }
                 });
 
                 if (userFound) {
                     currentUser = userFound;
                     lancerApplication();
+                                    const btnOuvriers = document.getElementById('btnTabOuvriers');
+                if (btnOuvriers) btnOuvriers.style.display = 'none';
+                    
                 } else {
                     errorMsg.style.display = 'block';
                 }
