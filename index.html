@@ -2130,6 +2130,56 @@ window.chargerHistoriquePaie = async () => {
     }
 };
         
+    // --- 1. Dans window.ouvrirGestionOuvriers (tout à la fin du bloc, avant appendChild) ---
+    document.body.appendChild(overlay);
+    
+    // ➡️ AJOUTE CETTE LIGNE ICI pour charger l'historique dès l'ouverture :
+    if (typeof window.chargerHistoriquePaie === 'function') {
+        window.chargerHistoriquePaie();
+    }
+};
+
+
+// --- 2. Dans window.enregistrerAvanceFirebase (après la réussite de l'ajout) ---
+window.enregistrerAvanceFirebase = async () => {
+    const select = document.getElementById('nomOuvrierSelect');
+    const montantInput = document.getElementById('montantAvance');
+    
+    const employeId = select.value;
+    const montant = parseFloat(montantInput.value);
+    const nomEmploye = select.options[select.selectedIndex]?.getAttribute('data-nom') || 'Ouvrier';
+
+    if (!employeId) {
+        alert("Veuillez sélectionner un ouvrier.");
+        return;
+    }
+    if (!montant || montant <= 0) {
+        alert("Veuillez saisir un montant valide.");
+        return;
+    }
+
+    try {
+        await addDoc(collection(db, "avances_paie"), {
+            employeId: employeId,
+            nomEmploye: nomEmploye,
+            montant: montant,
+            date: new Date().toLocaleDateString('fr-FR'),
+            createdAt: serverTimestamp()
+        });
+        alert(`✅ Avance de ${montant} FCFA enregistrée pour ${nomEmploye} !`);
+        montantInput.value = '';
+        
+        // ➡️ AJOUTE CES LIGNES ICI pour rafraîchir l'affichage instantanément :
+        if (typeof window.chargerHistoriquePaie === 'function') {
+            window.chargerHistoriquePaie();
+        }
+
+    } catch(err) {
+        console.error("Erreur enregistrement avance :", err);
+        alert("Erreur lors de l'enregistrement de l'avance.");
+    }
+};
+        
     </script>
 
 </body>
