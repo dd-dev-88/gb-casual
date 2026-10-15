@@ -1789,6 +1789,46 @@
                 }
             }
         });
+        function ouvrirQRCode(nomProduit) {
+    document.getElementById("modalQRTitre").innerText = nomProduit;
+    const container = document.getElementById("qrcodeContainer");
+    container.innerHTML = "";
+    
+    new QRCode(container, {
+        text: nomProduit,
+        width: 180,
+        height: 180
+    });
+    
+    document.getElementById("modalQRCode").classList.add("active");
+}
+
+function fermerModalQR() {
+    document.getElementById("modalQRCode").classList.remove("active");
+}
+
+function imprimerFenetreQR() {
+    const contenu = document.getElementById("modalQRCode").innerHTML;
+    const popup = window.open('', '_blank', 'width=450,height=550');
+    popup.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Impression QR Code</title>
+            <style>
+              body { text-align: center; font-family: 'Segoe UI', sans-serif; padding: 20px; background: #fff; }
+              .modal-card { border: 2px dashed #2c3e50; padding: 20px; border-radius: 10px; display: inline-block; }
+              .btn-modal { display: none; }
+            </style>
+          </head>
+          <body>
+            <div class="modal-card">${contenu}</div>
+            <script>window.print();<\/script>
+          </body>
+        </html>
+    `);
+}
+        
     </script>
 </body>
 </html>
