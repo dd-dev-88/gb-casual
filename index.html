@@ -1832,5 +1832,28 @@ function imprimerFenetreQR() {
 }
         
     </script>
+    // --- AFFICHAGE DU QR CODE PRODUIT ---
+window.ouvrirQRCode = (nomProduit) => {
+    const modalId = 'qrModalOverlay';
+    let existingModal = document.getElementById(modalId);
+    if (existingModal) existingModal.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = modalId;
+    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:9999;';
+
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(nomProduit)}`;
+
+    overlay.innerHTML = `
+        <div style="background:white; padding:20px; border-radius:10px; text-align:center; max-width:300px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+            <h3 style="margin-top:0; color:#0284c7; font-size:16px;">QR Code : ${nomProduit}</h3>
+            <img src="${qrUrl}" alt="QR Code" style="margin:15px 0; border:1px solid #ddd; padding:5px; border-radius:5px;" />
+            <p style="font-size:12px; color:#666; margin-bottom:15px;">Scannez pour identifier le produit</p>
+            <button type="button" style="background:#e74c3c; color:white; padding:8px 16px; border:none; border-radius:5px; cursor:pointer; font-weight:bold;" onclick="document.getElementById('${modalId}').remove()">Fermer</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+};
+    
 </body>
 </html>
