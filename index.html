@@ -1830,9 +1830,9 @@ function imprimerFenetreQR() {
         </html>
     `);
 }
-        
-      // --- AFFICHAGE DU QR CODE PRODUIT ---
-window.ouvrirQRCode = (nomProduit) => {
+
+        // --- AFFICHAGE DU QR CODE PRODUIT AVEC OPTIONS DE TELECHARGEMENT ET COPIE ---
+window.ouvrirQRCode = async (nomProduit) => {
     const modalId = 'qrModalOverlay';
     let existingModal = document.getElementById(modalId);
     if (existingModal) existingModal.remove();
@@ -1841,18 +1841,26 @@ window.ouvrirQRCode = (nomProduit) => {
     overlay.id = modalId;
     overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:9999;';
 
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(nomProduit)}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(nomProduit)}`;
 
     overlay.innerHTML = `
-        <div style="background:white; padding:20px; border-radius:10px; text-align:center; max-width:300px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
-            <h3 style="margin-top:0; color:#0284c7; font-size:16px;">QR Code : ${nomProduit}</h3>
-            <img src="${qrUrl}" alt="QR Code" style="margin:15px 0; border:1px solid #ddd; padding:5px; border-radius:5px;" />
-            <p style="font-size:12px; color:#666; margin-bottom:15px;">Scannez pour identifier le produit</p>
-            <button type="button" style="background:#e74c3c; color:white; padding:8px 16px; border:none; border-radius:5px; cursor:pointer; font-weight:bold;" onclick="document.getElementById('${modalId}').remove()">Fermer</button>
+        <div style="background:white; padding:20px; border-radius:12px; text-align:center; max-width:320px; box-shadow:0 4px 15px rgba(0,0,0,0.3); font-family:sans-serif;">
+            <h3 style="margin-top:0; color:#0284c7; font-size:18px;">QR Code : ${nomProduit}</h3>
+            <div id="qrContainer" style="margin:15px 0;">
+                <img id="qrImageModal" src="${qrUrl}" alt="QR Code" style="border:1px solid #ddd; padding:8px; border-radius:8px; background:#fff; width:200px; height:200px;" />
+            </div>
+            <p style="font-size:12px; color:#666; margin-bottom:15px;">Scannez ou téléchargez pour l'étiquette</p>
+            
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <a id="btnDownloadQR" href="${qrUrl}" download="QRCode_${nomProduit}.png" target="_blank" style="background:#27ae60; color:white; padding:10px; text-decoration:none; border-radius:6px; font-weight:bold; font-size:14px; display:block;">📥 Télécharger l'image</a>
+                <button type="button" id="btnCopyQR" style="background:#2980b9; color:white; padding:10px; border:none; border-radius:6px; font-weight:bold; font-size:14px; cursor:pointer;" onclick="navigator.clipboard.writeText('${qrUrl}').then(() => alert('Lien du QR Code copié !'))">📋 Copier le lien</button>
+                <button type="button" style="background:#e74c3c; color:white; padding:10px; border:none; border-radius:6px; font-weight:bold; font-size:14px; cursor:pointer;" onclick="document.getElementById('${modalId}').remove()">Fermer</button>
+            </div>
         </div>
     `;
     document.body.appendChild(overlay);
 };
+        
       </script>
 
 </body>
