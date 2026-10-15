@@ -2060,6 +2060,76 @@ window.enregistrerNouvelOuvrierFirebase = async () => {
     }
 };
         
+   // --- CHARGER ET AFFICHER L'HISTORIQUE DES AVANCES ET LA PAIE ---
+window.chargerHistoriquePaie = async () => {
+    const container = document.getElementById('listeOuvriersContainer');
+    if (!container) return;
+
+    container.innerHTML = '<p style="text-align:center; color:#0284c7;">Chargement des données de paie...</p>';
+
+    try {
+        // 1. Récupérer tous les employés
+        const empSnap = await getDocs(collection(db, "employes"));
+        // 2. Récupérer toutes les avances
+        const avancesSnap = await getDocs(collection(db, "avances_paie"));
+
+        let avancesParEmploye = {};
+        avancesSnap.forEach(docSnap => {
+            const data = docSnap.data();
+            if (!avancesParEmploye[data.employeId]) {
+                avancesParEmploye[data.employeId] = [];
+            }
+            avancesParEmploye[data.employeId].push(data);
+        });
+
+        if (empSnap.empty) {
+            container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:13px;">Aucun ouvrier enregistré.</p>';
+            return;
+        }
+
+        let html = '';
+        empSnap.forEach(docSnap => {
+            const emp = docSnap.data();
+            const empId = docSnap.id;
+            const listeAvances = avancesParEmploye[empId] || [];
+
+            // Calcul du total des avances
+            const totalAvances = listeAvances.reduce((sum, item) => sum + (parseFloat(item.montant) || 0), 0);
+            const salaireBase = parseFloat(emp.salaireBase) || 0;
+            const resteAPayer = salaireBase - totalAvances;
+
+            // Liste détaillée des dates d'avances
+            let detailsAvancesHtml = listeAvances.map(a => `<li>${a.date || 'N/A'} : <b>${a.montant} FCFA</b></li>`).join('');
+            if (!detailsAvancesHtml) detailsAvancesHtml = '<i>Aucune avance enregistrée</i>';
+
+            html += `
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:12px; margin-bottom:10px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0; font-size:15px; color:#1e293b;">👤 ${emp.nom || 'Sans nom'}</h3>
+                        <span style="background:#e0f2fe; color:#0369a1; font-size:11px; padding:3px 8px; border-radius:12px; font-weight:bold;">${emp.poste || 'Ouvrier'}</span>
+                    </div>
+                    <div style="font-size:13px; color:#475569; margin-top:8px;">
+                        <p style="margin:2px 0;">💰 Salaire prévu : <b>${salaireBase} FCFA</b></p>
+                        <p style="margin:2px 0; color:#dc2626;">📉 Total Avances : <b>${totalAvances} FCFA</b></p>
+                        <p style="margin:2px 0; color:#16a34a; font-size:14px;">💵 <b>Reste à Payer : ${resteAPayer} FCFA</b></p>
+                    </div>
+
+                    <details style="margin-top:8px; font-size:12px; color:#64748b;">
+                        <summary style="cursor:pointer; font-weight:bold;">📄 Historique des avances (${listeAvances.length})</summary>
+                        <ul style="padding-left:20px; margin:5px 0;">${detailsAvancesHtml}</ul>
+                    </details>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+    } catch(err) {
+        console.error("Erreur chargement paie :", err);
+        container.innerHTML = '<p style="text-align:center; color:#dc2626;">Erreur lors du chargement des données.</p>';
+    }
+};
+        
     </script>
 
 </body>
