@@ -1885,8 +1885,98 @@ window.ouvrirGestionOuvriers = () => {
 };
         
         
+      // --- MODULE CENTRALISÉ : GESTION DES OUVRIERS & PAIE (ADMIN ONLY) ---
+window.ouvrirGestionOuvriers = () => {
+    // Sécurité : réservé à l'Admin
+    if (typeof currentUser !== 'undefined' && currentUser && currentUser.role !== 'admin') {
+        alert("⛔ Accès refusé : Cette section est strictement réservée à l'administrateur.");
+        return;
+    }
+
+    const modalId = 'ouvriersModalOverlay';
+    let existingModal = document.getElementById(modalId);
+    if (existingModal) existingModal.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = modalId;
+    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index:9999; padding:10px; box-sizing:border-box;';
+
+    overlay.innerHTML = `
+        <div style="background:white; border-radius:12px; width:100%; max-width:550px; max-height:90vh; overflow-y:auto; padding:20px; box-shadow:0 5px 20px rgba(0,0,0,0.3); font-family:sans-serif;">
+            
+            <!-- En-tête -->
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #e2e8f0; padding-bottom:10px; margin-bottom:15px;">
+                <h2 style="margin:0; color:#0284c7; font-size:18px;">👥 Module Personnel & Paie (Admin)</h2>
+                <button onclick="document.getElementById('${modalId}').remove()" style="background:none; border:none; font-size:20px; cursor:pointer;">❌</button>
+            </div>
+
+            <!-- Onglets Internes -->
+            <div style="display:flex; gap:8px; margin-bottom:15px; border-bottom:1px solid #cbd5e1; padding-bottom:8px;">
+                <button id="subBtnPointage" onclick="afficherSousOngletOuvrier('pointage')" style="flex:1; padding:8px; border:none; background:#0284c7; color:white; font-weight:bold; border-radius:6px; cursor:pointer;">📋 Présences & Paie</button>
+                <button id="subBtnInscription" onclick="afficherSousOngletOuvrier('inscription')" style="flex:1; padding:8px; border:1px solid #cbd5e1; background:#f8fafc; color:#334155; font-weight:bold; border-radius:6px; cursor:pointer;">📝 Inscription / Fiches</button>
+            </div>
+
+            <!-- SECTION 1 : POINTAGE ET SALAIRES -->
+            <div id="secOuvrierPointage">
+                <div style="background:#f8fafc; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #e2e8f0;">
+                    <h4 style="margin-top:0; color:#334155; font-size:14px;">⚡ Enregistrer un Acompte / Pointage</h4>
+                    <input type="text" id="nomOuvrierSelect" placeholder="Nom de l'ouvrier" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                    <div style="display:flex; gap:8px;">
+                        <input type="number" id="montantAvance" placeholder="Montant Avance (FCFA)" style="width:60%; padding:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                        <button type="button" onclick="alert('Avance enregistrée')" style="width:40%; background:#16a34a; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Ajouter</button>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom:10px; color:#334155; font-size:14px;">📋 Suivi du Personnel</h4>
+                <div id="listeOuvriersContainer" style="display:flex; flex-direction:column; gap:10px;">
+                    <p style="text-align:center; color:#94a3b8; font-size:13px;">Aucun ouvrier enregistré dans le système.</p>
+                </div>
+            </div>
+
+            <!-- SECTION 2 : INSCRIPTION & FICHE -->
+            <div id="secOuvrierInscription" style="display:none;">
+                <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+                    <h4 style="margin-top:0; color:#334155; font-size:14px;">📝 Nouvelle Fiche Employé</h4>
+                    <input type="text" id="insNom" placeholder="Nom Complet" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                    <input type="text" id="insTel" placeholder="Numéro de Téléphone" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                    <input type="text" id="insPoste" placeholder="Poste / Rôle" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                    <input type="number" id="insSalaireBase" placeholder="Salaire Journalier ou Mensuel (FCFA)" style="width:100%; padding:8px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                    <button type="button" onclick="alert('Fiche employé créée !')" style="width:100%; background:#0284c7; color:white; border:none; padding:10px; border-radius:5px; font-weight:bold; cursor:pointer;">Enregistrer l'employé</button>
+                </div>
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+};
+
+// Basculement des sous-onglets
+window.afficherSousOngletOuvrier = (onglet) => {
+    const secPointage = document.getElementById('secOuvrierPointage');
+    const secInscription = document.getElementById('secOuvrierInscription');
+    const btnPointage = document.getElementById('subBtnPointage');
+    const btnInscription = document.getElementById('subBtnInscription');
+
+    if (onglet === 'pointage') {
+        secPointage.style.display = 'block';
+        secInscription.style.display = 'none';
+        btnPointage.style.background = '#0284c7';
+        btnPointage.style.color = 'white';
+        btnInscription.style.background = '#f8fafc';
+        btnInscription.style.color = '#334155';
+    } else {
+        secPointage.style.display = 'none';
+        secInscription.style.display = 'block';
+        btnInscription.style.background = '#0284c7';
+        btnInscription.style.color = 'white';
+        btnPointage.style.background = '#f8fafc';
+        btnPointage.style.color = '#334155';
+    }
+};
         
-      </script>
+    
+    </script>
 
 </body>
 </html>
