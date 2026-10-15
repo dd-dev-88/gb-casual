@@ -1048,6 +1048,8 @@
                         <div style="margin-top:6px;">
                             <button type="button" class="btn-edit-patient" style="font-size:10px; padding:3px 7px;" onclick="editerStock('${st.id}')">✏️ Modifier / Photo</button>
                             <button type="button" class="btn-action" style="background:#ef4444; font-size:10px; padding:3px 7px;" onclick="supprimerStock('${st.id}', '${st.nom}')">🗑️ Supprimer</button>
+                            <button type="button" class="btn-action" style="background:#8e44ad; margin-left:4px;" onclick="ouvrirQRCode('${st.nom}')">🔲 QR Code</button>
+
                         </div>
                     ` : '';
 
