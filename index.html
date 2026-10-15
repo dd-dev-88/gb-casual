@@ -1831,35 +1831,52 @@ function imprimerFenetreQR() {
     `);
 }
 
-        // --- AFFICHAGE DU QR CODE PRODUIT AVEC OPTIONS DE TELECHARGEMENT ET COPIE ---
-window.ouvrirQRCode = async (nomProduit) => {
-    const modalId = 'qrModalOverlay';
+// --- FONCTION DE SCANNER QR CODE / CODE-BARRES PAR CAMERA ---
+window.demarrerScannerCamera = () => {
+    const modalId = 'scannerModalOverlay';
     let existingModal = document.getElementById(modalId);
     if (existingModal) existingModal.remove();
 
     const overlay = document.createElement('div');
     overlay.id = modalId;
-    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:9999;';
-
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(nomProduit)}`;
+    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:9999;';
 
     overlay.innerHTML = `
-        <div style="background:white; padding:20px; border-radius:12px; text-align:center; max-width:320px; box-shadow:0 4px 15px rgba(0,0,0,0.3); font-family:sans-serif;">
-            <h3 style="margin-top:0; color:#0284c7; font-size:18px;">QR Code : ${nomProduit}</h3>
-            <div id="qrContainer" style="margin:15px 0;">
-                <img id="qrImageModal" src="${qrUrl}" alt="QR Code" style="border:1px solid #ddd; padding:8px; border-radius:8px; background:#fff; width:200px; height:200px;" />
-            </div>
-            <p style="font-size:12px; color:#666; margin-bottom:15px;">Scannez ou téléchargez pour l'étiquette</p>
-            
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                <a id="btnDownloadQR" href="${qrUrl}" download="QRCode_${nomProduit}.png" target="_blank" style="background:#27ae60; color:white; padding:10px; text-decoration:none; border-radius:6px; font-weight:bold; font-size:14px; display:block;">📥 Télécharger l'image</a>
-                <button type="button" id="btnCopyQR" style="background:#2980b9; color:white; padding:10px; border:none; border-radius:6px; font-weight:bold; font-size:14px; cursor:pointer;" onclick="navigator.clipboard.writeText('${qrUrl}').then(() => alert('Lien du QR Code copié !'))">📋 Copier le lien</button>
-                <button type="button" style="background:#e74c3c; color:white; padding:10px; border:none; border-radius:6px; font-weight:bold; font-size:14px; cursor:pointer;" onclick="document.getElementById('${modalId}').remove()">Fermer</button>
-            </div>
+        <div style="background:white; padding:20px; border-radius:12px; text-align:center; width:90%; max-width:350px; box-shadow:0 4px 15px rgba(0,0,0,0.4); font-family:sans-serif;">
+            <h3 style="margin-top:0; color:#0284c7; font-size:18px;">📷 Scanner de Code-Barres / QR</h3>
+            <div id="interactive" class="viewport" style="width:100%; height:250px; overflow:hidden; position:relative; background:#000; border-radius:8px; margin:10px 0;"></div>
+            <p style="font-size:12px; color:#666; margin-bottom:15px;">Placez le code QR devant la caméra</p>
+            <button type="button" style="background:#e74c3c; color:white; padding:10px 20px; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="ArreterScanner('${modalId}')">Fermer le Scanner</button>
         </div>
     `;
     document.body.appendChild(overlay);
+
+    if (window.Html5QrcodeScanner) {
+        const html5QrcodeScanner = new Html5QrcodeScanner("interactive", { fps: 10, qrbox: { width: 200, height: 200 } }, false);
+        html5QrcodeScanner.render((decodedText) => {
+            // Remplit automatiquement le champ de recherche ou le produit scanné
+            const champRecherche = document.querySelector('input[placeholder*="Ex: Gaine Minceur"], input[placeholder*="Code-barres"], #searchProduct');
+            if (champRecherche) {
+                champRecherche.value = decodedText;
+                champRecherche.dispatchEvent(new Event('input'));
+            }
+            alert("Produit identifié : " + decodedText);
+            html5QrcodeScanner.clear();
+            overlay.remove();
+        }, (errorMessage) => {
+            // Ignorer les erreurs de lecture continues
+        });
+    } else {
+        alert("Le module de scanner n'est pas encore totalement chargé. Veuillez réessayer dans quelques secondes.");
+        overlay.remove();
+    }
 };
+
+window.ArreterScanner = (modalId) => {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.remove();
+};
+        
         
       </script>
 
