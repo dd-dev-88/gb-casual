@@ -1989,20 +1989,6 @@ window.afficherSousOngletOuvrier = (onglet) => {
         btnPointage.style.color = '#334155';
     }
 };
-        
-    
- // --- SAUVEGARDE DE L'AVANCE DANS FIREBASE ---
-window.enregistrerAvanceFirebase = async () => {
-    const select = document.getElementById('nomOuvrierSelect');
-    const montantInput = document.getElementById('montantAvance');
-    
-    const employeId = select.value;
-    const montant = parseFloat(montantInput.value);
-    const nomEmploye = select.options[select.selectedIndex]?.getAttribute('data-nom') || 'Ouvrier';
-
-    if (!employeId) {
-        alert("Veuillez sélectionner un ouvrier.");
-        return;
 
         
     </script>
