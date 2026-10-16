@@ -2004,13 +2004,12 @@ window.afficherSousOngletOuvrier = (onglet) => {
     }
 };
  
-
-     // --- CHARGER ET AFFICHER L'HISTORIQUE DES AVANCES ET LA PAIE ---
+// --- CHARGER ET AFFICHER L'HISTORIQUE DES AVANCES ET LA PAIE ---
 window.chargerHistoriquePaie = async () => {
     const container = document.getElementById('listeOuvriersContainer');
     if (!container) return;
 
-    container.innerHTML = '<p style="text-align:center; color:#0284c7;">Chargement des données de paie...</p>';
+    container.innerHTML = '<p style="text-align:center; color:#0284c7;">Chargement des données...</p>';
 
     try {
         const empSnap = await getDocs(collection(db, "employes"));
@@ -2022,42 +2021,59 @@ window.chargerHistoriquePaie = async () => {
             if (!avancesParEmploye[data.employeId]) {
                 avancesParEmploye[data.employeId] = [];
             }
-            avancesParEmploye[data.employeId].push(data);
+            avancesParEmploye[data.employeId].push({ id: docSnap.id, ...data });
         });
 
+        let html = '';
+
         if (empSnap.empty) {
-            container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:13px;">Aucun ouvrier enregistré.</p>';
+            container.innerHTML = '<p style="text-align:center; color:#64748b;">Aucun ouvrier enregistré.</p>';
             return;
         }
 
-        let html = '';
         empSnap.forEach(docSnap => {
             const emp = docSnap.data();
             const empId = docSnap.id;
             const listeAvances = avancesParEmploye[empId] || [];
 
-            const totalAvances = listeAvances.reduce((sum, item) => sum + (parseFloat(item.montant) || 0), 0);
+            let totalAvances = 0;
+            listeAvances.forEach(a => totalAvances += (parseFloat(a.montant) || 0));
+
             const salaireBase = parseFloat(emp.salaireBase) || 0;
             const resteAPayer = salaireBase - totalAvances;
 
-            let detailsAvancesHtml = listeAvances.map(a => `<li>${a.date || 'N/A'} : <b>${a.montant} FCFA</b></li>`).join('');
-            if (!detailsAvancesHtml) detailsAvancesHtml = '<i>Aucune avance enregistrée</i>';
-
             html += `
-                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:12px; margin-bottom:10px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h3 style="margin:0; font-size:15px; color:#1e293b;">👤 ${emp.nom || 'Sans nom'}</h3>
-                        <span style="background:#e0f2fe; color:#0369a1; font-size:11px; padding:3px 8px; border-radius:12px; font-weight:bold;">${emp.poste || 'Ouvrier'}</span>
+                <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-between:space-between; align-items:center;">
+                        <strong style="color:#0f172a; font-size:15px;">👤 ${emp.nom}</strong>
+                        <div>
+                            <span style="font-size:11px; background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:12px; font-weight:600;">${emp.poste || 'Ouvrier'}</span>
+                            <button onclick="window.supprimerOuvrierFirebase('${empId}', '${emp.nom}')" title="Supprimer cet ouvrier" style="background:none; border:none; color:#ef4444; font-size:14px; cursor:pointer; margin-left:6px;">🗑️</button>
+                        </div>
                     </div>
-                    <div style="font-size:13px; color:#475569; margin-top:8px;">
-                        <p style="margin:2px 0;">💰 Salaire prévu : <b>${salaireBase} FCFA</b></p>
-                        <p style="margin:2px 0; color:#dc2626;">📉 Total Avances : <b>${totalAvances} FCFA</b></p>
-                        <p style="margin:2px 0; color:#16a34a; font-size:14px;">💵 <b>Reste à Payer : ${resteAPayer} FCFA</b></p>
+                    <div style="margin-top:8px; font-size:13px; color:#475569; line-height:1.6;">
+                        💰 Salaire prévu : <strong>${salaireBase} FCFA</strong><br>
+                        📉 Total Avances : <strong style="color:#dc2626;">${totalAvances} FCFA</strong><br>
+                        💵 Reste à Payer : <strong style="color:${resteAPayer >= 0 ? '#16a34a' : '#dc2626'};">${resteAPayer} FCFA</strong>
+                    </div>
+
+                    <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                        <button onclick="window.solderPaieOuvrier('${empId}', '${emp.nom}', ${listeAvances.length})" style="background:#16a34a; color:white; border:none; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;">
+                            💸 Solder / Réinitialiser
+                        </button>
                     </div>
 
                     <details style="margin-top:8px; font-size:12px; color:#64748b;">
-                        <summary style="cursor:pointer; font-weight:bold;">📄 Historique des avances (${listeAvances.length})</summary>
-                        <ul style="padding-left:20px; margin:5px 0;">${detailsAvancesHtml}</ul>
+                        <summary style="cursor:pointer; font-weight:600;">▶ 📄 Historique des avances (${listeAvances.length})</summary>
+                        <ul style="margin:6px 0 0 0; padding-left:18px;">
+                            ${listeAvances.length === 0 ? '<li>Aucune avance enregistrée</li>' : ''}
+                            ${listeAvances.map(a => `
+                                <li style="margin-bottom:4px;">
+                                    ${a.date ? new Date(a.date.seconds * 1000).toLocaleDateString('fr-FR') : 'N/A'} : <strong>${a.montant} FCFA</strong>
+                                    <button onclick="window.supprimerAvanceFirebase('${a.id}')" style="background:none; border:none; color:#ef4444; font-size:12px; cursor:pointer; margin-left:4px;" title="Annuler cette avance">❌</button>
+                                </li>
+                            `).join('')}
+                        </ul>
                     </details>
                 </div>
             `;
@@ -2065,67 +2081,61 @@ window.chargerHistoriquePaie = async () => {
 
         container.innerHTML = html;
 
-    } catch(err) {
+    } catch (err) {
         console.error("Erreur chargement paie :", err);
-        container.innerHTML = '<p style="text-align:center; color:#dc2626;">Erreur lors du chargement des données.</p>';
+        container.innerHTML = '<p style="text-align:center; color:#ef4444;">Erreur lors du chargement des données.</p>';
     }
 };
 
-// --- SAUVEGARDE DE L'AVANCE DANS FIREBASE ---
-window.enregistrerAvanceFirebase = async () => {
-    const select = document.getElementById('nomOuvrierSelect');
-    const montantInput = document.getElementById('montantAvance');
-    
-    const employeId = select.value;
-    const montant = parseFloat(montantInput.value);
-    const nomEmploye = select.options[select.selectedIndex]?.getAttribute('data-nom') || 'Ouvrier';
-
-    if (!employeId) {
-        alert("Veuillez sélectionner un ouvrier.");
-        return;
-    }
-    if (!montant || montant <= 0) {
-        alert("Veuillez saisir un montant valide.");
-        return;
-    }
-
-        
-        
-};
-
-// --- SAUVEGARDE DU NOUVEL OUVRIER DANS FIREBASE ---
-window.enregistrerNouvelOuvrierFirebase = async () => {
-    const nom = document.getElementById('insNom').value.trim();
-    const tel = document.getElementById('insTel').value.trim();
-    const poste = document.getElementById('insPoste').value.trim();
-    const salaire = parseFloat(document.getElementById('insSalaireBase').value) || 0;
-
-    if (!nom) {
-        alert("Veuillez saisir le nom complet de l'employé.");
-        return;
-    }
-
+// --- FONCTION : SUPPRIMER UNE AVANCE ---
+window.supprimerAvanceFirebase = async (avanceId) => {
+    if (!confirm("Voulez-vous vraiment annuler cette avance ?")) return;
     try {
-        await addDoc(collection(db, "employes"), {
-            nom: nom,
-            tel: tel,
-            poste: poste,
-            salaireBase: salaire,
-            role: "employe",
-            createdAt: serverTimestamp()
-        });
-        alert(`✅ Fiche créée pour ${nom} !`);
-        document.getElementById('insNom').value = '';
-        document.getElementById('insTel').value = '';
-        document.getElementById('insPoste').value = '';
-        document.getElementById('insSalaireBase').value = '';
-        
-        window.ouvrirGestionOuvriers();
-    } catch(err) {
-        console.error("Erreur création employé :", err);
-        alert("Erreur lors de la création de la fiche employé.");
+        await deleteDoc(doc(db, "avances_paie", avanceId));
+        alert("✅ Avance annulée avec succès !");
+        window.chargerHistoriquePaie();
+    } catch (err) {
+        console.error("Erreur suppression avance :", err);
+        alert("Erreur lors de l'annulation.");
     }
 };
+
+// --- FONCTION : SOLDER / RÉINITIALISER LA PAIE ---
+window.solderPaieOuvrier = async (employeId, nomEmploye, nbAvances) => {
+    if (nbAvances === 0) {
+        alert("Cet ouvrier n'a aucune avance à solder.");
+        return;
+    }
+    if (!confirm(`Solder le compte de ${nomEmploye} ? Cela va archiver/remettre les avances à zéro.`)) return;
+    
+    try {
+        const avancesSnap = await getDocs(collection(db, "avances_paie"));
+        avancesSnap.forEach(async (docSnap) => {
+            if (docSnap.data().employeId === employeId) {
+                await deleteDoc(doc(db, "avances_paie", docSnap.id));
+            }
+        });
+        alert(`✅ Compte soldé pour ${nomEmploye} !`);
+        window.chargerHistoriquePaie();
+    } catch (err) {
+        console.error("Erreur lors du solde :", err);
+        alert("Erreur lors du traitement.");
+    }
+};
+
+// --- FONCTION : SUPPRIMER UN OUVRIER ---
+window.supprimerOuvrierFirebase = async (employeId, nomEmploye) => {
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer définitivement ${nomEmploye} ?`)) return;
+    try {
+        await deleteDoc(doc(db, "employes", employeId));
+        alert(`✅ ${nomEmploye} a été supprimé de la base.`);
+        window.chargerHistoriquePaie();
+    } catch (err) {
+        console.error("Erreur suppression ouvrier :", err);
+        alert("Erreur lors de la suppression.");
+    }
+};
+        
         
     </script>
 
