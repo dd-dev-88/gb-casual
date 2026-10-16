@@ -1143,55 +1143,103 @@
             } catch(e){}
         }
 
-        window.remplirPrixStock = () => {
-            const stockId = document.getElementById('selectStockVente').value;
-            const item = localStock.find(i => i.id === stockId);
-            if (item) {
-                document.getElementById('montantTotal').value = item.prix;
-            }
-        };
+        // 1. Calcul automatique du Montant Total selon la Quantité
+window.remplirPrixStock = () => {
+    const stockId = document.getElementById('selectStockVente').value;
+    const item = localStock.find(i => i.id === stockId);
+    
+    if (item) {
+        const qteInput = document.getElementById('quantiteVente');
+        let qte = qteInput ? parseInt(qteInput.value) : 1;
+        if (isNaN(qte) || qte < 1) qte = 1;
 
-        document.getElementById('venteForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const stockId = document.getElementById('selectStockVente').value;
-            const montant = Number(document.getElementById('montantTotal').value);
-            const client = document.getElementById('nomClient').value;
-            const tel = document.getElementById('telClientVente').value;
+        // Multiplication automatique du prix par la quantité
+        document.getElementById('montantTotal').value = item.prix * qte;
+    }
+};
 
-            try {
-                let nomArticle = "Produit / Prestation";
-                if (stockId) {
-                    const st = localStock.find(i => i.id === stockId);
-                    if (st && st.qte > 0) {
-                        nomArticle = st.nom;
-                        await setDoc(doc(db, "stock", stockId), { qte: st.qte - 1 }, { merge: true });
+// Réaction immédiate lors du changement de quantité ou d'article
+document.getElementById('quantiteVente')?.addEventListener('input', window.remplirPrixStock);
+document.getElementById('selectStockVente')?.addEventListener('change', window.remplirPrixStock);
 
-                        await addDoc(collection(db, "mouvements_stock"), {
-                            texte: "➖ Vente de 1 unité de " + st.nom + " (Client: " + client + ")",
-                            date: new Date().toLocaleString('fr-FR'),
-                            createdAt: serverTimestamp()
-                        });
-                    }
+
+// 2. Traitement complet de la Vente et Déduction exacte du Stock
+document.getElementById('venteForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const stockId = document.getElementById('selectStockVente').value;
+    const qteInput = document.getElementById('quantiteVente');
+    
+    // Récupération dynamique de la quantité (ex: 6)
+    let quantite = qteInput ? parseInt(qteInput.value) : 1;
+    if (isNaN(quantite) || quantite < 1) quantite = 1;
+
+    // Récupération du montant total
+    const montantTotal = Number(document.getElementById('montantTotal').value) || 0;
+
+    // Client et téléphone optionnels ("Client de passage" par défaut)
+    const clientInput = document.getElementById('nomClient').value.trim();
+    const telInput = document.getElementById('telClientVente').value.trim();
+    const client = clientInput !== '' ? clientInput : 'Client de passage';
+    const tel = telInput !== '' ? telInput : 'N/A';
+
+    try {
+        let nomArticle = "Produit / Prestation";
+        
+        if (stockId) {
+            const st = localStock.find(i => i.id === stockId);
+            
+            if (st) {
+                if (st.qte < quantite) {
+                    alert(`Stock insuffisant ! Seules ${st.qte} unité(s) sont disponibles.`);
+                    return;
                 }
 
-                await addDoc(collection(db, "ventes"), {
-                    pole: "gb",
-                    article: nomArticle,
-                    canalVente: document.getElementById('canalVente').value,
-                    nomClient: client,
-                    telClient: tel,
-                    montantTotal: montant,
-                    employe: currentUser.nom,
-                    dateString: new Date().toISOString().split('T')[0],
-                    dateCreation: serverTimestamp()
-                });
+                nomArticle = st.nom;
 
-                alert("Vente enregistrée avec succès !");
-                e.target.reset();
-                chargerVentes();
-                chargerStock();
-            } catch (err) { alert("Erreur d'enregistrement."); }
+                // 🔻 DÉDUCTION EXACTE DU STOCK (st.qte - quantite)
+                await setDoc(doc(db, "stock", stockId), { 
+                    qte: st.qte - quantite 
+                }, { merge: true });
+
+                // Inscription au journal des mouvements de stock
+                await addDoc(collection(db, "mouvements_stock"), {
+                    texte: `📦 Vente de ${quantite} unité(s) de ${st.nom} (Client: ${client})`,
+                    date: new Date().toLocaleString('fr-FR'),
+                    createdAt: serverTimestamp()
+                });
+            }
+        }
+
+        // Enregistrement de la vente dans Firebase
+        await addDoc(collection(db, "ventes"), {
+            pole: "gb",
+            article: nomArticle,
+            canalVente: document.getElementById('canalVente').value,
+            nomClient: client,
+            telClient: tel,
+            quantite: quantite,
+            montantTotal: montantTotal,
+            employe: currentUser.nom,
+            dateString: new Date().toISOString().split('T')[0],
+            dateCreation: serverTimestamp()
         });
+
+        alert("Vente enregistrée avec succès !");
+        
+        // Remise à zéro propre du formulaire
+        document.getElementById('venteForm').reset();
+        if (qteInput) qteInput.value = 1;
+        document.getElementById('montantTotal').value = '';
+
+        if (typeof chargerVentes === 'function') chargerVentes();
+        if (typeof chargerStock === 'function') chargerStock();
+
+    } catch (err) {
+        alert("Erreur lors de l'enregistrement de la vente : " + err.message);
+    }
+});
+        
 
         document.getElementById('depenseForm').addEventListener('submit', async (e) => {
             e.preventDefault();
