@@ -2074,27 +2074,7 @@ window.enregistrerAvanceFirebase = async () => {
         return;
     }
 
-        try {
-        await addDoc(collection(db, "avances_paie"), {
-            employeId: employeId,
-            nomEmploye: nomEmploye,
-            montant: montant,
-            date: new Date().toLocaleDateString('fr-FR'),
-            createdAt: serverTimestamp()
-        });
-        alert(`✅ Avance de ${montant} FCFA enregistrée pour ${nomEmploye} !`);
-        montantInput.value = '';
         
-        // ➡️ Recharge l'historique et les calculs instantanément à l'écran
-        if (typeof window.chargerHistoriquePaie === 'function') {
-            await window.chargerHistoriquePaie();
-        }
-
-    } catch(err) {
-        console.error("Erreur enregistrement avance :", err);
-        alert("Erreur lors de l'enregistrement de l'avance.");
-    }
-};
         
 };
 
