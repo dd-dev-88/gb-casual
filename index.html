@@ -1151,39 +1151,65 @@
             }
         };
 
-        document.getElementById('venteForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const stockId = document.getElementById('selectStockVente').value;
-            const montant = Number(document.getElementById('montantTotal').value);
-            const client = document.getElementById('nomClient').value;
-            const tel = document.getElementById('telClientVente').value;
+ document.getElementById('venteForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const stockId = document.getElementById('selectStockVente').value;
+    
+    // 1. Récupération de la quantité et calcul du montant total
+    const qteInput = document.getElementById('quantiteVente');
+    const quantite = qteInput ? (parseInt(qteInput.value) || 1) : 1;
+    const montantSaisi = Number(document.getElementById('montantTotal').value) || 0;
+    const montantTotal = montantSaisi * quantite;
 
-            try {
-                let nomArticle = "Produit / Prestation";
-                if (stockId) {
-                    const st = localStock.find(i => i.id === stockId);
-                    if (st && st.qte > 0) {
-                        nomArticle = st.nom;
-                        await setDoc(doc(db, "stock", stockId), { qte: st.qte - 1 }, { merge: true });
+    // 2. Nom et téléphone optionnels ("Client de passage" par défaut)
+    const clientInput = document.getElementById('nomClient').value.trim();
+    const telInput = document.getElementById('telClientVente').value.trim();
+    const client = clientInput !== '' ? clientInput : 'Client de passage';
+    const tel = telInput !== '' ? telInput : 'N/A';
 
-                        await addDoc(collection(db, "mouvements_stock"), {
-                            texte: "➖ Vente de 1 unité de " + st.nom + " (Client: " + client + ")",
-                            date: new Date().toLocaleString('fr-FR'),
-                            createdAt: serverTimestamp()
-                        });
-                    }
-                }
+    try {
+        let nomArticle = "Produit / Prestation";
+        if (stockId) {
+            const st = localStock.find(i => i.id === stockId);
+            if (st && st.qte >= quantite) {
+                nomArticle = st.nom;
+                // Soustraction exacte de la quantité du stock
+                await setDoc(doc(db, "stock", stockId), { qte: st.qte - quantite }, { merge: true });
+                
+                await addDoc(collection(db, "mouvements_stock"), {
+                    texte: `📦 Vente de ${quantite} unité(s) de ${st.nom} (Client: ${client})`,
+                    date: new Date().toLocaleString('fr-FR'),
+                    createdAt: serverTimestamp()
+                });
+            } else if (st) {
+                alert("Stock insuffisant pour cette quantité !");
+                return;
+            }
+        }
 
-                await addDoc(collection(db, "ventes"), {
-                    pole: "gb",
-                    article: nomArticle,
-                    canalVente: document.getElementById('canalVente').value,
-                    nomClient: client,
-                    telClient: tel,
-                    montantTotal: montant,
-                    employe: currentUser.nom,
-                    dateString: new Date().toISOString().split('T')[0],
-                    dateCreation: serverTimestamp()
+        await addDoc(collection(db, "ventes"), {
+            pole: "gb",
+            article: nomArticle,
+            canalVente: document.getElementById('canalVente').value,
+            nomClient: client,
+            telClient: tel,
+            quantite: quantite,
+            montantTotal: montantTotal,
+            employe: currentUser.nom,
+            dateString: new Date().toISOString().split('T')[0],
+            dateCreation: serverTimestamp()
+        });
+
+        alert("Vente enregistrée avec succès !");
+        document.getElementById('venteForm').reset();
+        document.getElementById('montantTotal').value = '';
+        if (typeof chargerVentes === 'function') chargerVentes();
+        if (typeof chargerStock === 'function') chargerStock();
+    } catch (err) {
+        alert("Erreur lors de l'enregistrement de la vente : " + err.message);
+    }
+});
+        
                 });
 
                 alert("Vente enregistrée avec succès !");
