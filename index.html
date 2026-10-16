@@ -2003,29 +2003,7 @@ window.afficherSousOngletOuvrier = (onglet) => {
         }
     }
 };
-        
-
-    const secPointage = document.getElementById('secOuvrierPointage');
-    const secInscription = document.getElementById('secOuvrierInscription');
-    const btnPointage = document.getElementById('subBtnPointage');
-    const btnInscription = document.getElementById('subBtnInscription');
-
-    if (onglet === 'pointage') {
-        secPointage.style.display = 'block';
-        secInscription.style.display = 'none';
-        btnPointage.style.background = '#0284c7';
-        btnPointage.style.color = 'white';
-        btnInscription.style.background = '#f8fafc';
-        btnInscription.style.color = '#334155';
-    } else {
-        secPointage.style.display = 'none';
-        secInscription.style.display = 'block';
-        btnInscription.style.background = '#0284c7';
-        btnInscription.style.color = 'white';
-        btnPointage.style.background = '#f8fafc';
-        btnPointage.style.color = '#334155';
-    }
-};
+ 
 
      // --- CHARGER ET AFFICHER L'HISTORIQUE DES AVANCES ET LA PAIE ---
 window.chargerHistoriquePaie = async () => {
