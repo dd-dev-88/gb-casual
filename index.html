@@ -1144,13 +1144,23 @@
         }
 
         window.remplirPrixStock = () => {
-            const stockId = document.getElementById('selectStockVente').value;
-            const item = localStock.find(i => i.id === stockId);
-            if (item) {
-                document.getElementById('montantTotal').value = item.prix;
-            }
-        };
+    const stockId = document.getElementById('selectStockVente').value;
+    const item = localStock.find(i => i.id === stockId);
+    if (item) {
+        const qteInput = document.getElementById('quantiteVente');
+        if (qteInput && (!qteInput.value || qteInput.value < 1)) {
+            qteInput.value = 1;
+        }
+        const qte = qteInput ? (parseInt(qteInput.value) || 1) : 1;
+        document.getElementById('montantTotal').value = item.prix * qte;
+    }
+};
 
+// Recalculer le total automatiquement quand on change la quantité
+document.getElementById('quantiteVente')?.addEventListener('input', () => {
+    window.remplirPrixStock();
+});
+        
  document.getElementById('venteForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const stockId = document.getElementById('selectStockVente').value;
