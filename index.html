@@ -1967,7 +1967,35 @@ window.ouvrirGestionOuvriers = async () => {
         
 
 // Basculement des sous-onglets
+// Basculement des sous-onglets avec chargement automatique
 window.afficherSousOngletOuvrier = (onglet) => {
+    const secPointage = document.getElementById('secPointage');
+    const secInscription = document.getElementById('secInscription');
+    const btnPointage = document.getElementById('secPointageBtn');
+    const btnInscription = document.getElementById('secInscriptionBtn');
+
+    if (onglet === 'pointage') {
+        secPointage.style.display = 'block';
+        secInscription.style.display = 'none';
+        btnPointage.style.background = '#0284c7';
+        btnPointage.style.color = 'white';
+        btnInscription.style.background = '#f8fafc';
+        btnInscription.style.color = '#334155';
+
+        // ➡️ LANCE LE CHARGEMENT AUTOMATIQUE DE LA PAIE ET DES OUVRIERS
+        if (typeof window.chargerHistoriquePaie === 'function') {
+            window.chargerHistoriquePaie();
+        }
+    } else {
+        secPointage.style.display = 'none';
+        secInscription.style.display = 'block';
+        btnInscription.style.background = '#0284c7';
+        btnInscription.style.color = 'white';
+        btnPointage.style.background = '#f8fafc';
+        btnPointage.style.color = '#334155';
+    }
+};
+
     const secPointage = document.getElementById('secOuvrierPointage');
     const secInscription = document.getElementById('secOuvrierInscription');
     const btnPointage = document.getElementById('subBtnPointage');
