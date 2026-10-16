@@ -1143,7 +1143,7 @@
             } catch(e){}
         }
 
-        window.remplirPrixStock = () => {
+ window.remplirPrixStock = () => {
     const stockId = document.getElementById('selectStockVente').value;
     const item = localStock.find(i => i.id === stockId);
     if (item) {
@@ -1155,6 +1155,7 @@
         document.getElementById('montantTotal').value = item.prix * qte;
     }
 };
+        
 
 // Recalculer le total automatiquement quand on change la quantité
 document.getElementById('quantiteVente')?.addEventListener('input', () => {
