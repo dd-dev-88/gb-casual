@@ -1967,34 +1967,43 @@ window.ouvrirGestionOuvriers = async () => {
         
 
 // Basculement des sous-onglets
-// Basculement des sous-onglets avec chargement automatique
+// Basculement des sous-onglets avec chargement automatique (Corrigé)
 window.afficherSousOngletOuvrier = (onglet) => {
-    const secPointage = document.getElementById('secPointage');
-    const secInscription = document.getElementById('secInscription');
-    const btnPointage = document.getElementById('secPointageBtn');
-    const btnInscription = document.getElementById('secInscriptionBtn');
+    const secPointage = document.getElementById('secOuvrierPointage');
+    const secInscription = document.getElementById('secOuvrierInscription');
+    const btnPointage = document.getElementById('subBtnPointage');
+    const btnInscription = document.getElementById('subBtnInscription');
 
     if (onglet === 'pointage') {
-        secPointage.style.display = 'block';
-        secInscription.style.display = 'none';
-        btnPointage.style.background = '#0284c7';
-        btnPointage.style.color = 'white';
-        btnInscription.style.background = '#f8fafc';
-        btnInscription.style.color = '#334155';
+        if (secPointage) secPointage.style.display = 'block';
+        if (secInscription) secInscription.style.display = 'none';
+        if (btnPointage) {
+            btnPointage.style.background = '#0284c7';
+            btnPointage.style.color = 'white';
+        }
+        if (btnInscription) {
+            btnInscription.style.background = '#f8fafc';
+            btnInscription.style.color = '#334155';
+        }
 
-        // ➡️ LANCE LE CHARGEMENT AUTOMATIQUE DE LA PAIE ET DES OUVRIERS
+        // ➡️ Charge automatiquement les fiches de paie et ouvriers
         if (typeof window.chargerHistoriquePaie === 'function') {
             window.chargerHistoriquePaie();
         }
     } else {
-        secPointage.style.display = 'none';
-        secInscription.style.display = 'block';
-        btnInscription.style.background = '#0284c7';
-        btnInscription.style.color = 'white';
-        btnPointage.style.background = '#f8fafc';
-        btnPointage.style.color = '#334155';
+        if (secPointage) secPointage.style.display = 'none';
+        if (secInscription) secInscription.style.display = 'block';
+        if (btnInscription) {
+            btnInscription.style.background = '#0284c7';
+            btnInscription.style.color = 'white';
+        }
+        if (btnPointage) {
+            btnPointage.style.background = '#f8fafc';
+            btnPointage.style.color = '#334155';
+        }
     }
 };
+        
 
     const secPointage = document.getElementById('secOuvrierPointage');
     const secInscription = document.getElementById('secOuvrierInscription');
