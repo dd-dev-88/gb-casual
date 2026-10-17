@@ -2305,6 +2305,177 @@ window.supprimerOuvrierFirebase = async (employeId, nomEmploye) => {
     }
 };
         
+  let panierVente = [];
+
+// 1. Ajouter un article au panier
+window.ajouterAuPanier = function() {
+    const select = document.getElementById('cartProductSelect');
+    const qtyInput = document.getElementById('cartProductQty');
+    const selectedId = select.value;
+    const qty = parseInt(qtyInput.value) || 1;
+
+    if (!selectedId) {
+        alert("Veuillez sélectionner un article !");
+        return;
+    }
+
+    const item = localStock.find(s => s.id === selectedId);
+    if (!item) return;
+
+    if (item.qte < qty) {
+        alert(`Stock insuffisant ! Il ne reste que ${item.qte} unité(s) en stock.`);
+        return;
+    }
+
+    const indexExiste = panierVente.findIndex(p => p.id === selectedId);
+    if (indexExiste > -1) {
+        if (item.qte < (panierVente[indexExiste].qte + qty)) {
+            alert(`Stock insuffisant pour ajouter cette quantité supplémentaire.`);
+            return;
+        }
+        panierVente[indexExiste].qte += qty;
+    } else {
+        panierVente.push({
+            id: item.id,
+            nom: item.nom,
+            prix: Number(item.prix),
+            qte: qty
+        });
+    }
+
+    qtyInput.value = 1;
+    afficherPanier();
+};
+
+// 2. Afficher et mettre à jour le tableau du panier
+window.afficherPanier = function() {
+    const tbody = document.getElementById('cartTableBody');
+    tbody.innerHTML = '';
+    let total = 0;
+
+    if (panierVente.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Panier vide pour le moment</td></tr>`;
+        document.getElementById('cartTotalDisplay').innerText = '0 FCFA';
+        calculerMonnaie();
+        return;
+    }
+
+    panierVente.forEach((p, index) => {
+        const lineTotal = p.prix * p.qte;
+        total += lineTotal;
+        tbody.innerHTML += `
+            <tr style="border-bottom:1px solid #f1f5f9;">
+                <td style="padding:8px; font-weight:bold;">${p.nom}</td>
+                <td style="padding:8px; text-align:center;">${p.prix.toLocaleString()} FCFA</td>
+                <td style="padding:8px; text-align:center;">
+                    <button type="button" onclick="modifierQtePanier(${index}, -1)" style="border:none; background:#cbd5e1; border-radius:4px; padding:2px 8px; font-weight:bold; cursor:pointer;">-</button>
+                    <span style="margin:0 6px; font-weight:bold;">${p.qte}</span>
+                    <button type="button" onclick="modifierQtePanier(${index}, 1)" style="border:none; background:#cbd5e1; border-radius:4px; padding:2px 8px; font-weight:bold; cursor:pointer;">+</button>
+                </td>
+                <td style="padding:8px; text-align:right; font-weight:bold;">${lineTotal.toLocaleString()} FCFA</td>
+                <td style="padding:8px; text-align:center;">
+                    <button type="button" onclick="supprimerDuPanier(${index})" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">🗑️</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('cartTotalDisplay').innerText = `${total.toLocaleString()} FCFA`;
+    calculerMonnaie();
+};
+
+// 3. Modifier la quantité ou supprimer
+window.modifierQtePanier = function(index, delta) {
+    const itemStock = localStock.find(s => s.id === panierVente[index].id);
+    const nouvelleQte = panierVente[index].qte + delta;
+
+    if (nouvelleQte <= 0) {
+        supprimerDuPanier(index);
+        return;
+    }
+    if (itemStock && itemStock.qte < nouvelleQte) {
+        alert(`Stock disponible dépassé ! (${itemStock.qte} max)`);
+        return;
+    }
+
+    panierVente[index].qte = nouvelleQte;
+    afficherPanier();
+};
+
+window.supprimerDuPanier = function(index) {
+    panierVente.splice(index, 1);
+    afficherPanier();
+};
+
+// 4. Gestion du mode de paiement & monnaie
+window.toggleMontantRecu = function() {
+    const mode = document.getElementById('cartPaymentMode').value;
+    const divRecu = document.getElementById('divMontantRecu');
+    divRecu.style.display = (mode === 'Espèces') ? 'block' : 'none';
+    calculerMonnaie();
+};
+
+window.calculerMonnaie = function() {
+    const mode = document.getElementById('cartPaymentMode').value;
+    const divMonnaie = document.getElementById('divMonnaie');
+    
+    if (mode !== 'Espèces' || panierVente.length === 0) {
+        divMonnaie.style.display = 'none';
+        return;
+    }
+
+    const total = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
+    const recu = Number(document.getElementById('cartAmountReceived').value) || 0;
+
+    if (recu > 0) {
+        divMonnaie.style.display = 'block';
+        const monnaie = recu - total;
+        document.getElementById('cartChangeDisplay').innerText = monnaie >= 0 ? `${monnaie.toLocaleString()} FCFA` : `Incomplet (${monnaie.toLocaleString()} FCFA)`;
+    } else {
+        divMonnaie.style.display = 'none';
+    }
+};
+
+// 5. Valider et enregistrer la vente globale dans Firebase
+window.validerPanierVente = async function() {
+    if (panierVente.length === 0) {
+        alert("Le panier est vide ! Veuillez ajouter au moins un article.");
+        return;
+    }
+
+    const modePaiement = document.getElementById('cartPaymentMode').value;
+    const totalVente = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
+
+    if (confirm(`Confirmer la vente de ${panierVente.length} article(s) pour un total de ${totalVente.toLocaleString()} FCFA (${modePaiement}) ?`)) {
+        try {
+            // Enregistrement dans la collection "ventes"
+            await addDoc(collection(db, "ventes"), {
+                articles: panierVente,
+                total: totalVente,
+                modePaiement: modePaiement,
+                date: new Date().toISOString(),
+                vendeur: (typeof currentUser !== 'undefined' && currentUser) ? currentUser.email : 'Caissier'
+            });
+
+            // Mise à jour des stocks dans Firebase pour chaque article
+            for (let item of panierVente) {
+                const itemStock = localStock.find(s => s.id === item.id);
+                if (itemStock) {
+                    const nouvelleQte = itemStock.qte - item.qte;
+                    await updateDoc(doc(db, "stock", item.id), { qte: nouvelleQte });
+                }
+            }
+
+            alert("✅ Vente enregistrée et stock mis à jour avec succès !");
+            panierVente = [];
+            document.getElementById('cartAmountReceived').value = '';
+            afficherPanier();
+            if (typeof chargerStock === 'function') chargerStock();
+        } catch (err) {
+            alert("Erreur lors de la validation : " + err.message);
+        }
+    }
+};
         
     </script>
 
