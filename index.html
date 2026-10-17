@@ -2481,20 +2481,25 @@ window.validerPanierVente = async function() {
         }
     }
 };
-
-        // --- GESTION DES PANIERS EN ATTENTE (EN SUSPENS / ACOMPTES) ---
+// --- GESTION DES PANIERS EN ATTENTE (SANS REDEMANDER LE NOM) ---
 
 let paniersEnAttente = [];
+let clientEnAttenteActuel = null; // Garde en mémoire le nom du client en cours
 
-// 1. Mettre le panier actuel en attente
+// 1. Mettre en attente (Demande le nom UNIQUEMENT si c'est un nouveau client)
 window.mettrePanierEnAttente = function() {
     if (panierVente.length === 0) {
         alert("Le panier est vide ! Impossible de le mettre en attente.");
         return;
     }
 
-    const nomClient = prompt("Nom ou note pour ce panier en attente (ex: Client Jean, Acompte 5000) :", "Client comptoir");
-    if (!nomClient) return;
+    let nomClient = clientEnAttenteActuel;
+    
+    // On demande le nom UNIQUEMENT si ce n'est pas un panier déjà repris
+    if (!nomClient) {
+        nomClient = prompt("Nom du client ou note (ex: Client Jean, Acompte 5000) :", "Client comptoir");
+        if (!nomClient) return; // Annulé par l'utilisateur
+    }
 
     const totalVente = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
     
@@ -2507,10 +2512,14 @@ window.mettrePanierEnAttente = function() {
     };
 
     paniersEnAttente.push(panierSuspendu);
+    
+    // Réinitialisation du panier et de la mémoire du client
     panierVente = [];
+    clientEnAttenteActuel = null;
+    
     afficherPanier();
     afficherPaniersEnAttente();
-    alert(`✅ Panier mis en attente pour "${nomClient}".`);
+    alert(`✅ Panier de "${nomClient}" enregistré en attente.`);
 };
 
 // 2. Afficher la liste des paniers en attente
@@ -2553,15 +2562,21 @@ window.afficherPaniersEnAttente = function() {
     container.innerHTML = html;
 };
 
-// 3. Reprendre un panier en attente
+// 3. Reprendre un panier en attente (Conserve le nom du client)
 window.restaurerPanier = function(index) {
     if (panierVente.length > 0) {
-        if (!confirm("Attention, votre panier actuel contient déjà des articles. Voulez-vous le remplacer par ce panier en attente ?")) {
+        if (!confirm("Un panier est déjà en cours. Voulez-vous le remplacer par ce panier en attente ?")) {
             return;
         }
     }
-    panierVente = [...paniersEnAttente[index].articles];
+
+    const panierChoisi = paniersEnAttente[index];
+    panierVente = [...panierChoisi.articles];
+    clientEnAttenteActuel = panierChoisi.client; // On garde le nom du client en mémoire !
+
+    // Retirer de la liste des attentes
     paniersEnAttente.splice(index, 1);
+
     afficherPanier();
     afficherPaniersEnAttente();
 };
@@ -2573,6 +2588,7 @@ window.supprimerPanierAttente = function(index) {
         afficherPaniersEnAttente();
     }
 };
+
         
     </script>
 
