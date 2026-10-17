@@ -1102,14 +1102,13 @@ window.afficherQRCodeArticle = function(nomArticle, prixArticle) {
                     
                     const imgTag = st.image ? `<img src="${st.image}" class="stock-img-thumb" alt="produit">` : `<div style="width:45px; height:45px; background:#e2e8f0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-right:10px;">📦</div>`;
 
-                    const adminActions = currentUser.role === 'admin' ? `
-                        <div style="margin-top:6px;">
-                            <button type="button" class="btn-edit-patient" style="font-size:10px; padding:3px 7px;" onclick="editerStock('${st.id}')">✏️ Modifier / Photo</button>
-                            <button type="button" class="btn-action" style="background:#ef4444; font-size:10px; padding:3px 7px;" onclick="supprimerStock('${st.id}', '${st.nom}')">🗑️ Supprimer</button>
-                            <button type="button" class="btn-action" style="background:#8e44ad; margin-left:4px;" onclick="ouvrirQRCode('${st.nom}')">🔲 QR Code</button>
-
-                        </div>
-                    ` : '';
+                        const adminActions = currentUser.role === 'admin' ? `
+        <div style="margin-top:6px;">
+            <button type="button" class="btn-action" style="font-size:10px; padding:4px 8px; background:#f59e0b; color:white; border:none; border-radius:4px; cursor:pointer;" onclick="editerStock('${st.id}')">Modifier / Photo</button>
+            <button type="button" class="btn-action" style="background:#ef4444; font-size:10px; padding:4px 8px; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:4px;" onclick="supprimerStock('${st.id}')">Supprimer</button>
+            <button type="button" class="btn-action" style="background:#8b5cf6; font-size:10px; padding:4px 8px; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:4px;" onclick="afficherQRCodeArticle('${st.nom}', '${st.prix}')">📱 QR Code</button>
+        </div>
+    ` : '';
 
                     html += `<div class="${itemClass}"><div style="display:flex; align-items:center;">${imgTag}<div><strong>${st.nom}</strong> (${st.pole === 'gb' ? '🛍️ GB Casual' : '🌿 Glory Herbal'})<br><small style="color:#64748b;">Prix : ${st.prix.toLocaleString()} F</small>${adminActions}</div></div><div><span class="${badgeClass}">${badgeText}</span></div></div>`;
 
