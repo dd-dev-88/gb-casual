@@ -926,6 +926,34 @@
                 readerDiv.style.display = 'none';
             }
         };
+        // Fonction pour générer le Code QR de l'article dans le stock
+window.genererQRStock = function() {
+    const nomInput = document.getElementById('stockNom');
+    const nomText = nomInput ? nomInput.value.trim() : "";
+
+    if (!nomText) {
+        alert("Veuillez d'abord saisir le nom de l'article dans le champ Nom !");
+        return;
+    }
+
+    const qrContainer = document.getElementById('qrcodeArticle');
+    if (!qrContainer) {
+        alert("Erreur : le conteneur du QR code est introuvable.");
+        return;
+    }
+
+    qrContainer.innerHTML = "";
+
+    new QRCode(qrContainer, {
+        text: nomText,
+        width: 140,
+        height: 140,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+};
+        
 
         // Enregistrement & Modification de Stock
         document.getElementById('stockForm').addEventListener('submit', async (e) => {
