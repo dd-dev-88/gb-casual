@@ -2481,6 +2481,98 @@ window.validerPanierVente = async function() {
         }
     }
 };
+
+        // --- GESTION DES PANIERS EN ATTENTE (EN SUSPENS / ACOMPTES) ---
+
+let paniersEnAttente = [];
+
+// 1. Mettre le panier actuel en attente
+window.mettrePanierEnAttente = function() {
+    if (panierVente.length === 0) {
+        alert("Le panier est vide ! Impossible de le mettre en attente.");
+        return;
+    }
+
+    const nomClient = prompt("Nom ou note pour ce panier en attente (ex: Client Jean, Acompte 5000) :", "Client comptoir");
+    if (!nomClient) return;
+
+    const totalVente = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
+    
+    const panierSuspendu = {
+        id: 'attente_' + Date.now(),
+        client: nomClient,
+        articles: [...panierVente],
+        total: totalVente,
+        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    paniersEnAttente.push(panierSuspendu);
+    panierVente = [];
+    afficherPanier();
+    afficherPaniersEnAttente();
+    alert(`✅ Panier mis en attente pour "${nomClient}".`);
+};
+
+// 2. Afficher la liste des paniers en attente
+window.afficherPaniersEnAttente = function() {
+    let container = document.getElementById('paniersEnAttenteContainer');
+    if (!container) {
+        const posContainer = document.getElementById('posContainer');
+        if (!posContainer) return;
+        container = document.createElement('div');
+        container.id = 'paniersEnAttenteContainer';
+        container.style.cssText = "margin-top:15px; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:12px;";
+        posContainer.after(container);
+    }
+
+    if (paniersEnAttente.length === 0) {
+        container.innerHTML = '';
+        container.style.display = 'none';
+        return;
+    }
+
+    container.style.display = 'block';
+    let html = `<h4 style="margin:0 0 8px 0; color:#b45309; font-size:14px;">⏳ Paniers en attente / Acomptes (${paniersEnAttente.length})</h4>`;
+    html += `<div style="display:flex; flex-direction:column; gap:6px;">`;
+
+    paniersEnAttente.forEach((p, index) => {
+        html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:8px; border-radius:6px; border:1px solid #fef3c7; font-size:13px;">
+                <div>
+                    <strong>👤 ${p.client}</strong> (${p.articles.length} art.) - <span style="color:#16a34a; font-weight:bold;">${p.total.toLocaleString()} FCFA</span> <small style="color:#64748b;">(${p.date})</small>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <button type="button" onclick="restaurerPanier(${index})" style="background:#2563eb; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px;">Reprendre</button>
+                    <button type="button" onclick="supprimerPanierAttente(${index})" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px;">🗑️</button>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+};
+
+// 3. Reprendre un panier en attente
+window.restaurerPanier = function(index) {
+    if (panierVente.length > 0) {
+        if (!confirm("Attention, votre panier actuel contient déjà des articles. Voulez-vous le remplacer par ce panier en attente ?")) {
+            return;
+        }
+    }
+    panierVente = [...paniersEnAttente[index].articles];
+    paniersEnAttente.splice(index, 1);
+    afficherPanier();
+    afficherPaniersEnAttente();
+};
+
+// 4. Supprimer un panier en attente
+window.supprimerPanierAttente = function(index) {
+    if (confirm("Voulez-vous vraiment supprimer ce panier en attente ?")) {
+        paniersEnAttente.splice(index, 1);
+        afficherPaniersEnAttente();
+    }
+};
         
     </script>
 
