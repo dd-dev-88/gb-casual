@@ -553,7 +553,81 @@
                     <p style="font-size:11px; color:#7f1d1d; margin-bottom:8px;">📢 <i>Veuillez signaler immédiatement ces articles à l'employeur pour réapprovisionnement.</i></p>
                     <div id="stockDashboardListContainer"></div>
                 </div>
+<!-- SECTION PANIER DE VENTE MULTI-ARTICLES -->
+<div id="posContainer" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:16px; margin-top:20px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+    <h3 style="margin-top:0; color:#0f172a; font-size:16px; display:flex; align-items:center; gap:8px;">
+        🛒 Panier de Vente (Multi-articles)
+    </h3>
+    
+    <!-- Choix Produit & Quantité -->
+    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:15px;">
+        <div style="flex:2; min-width:180px;">
+            <label style="font-size:12px; font-weight:bold; color:#475569;">Sélectionner un article :</label>
+            <select id="cartProductSelect" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; background:white;">
+                <option value="">-- Choisir un vêtement --</option>
+            </select>
+        </div>
+        <div style="flex:1; min-width:80px;">
+            <label style="font-size:12px; font-weight:bold; color:#475569;">Qté :</label>
+            <input type="number" id="cartProductQty" value="1" min="1" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; background:white;">
+        </div>
+        <div>
+            <button type="button" onclick="ajouterAuPanier()" style="background:#2563eb; color:white; border:none; padding:9px 16px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px;">➕ Ajouter au panier</button>
+        </div>
+    </div>
 
+    <!-- Tableau du Panier -->
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:13px; background:white; border-radius:8px; overflow:hidden; border:1px solid #e2e8f0;">
+            <thead>
+                <tr style="background:#f1f5f9; color:#334155; text-align:left;">
+                    <th style="padding:10px;">Article</th>
+                    <th style="padding:10px; text-align:center;">Prix Unitaire</th>
+                    <th style="padding:10px; text-align:center;">Qté</th>
+                    <th style="padding:10px; text-align:right;">Total</th>
+                    <th style="padding:10px; text-align:center;">Action</th>
+                </tr>
+            </thead>
+            <tbody id="cartTableBody">
+                <tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Panier vide pour le moment</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Résumé & Mode de Paiement -->
+    <div style="background:white; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid #f1f5f9;">
+            <span style="font-size:16px; font-weight:bold; color:#0f172a;">TOTAL À PAYER :</span>
+            <span id="cartTotalDisplay" style="font-size:22px; font-weight:bold; color:#16a34a;">0 FCFA</span>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+            <div style="flex:1; min-width:140px;">
+                <label style="font-size:12px; font-weight:bold; color:#475569;">Mode de Paiement :</label>
+                <select id="cartPaymentMode" onchange="toggleMontantRecu()" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px;">
+                    <option value="Espèces">💵 Espèces</option>
+                    <option value="Mobile Money">📱 Mobile Money (Flooz / T-Money / Moov)</option>
+                    <option value="Carte / TPE">💳 Carte / TPE</option>
+                    <option value="Crédit / En attente">⏳ Crédit / En attente</option>
+                </select>
+            </div>
+            <div id="divMontantRecu" style="flex:1; min-width:120px;">
+                <label style="font-size:12px; font-weight:bold; color:#475569;">Montant Reçu (FCFA) :</label>
+                <input type="number" id="cartAmountReceived" oninput="calculerMonnaie()" placeholder="ex: 10000" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px;">
+            </div>
+        </div>
+
+        <div id="divMonnaie" style="display:none; font-weight:bold; font-size:14px; color:#2563eb; margin-bottom:12px; text-align:right;">
+            Monnaie à rendre : <span id="cartChangeDisplay">0 FCFA</span>
+        </div>
+
+        <button type="button" onclick="validerPanierVente()" style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">
+            ✅ Valider & Enregistrer la Vente
+        </button>
+    </div>
+</div>
+                
+                
                 <div id="adminStockSection" style="display:none;">
                     <form id="stockForm">
                         
@@ -1115,6 +1189,10 @@ window.afficherQRCodeArticle = function(nomArticle, prixArticle) {
                     selectOptions += `<option value="${st.id}">${st.nom} - ${st.prix} FCFA (Stock: ${st.qte})</option>`;
                 });
 
+               if (document.getElementById('cartProductSelect')) {
+    document.getElementById('cartProductSelect').innerHTML = selectOptions;
+               }
+                
                 const banner = document.getElementById('stockDashboardBanner');
                 const listContainer = document.getElementById('stockDashboardListContainer');
 
