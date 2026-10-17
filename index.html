@@ -928,28 +928,34 @@
                 readerDiv.style.display = 'none';
             }
         };
-        // Fonction pour générer le Code QR de l'article dans le stock
-window.genererQRStock = function() {
-    const nomInput = document.getElementById('stockNom');
-    const nomText = nomInput ? nomInput.value.trim() : "";
-
-    if (!nomText) {
-        alert("Veuillez d'abord saisir le nom de l'article dans le champ Nom !");
-        return;
+// Fonction pour afficher et imprimer le QR code d'un article existant
+window.afficherQRCodeArticle = function(nomArticle, prixArticle) {
+    let modal = document.getElementById('qrCodeModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'qrCodeModal';
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); display:flex; align-items:center; justify-content:center; z-index:9999;';
+        document.body.appendChild(modal);
     }
 
-    const qrContainer = document.getElementById('qrcodeArticle');
-    if (!qrContainer) {
-        alert("Erreur : le conteneur du QR code est introuvable.");
-        return;
-    }
+    modal.innerHTML = `
+        <div style="background:white; padding:25px; border-radius:14px; text-align:center; max-width:320px; width:90%; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+            <h3 style="margin-top:0; color:#1e293b; font-size:18px;">${nomArticle}</h3>
+            <p style="color:#2563eb; font-weight:bold; font-size:16px; margin: 8px 0 15px 0;">${prixArticle} FCFA</p>
+            <div id="modalQrContainer" style="display:flex; justify-content:center; margin:15px 0;"></div>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+                <button onclick="window.print()" style="background:#2563eb; color:white; border:none; padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:bold;">🖨️ Imprimer</button>
+                <button onclick="document.getElementById('qrCodeModal').style.display='none'" style="background:#64748b; color:white; border:none; padding:10px 18px; border-radius:8px; cursor:pointer;">Fermer</button>
+            </div>
+        </div>
+    `;
 
-    qrContainer.innerHTML = "";
+    modal.style.display = 'flex';
 
-    new QRCode(qrContainer, {
-        text: nomText,
-        width: 140,
-        height: 140,
+    new QRCode(document.getElementById('modalQrContainer'), {
+        text: nomArticle,
+        width: 160,
+        height: 160,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
