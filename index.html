@@ -2460,8 +2460,8 @@ window.validerPanierVente = async function() {
                 total: totalVente,
                 modePaiement: modePaiement,
                 date: new Date().toISOString(),
-                vendeur: (typeof currentUser !== 'undefined' && currentUser) ? currentUser.email : 'Caissier'
-            });
+                vendeur: (typeof currentUser !== 'undefined' && currentUser && (currentUser.email || currentUser.nom)) ? (currentUser.email || currentUser.nom) : 'Comptoir',
+                
 
             // Mise à jour des stocks dans Firebase pour chaque article
             for (let item of panierVente) {
