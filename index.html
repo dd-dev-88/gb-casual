@@ -2562,24 +2562,23 @@ window.afficherPaniersEnAttente = function() {
     container.innerHTML = html;
 };
 
-// 3. Reprendre un panier en attente (Conserve le nom du client)
 window.restaurerPanier = function(index) {
     if (panierVente.length > 0) {
-        if (!confirm("Un panier est déjà en cours. Voulez-vous le remplacer par ce panier en attente ?")) {
+        if (!confirm("Un panier est déjà en cours. Voulez-vous le remplacer ?")) {
             return;
         }
     }
 
     const panierChoisi = paniersEnAttente[index];
     panierVente = [...panierChoisi.articles];
-    clientEnAttenteActuel = panierChoisi.client; // On garde le nom du client en mémoire !
+    clientEnAttenteActuel = panierChoisi.client;
 
-    // Retirer de la liste des attentes
     paniersEnAttente.splice(index, 1);
 
     afficherPanier();
     afficherPaniersEnAttente();
 };
+        
 
 // 4. Supprimer un panier en attente
 window.supprimerPanierAttente = function(index) {
