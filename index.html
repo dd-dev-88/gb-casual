@@ -900,21 +900,24 @@
     document.getElementById('userInfoDisplay').textContent = currentUser.nom + " (" + (currentUser.role === 'admin' ? "Administrateur" : "Vendeur") + ")";
 
     if (currentUser.role === 'admin') {
-        document.getElementById('btnTabAdmin').style.display = "inline-block";
-        document.getElementById('btnTabExpenses').style.display = "inline-block";
-        if (document.getElementById('adminFinanceCards')) document.getElementById('adminFinanceCards').style.display = "block";
-        if (document.getElementById('adminStockSection')) document.getElementById('adminStockSection').style.display = "block";
-        if (document.getElementById('employeStockMessage')) document.getElementById('employeStockMessage').style.display = "none";
-        document.getElementById('titleRecettes').textContent = "Historique Général des Ventes";
-        chargerEmployes();
-    } else {
-        document.getElementById('btnTabAdmin').style.display = "none";
-        document.getElementById('btnTabExpenses').style.display = "none";
-        if (document.getElementById('adminFinanceCards')) document.getElementById('adminFinanceCards').style.display = "none";
-        if (document.getElementById('adminStockSection')) document.getElementById('adminStockSection').style.display = "none";
-        if (document.getElementById('employeStockMessage')) document.getElementById('employeStockMessage').style.display = "block";
-        document.getElementById('titleRecettes').textContent = "Mes Ventes de la Journée";
+    document.getElementById('btnTabAdmin').style.display = "inline-block";
+    document.getElementById('btnTabExpenses').style.display = "inline-block";
+    if (document.getElementById('btnTabOuvriers')) document.getElementById('btnTabOuvriers').style.display = "inline-block";
+    if (document.getElementById('adminFinanceCards')) document.getElementById('adminFinanceCards').style.display = "block";
+    if (document.getElementById('adminStockSection')) document.getElementById('adminStockSection').style.display = "block";
+    if (document.getElementById('employeStockMessage')) document.getElementById('employeStockMessage').style.display = "none";
+    document.getElementById('titleRecettes').textContent = "Historique Général des Ventes";
+    chargerEmployes();
+} else {
+    document.getElementById('btnTabAdmin').style.display = "none";
+    document.getElementById('btnTabExpenses').style.display = "none";
+    if (document.getElementById('btnTabOuvriers')) document.getElementById('btnTabOuvriers').style.display = "none";
+    if (document.getElementById('adminFinanceCards')) document.getElementById('adminFinanceCards').style.display = "none";
+    if (document.getElementById('adminStockSection')) document.getElementById('adminStockSection').style.display = "none";
+    if (document.getElementById('employeStockMessage')) document.getElementById('employeStockMessage').style.display = "block";
+    document.getElementById('titleRecettes').textContent = "Mes Ventes de la Journée";
     }
+
 
     chargerVentes();
     if (currentUser.role === 'admin') chargerDepenses();
