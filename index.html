@@ -181,6 +181,106 @@
             </div>
         </header>
 
+        <!-- SECTIONS PRINCIPALES DE L'APPLICATION -->
+<div class="container my-4">
+
+  <!-- 1. MODULE DE GESTION DU STOCK (Réservé Admin) -->
+  <div id="paneStock" class="card my-3">
+    <div class="card-header bg-dark text-white font-weight-bold">
+      📦 Ajouter / Modifier un Article en Stock
+    </div>
+    <div class="card-body">
+      <form id="stockForm">
+        <input type="hidden" id="editingStockId" value="">
+
+        <div class="form-group mb-2">
+          <label for="stockPole">Pôle / Catégorie :</label>
+          <select id="stockPole" class="form-control" required>
+            <option value="gb">GB Casual</option>
+            <option value="glory">Glory Herbal</option>
+          </select>
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="stockNom">Nom de l'article :</label>
+          <input type="text" id="stockNom" class="form-control" placeholder="Ex: Vinaigre de cidre" required>
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="stockPrix">Prix unitaire (FCFA) :</label>
+          <input type="number" id="stockPrix" class="form-control" placeholder="Ex: 10000" min="0" required>
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="stockQte">Quantité en stock :</label>
+          <input type="number" id="stockQte" class="form-control" placeholder="Ex: 10" min="0" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-2">
+          💾 Enregistrer dans le Stock
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. FORMULAIRE DE VENTE DIRECTE -->
+  <div id="paneVenteSimple" class="card my-3">
+    <div class="card-header bg-success text-white font-weight-bold">
+      🛒 Nouvelle Vente Simple
+    </div>
+    <div class="card-body">
+      <form id="venteForm">
+        <div class="form-group mb-2">
+          <label for="canalVente">Canal de vente :</label>
+          <select id="canalVente" class="form-control">
+            <option value="Boutique">Boutique</option>
+            <option value="WhatsApp">WhatsApp</option>
+          </select>
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="montantTotal">Montant Total (FCFA) :</label>
+          <input type="number" id="montantTotal" class="form-control" placeholder="0" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 mt-2">
+          ✅ Enregistrer la Vente
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. FORMULAIRE DE DÉPENSE -->
+  <div id="paneDepense" class="card my-3">
+    <div class="card-header bg-danger text-white font-weight-bold">
+      💸 Enregistrer une Dépense
+    </div>
+    <div class="card-body">
+      <form id="depenseForm">
+        <div class="form-group mb-2">
+          <label for="depenseCategorie">Catégorie :</label>
+          <input type="text" id="depenseCategorie" class="form-control" placeholder="Ex: Transport, Loyer...">
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="depenseMotif">Motif :</label>
+          <input type="text" id="depenseMotif" class="form-control" placeholder="Ex: Achat fournitures" required>
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="depenseMontant">Montant (FCFA) :</label>
+          <input type="number" id="depenseMontant" class="form-control" placeholder="0" required>
+        </div>
+
+        <button type="submit" class="btn btn-danger w-100 mt-2">
+          💸 Valider la Dépense
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>
+        
         <!-- ECRAN DE CONNEXION -->
         <div id="loginScreen" class="active">
             <form id="loginForm">
