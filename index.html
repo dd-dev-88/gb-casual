@@ -1341,7 +1341,8 @@ document.getElementById('venteForm').addEventListener('submit', async (e) => {
             telClient: tel,
             quantite: quantite,
             montantTotal: montantTotal,
-            employe: currentUser.nom,
+        employe: (typeof currentUser !== 'undefined' && currentUser && (currentUser.nom || currentUser.email)) ? (currentUser.nom || currentUser.email) : "Vendeur Comptoir",
+            
             dateString: new Date().toISOString().split('T')[0],
             dateCreation: serverTimestamp()
         });
