@@ -899,13 +899,16 @@
             document.getElementById('appScreen').classList.add('active');
             document.getElementById('userInfoDisplay').textContent = currentUser.nom + " (" + (currentUser.role === 'admin' ? 'Entrepreneur' : 'Employé') + ")";
             
-            if(currentUser.role === 'admin') {
-                document.getElementById('btnTabAdmin').style.display = "inline-block";
-                document.getElementById('btnTabDepenses').style.display = "inline-block";
-                document.getElementById('adminFinanceCards').style.display = "block";
-                document.getElementById('adminStockSection').style.display = "block";
-                document.getElementById('employeStockMessage').style.display = "none";
-                document.getElementById('titleRecettes').textContent = "Historique Général des Recettes";
+            if (currentUser.role === 'admin') {
+    document.getElementById('btnTabAdmin').style.display = "inline-block";
+    document.getElementById('btnTabExpenses').style.display = "inline-block";
+    if (document.getElementById('adminFinanceCards')) document.getElementById('adminFinanceCards').style.display = "block";
+    if (document.getElementById('adminStockSection')) document.getElementById('adminStockSection').style.display = "block";
+    if (document.getElementById('employeStockMessage')) document.getElementById('employeStockMessage').style.display = "none";
+    document.getElementById('titleRecettes').textContent = "Historique Général des Ventes";
+    chargerEmployes();
+            }
+            
                 chargerEmployes();
             } else {
                 document.getElementById('btnTabAdmin').style.display = "none";
