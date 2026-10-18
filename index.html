@@ -9,8 +9,6 @@
     <link rel="apple-touch-icon" href="logo.jpg">
     <!-- Librairie de Scanner Code-Barres / QR Code -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f1f5f9; padding: 15px; color: #1e293b; }
@@ -181,7 +179,6 @@
             </div>
         </header>
 
-        
         <!-- ECRAN DE CONNEXION -->
         <div id="loginScreen" class="active">
             <form id="loginForm">
@@ -208,18 +205,15 @@
             </div>
 
             <div class="tabs-main">
-    <button class="tab-btn gb-casual active" id="btnTabVentes" onclick="switchTab('ventes')">Ventes</button>
-    <button class="tab-btn expenses" id="btnTabExpenses" onclick="switchTab('depenses')">Dépenses</button>
-    <button class="tab-btn glory-herbal" id="btnTabPatients" onclick="switchTab('patients')">Glory Herbal</button>
-    <button class="tab-btn stock" id="btnTabStock" onclick="switchTab('stock')">Stocks</button>
-    <button class="tab-btn admin" id="btnTabAdmin" onclick="switchTab('admin')">Admin</button>
-    <button class="tab-btn admin" id="btnTabOuvriers" onclick="switchTab('ouvriers')" style="display:none;">Employés</button>
-            </div>
-                
+                <button class="tab-btn gb-casual active" onclick="switchTab('ventes')" id="btnTabVentes">🛍️ Ventes</button>
+                <button class="tab-btn depenses" onclick="switchTab('depenses')" id="btnTabDepenses" style="display:none;">💸 Dépenses</button>
+                <button class="tab-btn glory-herbal" onclick="switchTab('patients')" id="btnTabPatients">🩺 Glory Herbal</button>
+                <button class="tab-btn stock" onclick="switchTab('stock')" id="btnTabStock">📦 Stocks</button>
+                <button class="tab-btn admin" onclick="switchTab('admin')" id="btnTabAdmin" style="display:none;">⚙️ Admin</button>
             </div>
 
             <!-- TAB 1: VENTES & CAISSE GLOBALE -->
-            <div id="paneVentes" class="section-pane ">
+            <div id="paneVentes" class="section-pane active">
                 <div id="adminFinanceCards" style="display:none;">
                     <div class="period-filter-bar">
                         <button class="period-btn active" id="pBtnJour" onclick="filtrerPeriode('jour')">Aujourd'hui</button>
@@ -252,85 +246,7 @@
                             <div class="amount" id="totalBeneficeNetDisplay">0 F</div>
                         </div>
                     </div>
-                </div>
-<!-- SECTION PANIER DE VENTE MULTI-ARTICLES -->
-<div id="posContainer" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:16px; margin-top:20px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
-    <h3 style="margin-top:0; color:#0f172a; font-size:16px; display:flex; align-items:center; gap:8px;">
-        🛒 Panier de Vente (Multi-articles)
-    </h3>
-    
-    <!-- Choix Produit & Quantité -->
-    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:15px;">
-        <div style="flex:2; min-width:180px;">
-            <label style="font-size:12px; font-weight:bold; color:#475569;">Sélectionner un article :</label>
-            <select id="cartProductSelect" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; background:white;">
-                <option value="">-- Choisir un vêtement --</option>
-            </select>
-        </div>
-        <div style="flex:1; min-width:80px;">
-            <label style="font-size:12px; font-weight:bold; color:#475569;">Qté :</label>
-            <input type="number" id="cartProductQty" value="1" min="1" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; background:white;">
-        </div>
-        <div>
-            <button type="button" onclick="ajouterAuPanier()" style="background:#2563eb; color:white; border:none; padding:9px 16px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px;">➕ Ajouter au panier</button>
-        </div>
-    </div>
 
-    <!-- Tableau du Panier -->
-    <div style="overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:13px; background:white; border-radius:8px; overflow:hidden; border:1px solid #e2e8f0;">
-            <thead>
-                <tr style="background:#f1f5f9; color:#334155; text-align:left;">
-                    <th style="padding:10px;">Article</th>
-                    <th style="padding:10px; text-align:center;">Prix Unitaire</th>
-                    <th style="padding:10px; text-align:center;">Qté</th>
-                    <th style="padding:10px; text-align:right;">Total</th>
-                    <th style="padding:10px; text-align:center;">Action</th>
-                </tr>
-            </thead>
-            <tbody id="cartTableBody">
-                <tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Panier vide pour le moment</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Résumé & Mode de Paiement -->
-    <div style="background:white; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid #f1f5f9;">
-            <span style="font-size:16px; font-weight:bold; color:#0f172a;">TOTAL À PAYER :</span>
-            <span id="cartTotalDisplay" style="font-size:22px; font-weight:bold; color:#16a34a;">0 FCFA</span>
-        </div>
-
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
-            <div style="flex:1; min-width:140px;">
-                <label style="font-size:12px; font-weight:bold; color:#475569;">Mode de Paiement :</label>
-                <select id="cartPaymentMode" onchange="toggleMontantRecu()" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px;">
-                    <option value="Espèces">💵 Espèces</option>
-                    <option value="Mobile Money">📱 Mobile Money (Flooz / T-Money / Moov)</option>
-                    <option value="Carte / TPE">💳 Carte / TPE</option>
-                    <option value="Crédit / En attente">⏳ Crédit / En attente</option>
-                </select>
-            </div>
-            <div id="divMontantRecu" style="flex:1; min-width:120px;">
-                <label style="font-size:12px; font-weight:bold; color:#475569;">Montant Reçu (FCFA) :</label>
-                <input type="number" id="cartAmountReceived" oninput="calculerMonnaie()" placeholder="ex: 10000" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px;">
-            </div>
-        </div>
-
-        <div id="divMonnaie" style="display:none; font-weight:bold; font-size:14px; color:#2563eb; margin-bottom:12px; text-align:right;">
-            Monnaie à rendre : <span id="cartChangeDisplay">0 FCFA</span>
-        </div>
-
-        <button type="button" onclick="mettrePanierEnAttente()" style="width:100%; background:#d97706; color:white; border:none; padding:10px; border-radius:8px; font-size:14px; font-weight:bold; cursor:pointer; margin-bottom:8px;">
-    ⏸️ Mettre en attente (Client en cours / Acompte)
-        </button>
-        
-        <button type="button" onclick="validerPanierVente()" style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">
-            ✅ Valider & Enregistrer la Vente
-        </button>
-    </div>
-</div>
-                    
                     <div class="channel-cards">
                         <div class="c-card">
                             <span>🏪 Boutique :</span>
@@ -351,19 +267,13 @@
                     <div id="readerVente" style="width:100%; margin-top:10px; display:none;"></div>
                 </div>
 
-                <form id="venteForm" novalidate>
-                    
+                <form id="venteForm">
                     <div class="form-group">
                         <label>Sélectionner un produit du stock :</label>
                         <select id="selectStockVente" onchange="remplirPrixStock()" style="font-size:12px;">
                             <option value="">-- Choix libre / Hors stock --</option>
                         </select>
                     </div>
-                                <div class="form-group">
-                <label>Quantité :</label>
-                <input type="number" id="quantiteVente" value="1" min="1" placeholder="Ex: 1">
-                                </div>
-                    
                     <div class="form-group">
                         <label>Canal de Vente :</label>
                         <select id="canalVente" required>
@@ -631,13 +541,10 @@
                     <h3>⚠️ PRODUITS EN ALERTE (Reste 3 unités ou moins)</h3>
                     <p style="font-size:11px; color:#7f1d1d; margin-bottom:8px;">📢 <i>Veuillez signaler immédiatement ces articles à l'employeur pour réapprovisionnement.</i></p>
                     <div id="stockDashboardListContainer"></div>
+                </div>
 
-                
-                
-                <div id="adminStockSection">
+                <div id="adminStockSection" style="display:none;">
                     <form id="stockForm">
-                        
-                        
                         <input type="hidden" id="editingStockId" value="">
                         
                         <div class="form-group">
@@ -846,14 +753,6 @@
             if (code === currentAdminCode) {
                 currentUser = { nom: "Administrateur", role: "admin" };
                 lancerApplication();
-                    if (currentUser && currentUser.role === 'admin') {
-        const btnOuvriers = document.getElementById('btnTabOuvriers');
-        if (btnOuvriers) btnOuvriers.style.display = 'inline-block';
-    } else {
-        const btnOuvriers = document.getElementById('btnTabOuvriers');
-        if (btnOuvriers) btnOuvriers.style.display = 'none';
-                    }
-                
                 return;
             }
 
@@ -862,16 +761,13 @@
                 let userFound = null;
                 empSnap.forEach(d => {
                     if (d.data().code === code) {
-                      userFound = { nom: d.data().nom, role: "employe" };
+                        userFound = { nom: d.data().nom, role: "employe" };
                     }
                 });
 
                 if (userFound) {
                     currentUser = userFound;
                     lancerApplication();
-                                    const btnOuvriers = document.getElementById('btnTabOuvriers');
-                if (btnOuvriers) btnOuvriers.style.display = 'none';
-                    
                 } else {
                     errorMsg.style.display = 'block';
                 }
@@ -895,37 +791,34 @@
         });
 
         function lancerApplication() {
-    document.getElementById('loginScreen').classList.remove('active');
-    document.getElementById('appScreen').classList.add('active');
-    document.getElementById('userInfoDisplay').textContent = currentUser.nom + " (" + (currentUser.role === 'admin' ? "Administrateur" : "Vendeur") + ")";
-
-    if (currentUser.role === 'admin') {
-    document.getElementById('btnTabAdmin').style.display = "inline-block";
-    document.getElementById('btnTabExpenses').style.display = "inline-block";
-    if (document.getElementById('btnTabOuvriers')) document.getElementById('btnTabOuvriers').style.display = "inline-block";
-    if (document.getElementById('adminFinanceCards')) document.getElementById('adminFinanceCards').style.display = "block";
-    if (document.getElementById('adminStockSection')) document.getElementById('adminStockSection').style.display = "block";
-    if (document.getElementById('employeStockMessage')) document.getElementById('employeStockMessage').style.display = "none";
-    document.getElementById('titleRecettes').textContent = "Historique Général des Ventes";
-    chargerEmployes();
-} else {
-    document.getElementById('btnTabAdmin').style.display = "none";
-    document.getElementById('btnTabExpenses').style.display = "none";
-    if (document.getElementById('btnTabOuvriers')) document.getElementById('btnTabOuvriers').style.display = "none";
-    if (document.getElementById('adminFinanceCards')) document.getElementById('adminFinanceCards').style.display = "none";
-    if (document.getElementById('adminStockSection')) document.getElementById('adminStockSection').style.display = "none";
-    if (document.getElementById('employeStockMessage')) document.getElementById('employeStockMessage').style.display = "block";
-    document.getElementById('titleRecettes').textContent = "Mes Ventes de la Journée";
-    }
-
-
-    chargerVentes();
-    if (currentUser.role === 'admin') chargerDepenses();
-    chargerPatients();
-    chargerStock();
-    if (currentUser.role === 'admin') chargerMouvementsStock();
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('appScreen').classList.add('active');
+            document.getElementById('userInfoDisplay').textContent = currentUser.nom + " (" + (currentUser.role === 'admin' ? 'Entrepreneur' : 'Employé') + ")";
+            
+            if(currentUser.role === 'admin') {
+                document.getElementById('btnTabAdmin').style.display = "inline-block";
+                document.getElementById('btnTabDepenses').style.display = "inline-block";
+                document.getElementById('adminFinanceCards').style.display = "block";
+                document.getElementById('adminStockSection').style.display = "block";
+                document.getElementById('employeStockMessage').style.display = "none";
+                document.getElementById('titleRecettes').textContent = "Historique Général des Recettes";
+                chargerEmployes();
+            } else {
+                document.getElementById('btnTabAdmin').style.display = "none";
+                document.getElementById('btnTabDepenses').style.display = "none";
+                document.getElementById('adminFinanceCards').style.display = "none";
+                document.getElementById('adminStockSection').style.display = "none";
+                document.getElementById('employeStockMessage').style.display = "block";
+                document.getElementById('titleRecettes').textContent = "Mes Ventes de la Journée";
+            }
+            
+            chargerVentes();
+            if(currentUser.role === 'admin') chargerDepenses();
+            chargerPatients();
+            chargerStock();
+            if(currentUser.role === 'admin') chargerMouvementsStock();
         }
-        
+
         window.deconnecter = () => { location.reload(); };
 
         window.switchTab = (tab) => {
@@ -1011,40 +904,6 @@
                 readerDiv.style.display = 'none';
             }
         };
-// Fonction pour afficher et imprimer le QR code d'un article existant
-window.afficherQRCodeArticle = function(nomArticle, prixArticle) {
-    let modal = document.getElementById('qrCodeModal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'qrCodeModal';
-        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); display:flex; align-items:center; justify-content:center; z-index:9999;';
-        document.body.appendChild(modal);
-    }
-
-    modal.innerHTML = `
-        <div style="background:white; padding:25px; border-radius:14px; text-align:center; max-width:320px; width:90%; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
-            <h3 style="margin-top:0; color:#1e293b; font-size:18px;">${nomArticle}</h3>
-            <p style="color:#2563eb; font-weight:bold; font-size:16px; margin: 8px 0 15px 0;">${prixArticle} FCFA</p>
-            <div id="modalQrContainer" style="display:flex; justify-content:center; margin:15px 0;"></div>
-            <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
-                <button onclick="window.print()" style="background:#2563eb; color:white; border:none; padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:bold;">🖨️ Imprimer</button>
-                <button onclick="document.getElementById('qrCodeModal').style.display='none'" style="background:#64748b; color:white; border:none; padding:10px 18px; border-radius:8px; cursor:pointer;">Fermer</button>
-            </div>
-        </div>
-    `;
-
-    modal.style.display = 'flex';
-
-    new QRCode(document.getElementById('modalQrContainer'), {
-        text: nomArticle,
-        width: 160,
-        height: 160,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-    });
-};
-        
 
         // Enregistrement & Modification de Stock
         document.getElementById('stockForm').addEventListener('submit', async (e) => {
@@ -1185,23 +1044,18 @@ window.afficherQRCodeArticle = function(nomArticle, prixArticle) {
                     
                     const imgTag = st.image ? `<img src="${st.image}" class="stock-img-thumb" alt="produit">` : `<div style="width:45px; height:45px; background:#e2e8f0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-right:10px;">📦</div>`;
 
-                        const adminActions = currentUser.role === 'admin' ? `
-        <div style="margin-top:6px;">
-            <button type="button" class="btn-action" style="font-size:10px; padding:4px 8px; background:#f59e0b; color:white; border:none; border-radius:4px; cursor:pointer;" onclick="editerStock('${st.id}')">Modifier / Photo</button>
-            <button type="button" class="btn-action" style="background:#ef4444; font-size:10px; padding:4px 8px; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:4px;" onclick="supprimerStock('${st.id}')">Supprimer</button>
-            <button type="button" class="btn-action" style="background:#8b5cf6; font-size:10px; padding:4px 8px; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:4px;" onclick="afficherQRCodeArticle('${st.nom}', '${st.prix}')">📱 QR Code</button>
-        </div>
-    ` : '';
+                    const adminActions = currentUser.role === 'admin' ? `
+                        <div style="margin-top:6px;">
+                            <button type="button" class="btn-edit-patient" style="font-size:10px; padding:3px 7px;" onclick="editerStock('${st.id}')">✏️ Modifier / Photo</button>
+                            <button type="button" class="btn-action" style="background:#ef4444; font-size:10px; padding:3px 7px;" onclick="supprimerStock('${st.id}', '${st.nom}')">🗑️ Supprimer</button>
+                        </div>
+                    ` : '';
 
                     html += `<div class="${itemClass}"><div style="display:flex; align-items:center;">${imgTag}<div><strong>${st.nom}</strong> (${st.pole === 'gb' ? '🛍️ GB Casual' : '🌿 Glory Herbal'})<br><small style="color:#64748b;">Prix : ${st.prix.toLocaleString()} F</small>${adminActions}</div></div><div><span class="${badgeClass}">${badgeText}</span></div></div>`;
 
                     selectOptions += `<option value="${st.id}">${st.nom} - ${st.prix} FCFA (Stock: ${st.qte})</option>`;
                 });
 
-               if (document.getElementById('cartProductSelect')) {
-    document.getElementById('cartProductSelect').innerHTML = selectOptions;
-               }
-                
                 const banner = document.getElementById('stockDashboardBanner');
                 const listContainer = document.getElementById('stockDashboardListContainer');
 
@@ -1268,104 +1122,64 @@ window.afficherQRCodeArticle = function(nomArticle, prixArticle) {
             } catch(e){}
         }
 
-        // 1. Calcul automatique du Montant Total selon la Quantité
-window.remplirPrixStock = () => {
-    const stockId = document.getElementById('selectStockVente').value;
-    const item = localStock.find(i => i.id === stockId);
+        window.remplirPrixStock = () => {
+            const stockId = document.getElementById('selectStockVente').value;
+            const item = localStock.find(i => i.id === stockId);
+            if (item) {
+                document.getElementById('montantTotal').value = item.prix;
+            }
+        };
+
+        document.getElementById('venteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+                const stockId = document.getElementById('selectStockVente').value;
     
-    if (item) {
-        const qteInput = document.getElementById('quantiteVente');
-        let qte = qteInput ? parseInt(qteInput.value) : 1;
-        if (isNaN(qte) || qte < 1) qte = 1;
-
-        // Multiplication automatique du prix par la quantité
-        document.getElementById('montantTotal').value = item.prix * qte;
-    }
-};
-
-// Réaction immédiate lors du changement de quantité ou d'article
-document.getElementById('quantiteVente')?.addEventListener('input', window.remplirPrixStock);
-document.getElementById('selectStockVente')?.addEventListener('change', window.remplirPrixStock);
-
-
-// 2. Traitement complet de la Vente et Déduction exacte du Stock
-document.getElementById('venteForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const stockId = document.getElementById('selectStockVente').value;
+    // 1. Quantité et montant total
     const qteInput = document.getElementById('quantiteVente');
-    
-    // Récupération dynamique de la quantité (ex: 6)
-    let quantite = qteInput ? parseInt(qteInput.value) : 1;
-    if (isNaN(quantite) || quantite < 1) quantite = 1;
+    const quantite = qteInput ? (parseInt(qteInput.value) || 1) : 1;
+    const montantSaisi = Number(document.getElementById('montantTotal').value) || 0;
+    const montantTotal = montantSaisi * quantite;
 
-    // Récupération du montant total
-    const montantTotal = Number(document.getElementById('montantTotal').value) || 0;
-
-    // Client et téléphone optionnels ("Client de passage" par défaut)
+    // 2. Client et Téléphone optionnels
     const clientInput = document.getElementById('nomClient').value.trim();
     const telInput = document.getElementById('telClientVente').value.trim();
     const client = clientInput !== '' ? clientInput : 'Client de passage';
     const tel = telInput !== '' ? telInput : 'N/A';
 
-    try {
-        let nomArticle = "Produit / Prestation";
-        
-        if (stockId) {
-            const st = localStock.find(i => i.id === stockId);
-            
-            if (st) {
-                if (st.qte < quantite) {
-                    alert(`Stock insuffisant ! Seules ${st.qte} unité(s) sont disponibles.`);
-                    return;
+            try {
+                let nomArticle = "Produit / Prestation";
+                if (stockId) {
+                    const st = localStock.find(i => i.id === stockId);
+                    if (st && st.qte > 0) {
+                        nomArticle = st.nom;
+                        await setDoc(doc(db, "stock", stockId), { qte: st.qte - 1 }, { merge: true });
+
+                        await addDoc(collection(db, "mouvements_stock"), {
+                            texte: "➖ Vente de 1 unité de " + st.nom + " (Client: " + client + ")",
+                            date: new Date().toLocaleString('fr-FR'),
+                            createdAt: serverTimestamp()
+                        });
+                    }
                 }
 
-                nomArticle = st.nom;
-
-                // 🔻 DÉDUCTION EXACTE DU STOCK (st.qte - quantite)
-                await setDoc(doc(db, "stock", stockId), { 
-                    qte: st.qte - quantite 
-                }, { merge: true });
-
-                // Inscription au journal des mouvements de stock
-                await addDoc(collection(db, "mouvements_stock"), {
-                    texte: `📦 Vente de ${quantite} unité(s) de ${st.nom} (Client: ${client})`,
-                    date: new Date().toLocaleString('fr-FR'),
-                    createdAt: serverTimestamp()
+                await addDoc(collection(db, "ventes"), {
+                    pole: "gb",
+                    article: nomArticle,
+                    canalVente: document.getElementById('canalVente').value,
+                    nomClient: client,
+                    telClient: tel,
+                    montantTotal: montant,
+                    employe: currentUser.nom,
+                    dateString: new Date().toISOString().split('T')[0],
+                    dateCreation: serverTimestamp()
                 });
-            }
-        }
 
-        // Enregistrement de la vente dans Firebase
-        await addDoc(collection(db, "ventes"), {
-            pole: "gb",
-            article: nomArticle,
-            canalVente: document.getElementById('canalVente').value,
-            nomClient: client,
-            telClient: tel,
-            quantite: quantite,
-            montantTotal: montantTotal,
-        employe: (typeof currentUser !== 'undefined' && currentUser && (currentUser.nom || currentUser.email)) ? (currentUser.nom || currentUser.email) : "Vendeur Comptoir",
-            
-            dateString: new Date().toISOString().split('T')[0],
-            dateCreation: serverTimestamp()
+                alert("Vente enregistrée avec succès !");
+                e.target.reset();
+                chargerVentes();
+                chargerStock();
+            } catch (err) { alert("Erreur d'enregistrement."); }
         });
-
-        alert("Vente enregistrée avec succès !");
-        
-        // Remise à zéro propre du formulaire
-        document.getElementById('venteForm').reset();
-        if (qteInput) qteInput.value = 1;
-        document.getElementById('montantTotal').value = '';
-
-        if (typeof chargerVentes === 'function') chargerVentes();
-        if (typeof chargerStock === 'function') chargerStock();
-
-    } catch (err) {
-        alert("Erreur lors de l'enregistrement de la vente : " + err.message);
-    }
-});
-        
 
         document.getElementById('depenseForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1984,211 +1798,12 @@ document.getElementById('venteForm').addEventListener('submit', async (e) => {
                 }
             }
         });
-        function ouvrirQRCode(nomProduit) {
-    document.getElementById("modalQRTitre").innerText = nomProduit;
-    const container = document.getElementById("qrcodeContainer");
-    container.innerHTML = "";
-    
-    new QRCode(container, {
-        text: nomProduit,
-        width: 180,
-        height: 180
-    });
-    
-    document.getElementById("modalQRCode").classList.add("active");
-}
-
-function fermerModalQR() {
-    document.getElementById("modalQRCode").classList.remove("active");
-}
-
-function imprimerFenetreQR() {
-    const contenu = document.getElementById("modalQRCode").innerHTML;
-    const popup = window.open('', '_blank', 'width=450,height=550');
-    popup.document.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Impression QR Code</title>
-            <style>
-              body { text-align: center; font-family: 'Segoe UI', sans-serif; padding: 20px; background: #fff; }
-              .modal-card { border: 2px dashed #2c3e50; padding: 20px; border-radius: 10px; display: inline-block; }
-              .btn-modal { display: none; }
-            </style>
-          </head>
-          <body>
-            <div class="modal-card">${contenu}</div>
-            <script>window.print();<\/script>
-          </body>
-        </html>
-    `);
-}
-
-// --- FONCTION D'AFFICHAGE DU MODULE GESTION DES OUVRIERS ---
-window.ouvrirGestionOuvriers = () => {
-    const modalId = 'ouvriersModalOverlay';
-    let existingModal = document.getElementById(modalId);
-    if (existingModal) existingModal.remove();
-
-    const overlay = document.createElement('div');
-    overlay.id = modalId;
-    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index:9999; padding:10px; box-sizing:border-box;';
-
-    overlay.innerHTML = `
-        <div style="background:white; border-radius:12px; width:100%; max-width:500px; max-height:90vh; overflow-y:auto; padding:20px; box-shadow:0 5px 20px rgba(0,0,0,0.3); font-family:sans-serif;">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:15px;">
-                <h2 style="margin:0; color:#0284c7; font-size:18px;">👥 Gestion des Ouvriers & Paie</h2>
-                <button onclick="document.getElementById('${modalId}').remove()" style="background:none; border:none; font-size:20px; cursor:pointer;">❌</button>
-            </div>
-
-            <!-- Formulaire d'ajout d'un ouvrier -->
-            <div style="background:#f8fafc; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #e2e8f0;">
-                <h4 style="margin-top:0; color:#334155; font-size:14px;">➕ Ajouter un ouvrier</h4>
-                <input type="text" id="nomOuvrier" placeholder="Nom & Prénom" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
-                <div style="display:flex; gap:8px;">
-                    <input type="number" id="salaireJour" placeholder="Salaire / jour (FCFA)" style="width:50%; padding:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
-                    <button type="button" onclick="ajouterOuvrier()" style="width:50%; background:#0284c7; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Enregistrer</button>
-                </div>
-            </div>
-
-            <!-- Liste des ouvriers et pointage -->
-            <h4 style="margin-bottom:10px; color:#334155; font-size:14px;">📋 Pointage & Salaires du Mois</h4>
-            <div id="listeOuvriersContainer" style="display:flex; flex-direction:column; gap:10px;">
-                <!-- Les cartes des ouvriers s'afficheront ici dynamiquement -->
-                <p style="text-align:center; color:#94a3b8; font-size:13px;">Aucun ouvrier enregistré pour le moment.</p>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(overlay);
-};
-        
-        
-// --- MODULE CENTRALISÉ : GESTION DES OUVRIERS & PAIE (ADMIN ONLY) ---
-window.ouvrirGestionOuvriers = async () => {
-    // Sécurité : réservé à l'Admin
-    if (typeof currentUser !== 'undefined' && currentUser && currentUser.role !== 'admin') {
-        alert("⛔ Accès refusé : Cette section est strictly réservée à l'administrateur.");
-        return;
-    }
-
-    const modalId = 'ouvriersModalOverlay';
-    let existingModal = document.getElementById(modalId);
-    if (existingModal) existingModal.remove();
-
-    const overlay = document.createElement('div');
-    overlay.id = modalId;
-    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index:9999; padding:10px; box-sizing:border-box;';
-
-    // Charger la liste des employés depuis Firebase pour le menu déroulant
-    let optionsEmployes = '<option value="">-- Sélectionner un ouvrier --</option>';
-    try {
-        const snap = await getDocs(collection(db, "employes"));
-        snap.forEach(docSnap => {
-            const data = docSnap.data();
-            optionsEmployes += `<option value="${docSnap.id}" data-nom="${data.nom || ''}">${data.nom || 'Sans nom'} - ${data.poste || 'Ouvrier'}</option>`;
-        });
-    } catch(err) {
-        console.error("Erreur chargement employés :", err);
-    }
-
-    overlay.innerHTML = `
-        <div style="background:white; border-radius:12px; width:100%; max-width:550px; max-height:90vh; overflow-y:auto; padding:20px; box-shadow:0 5px 20px rgba(0,0,0,0.3); font-family:sans-serif;">
-            
-            <!-- En-tête -->
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #e2e8f0; padding-bottom:10px; margin-bottom:15px;">
-                <h2 style="margin:0; color:#0284c7; font-size:18px;">👥 Module Personnel & Paie (Admin)</h2>
-                <button onclick="document.getElementById('${modalId}').remove()" style="background:none; border:none; font-size:20px; cursor:pointer;">❌</button>
-            </div>
-
-            <!-- Onglets Internes -->
-            <div style="display:flex; gap:8px; margin-bottom:15px; border-bottom:1px solid #cbd5e1; padding-bottom:8px;">
-                <button id="subBtnPointage" onclick="afficherSousOngletOuvrier('pointage')" style="flex:1; padding:8px; border:none; background:#0284c7; color:white; font-weight:bold; border-radius:6px; cursor:pointer;">📋 Présences & Paie</button>
-                <button id="subBtnInscription" onclick="afficherSousOngletOuvrier('inscription')" style="flex:1; padding:8px; border:1px solid #cbd5e1; background:#f8fafc; color:#334155; font-weight:bold; border-radius:6px; cursor:pointer;">📝 Inscription / Fiches</button>
-            </div>
-
-            <!-- SECTION 1 : POINTAGE ET SALAIRES -->
-            <div id="secOuvrierPointage">
-                <div style="background:#f8fafc; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #e2e8f0;">
-                    <h4 style="margin-top:0; color:#334155; font-size:14px;">⚡ Enregistrer un Acompte / Pointage</h4>
-                    <select id="nomOuvrierSelect" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
-                        ${optionsEmployes}
-                    </select>
-                    <div style="display:flex; gap:8px;">
-                        <input type="number" id="montantAvance" placeholder="Montant Avance (FCFA)" style="width:60%; padding:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
-                        <button type="button" onclick="enregistrerAvanceFirebase()" style="width:40%; background:#16a34a; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Ajouter</button>
-                    </div>
-                </div>
-
-                <h4 style="margin-bottom:10px; color:#334155; font-size:14px;">📋 Suivi du Personnel</h4>
-                <div id="listeOuvriersContainer" style="display:flex; flex-direction:column; gap:10px;">
-                    <p style="text-align:center; color:#94a3b8; font-size:13px;">Sélectionnez un ouvrier ou enregistrez une avance.</p>
-                </div>
-            </div>
-
-            <!-- SECTION 2 : INSCRIPTION & FICHE -->
-            <div id="secOuvrierInscription" style="display:none;">
-                <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
-                    <h4 style="margin-top:0; color:#334155; font-size:14px;">📝 Nouvelle Fiche Employé</h4>
-                    <input type="text" id="insNom" placeholder="Nom Complet" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
-                    <input type="text" id="insTel" placeholder="Numéro de Téléphone" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
-                    <input type="text" id="insPoste" placeholder="Poste / Rôle" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
-                    <input type="number" id="insSalaireBase" placeholder="Salaire Journalier ou Mensuel (FCFA)" style="width:100%; padding:8px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
-                    <button type="button" onclick="enregistrerNouvelOuvrierFirebase()" style="width:100%; background:#0284c7; color:white; border:none; padding:10px; border-radius:5px; font-weight:bold; cursor:pointer;">Enregistrer l'employé</button>
-                </div>
-            </div>
-
-        </div>
-    `;
-
-    document.body.appendChild(overlay);
-};
-        
-
-// Basculement des sous-onglets
-// Basculement des sous-onglets avec chargement automatique (Corrigé)
-window.afficherSousOngletOuvrier = (onglet) => {
-    const secPointage = document.getElementById('secOuvrierPointage');
-    const secInscription = document.getElementById('secOuvrierInscription');
-    const btnPointage = document.getElementById('subBtnPointage');
-    const btnInscription = document.getElementById('subBtnInscription');
-
-    if (onglet === 'pointage') {
-        if (secPointage) secPointage.style.display = 'block';
-        if (secInscription) secInscription.style.display = 'none';
-        if (btnPointage) {
-            btnPointage.style.background = '#0284c7';
-            btnPointage.style.color = 'white';
-        }
-        if (btnInscription) {
-            btnInscription.style.background = '#f8fafc';
-            btnInscription.style.color = '#334155';
-        }
-
-        // ➡️ Charge automatiquement les fiches de paie et ouvriers
-        if (typeof window.chargerHistoriquePaie === 'function') {
-            window.chargerHistoriquePaie();
-        }
-    } else {
-        if (secPointage) secPointage.style.display = 'none';
-        if (secInscription) secInscription.style.display = 'block';
-        if (btnInscription) {
-            btnInscription.style.background = '#0284c7';
-            btnInscription.style.color = 'white';
-        }
-        if (btnPointage) {
-            btnPointage.style.background = '#f8fafc';
-            btnPointage.style.color = '#334155';
-        }
-    }
-};
- 
-// --- CHARGER ET AFFICHER L'HISTORIQUE DES AVANCES ET LA PAIE ---
+      // --- CHARGER ET AFFICHER L'HISTORIQUE DES AVANCES ET LA PAIE ---
 window.chargerHistoriquePaie = async () => {
     const container = document.getElementById('listeOuvriersContainer');
     if (!container) return;
 
-    container.innerHTML = '<p style="text-align:center; color:#0284c7;">Chargement des données...</p>';
+    container.innerHTML = '<p style="text-align:center; color:#0284c7;">Chargement des données de paie...</p>';
 
     try {
         const empSnap = await getDocs(collection(db, "employes"));
@@ -2200,59 +1815,42 @@ window.chargerHistoriquePaie = async () => {
             if (!avancesParEmploye[data.employeId]) {
                 avancesParEmploye[data.employeId] = [];
             }
-            avancesParEmploye[data.employeId].push({ id: docSnap.id, ...data });
+            avancesParEmploye[data.employeId].push(data);
         });
 
-        let html = '';
-
         if (empSnap.empty) {
-            container.innerHTML = '<p style="text-align:center; color:#64748b;">Aucun ouvrier enregistré.</p>';
+            container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:13px;">Aucun ouvrier enregistré.</p>';
             return;
         }
 
+        let html = '';
         empSnap.forEach(docSnap => {
             const emp = docSnap.data();
             const empId = docSnap.id;
             const listeAvances = avancesParEmploye[empId] || [];
 
-            let totalAvances = 0;
-            listeAvances.forEach(a => totalAvances += (parseFloat(a.montant) || 0));
-
+            const totalAvances = listeAvances.reduce((sum, item) => sum + (parseFloat(item.montant) || 0), 0);
             const salaireBase = parseFloat(emp.salaireBase) || 0;
             const resteAPayer = salaireBase - totalAvances;
 
-            html += `
-                <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-                    <div style="display:flex; justify-between:space-between; align-items:center;">
-                        <strong style="color:#0f172a; font-size:15px;">👤 ${emp.nom}</strong>
-                        <div>
-                            <span style="font-size:11px; background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:12px; font-weight:600;">${emp.poste || 'Ouvrier'}</span>
-                            <button onclick="window.supprimerOuvrierFirebase('${empId}', '${emp.nom}')" title="Supprimer cet ouvrier" style="background:none; border:none; color:#ef4444; font-size:14px; cursor:pointer; margin-left:6px;">🗑️</button>
-                        </div>
-                    </div>
-                    <div style="margin-top:8px; font-size:13px; color:#475569; line-height:1.6;">
-                        💰 Salaire prévu : <strong>${salaireBase} FCFA</strong><br>
-                        📉 Total Avances : <strong style="color:#dc2626;">${totalAvances} FCFA</strong><br>
-                        💵 Reste à Payer : <strong style="color:${resteAPayer >= 0 ? '#16a34a' : '#dc2626'};">${resteAPayer} FCFA</strong>
-                    </div>
+            let detailsAvancesHtml = listeAvances.map(a => `<li>${a.date || 'N/A'} : <b>${a.montant} FCFA</b></li>`).join('');
+            if (!detailsAvancesHtml) detailsAvancesHtml = '<i>Aucune avance enregistrée</i>';
 
-                    <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
-                        <button onclick="window.solderPaieOuvrier('${empId}', '${emp.nom}', ${listeAvances.length})" style="background:#16a34a; color:white; border:none; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;">
-                            💸 Solder / Réinitialiser
-                        </button>
+            html += `
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:12px; margin-bottom:10px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0; font-size:15px; color:#1e293b;">👤 ${emp.nom || 'Sans nom'}</h3>
+                        <span style="background:#e0f2fe; color:#0369a1; font-size:11px; padding:3px 8px; border-radius:12px; font-weight:bold;">${emp.poste || 'Ouvrier'}</span>
+                    </div>
+                    <div style="font-size:13px; color:#475569; margin-top:8px;">
+                        <p style="margin:2px 0;">💰 Salaire prévu : <b>${salaireBase} FCFA</b></p>
+                        <p style="margin:2px 0; color:#dc2626;">📉 Total Avances : <b>${totalAvances} FCFA</b></p>
+                        <p style="margin:2px 0; color:#16a34a; font-size:14px;">💵 <b>Reste à Payer : ${resteAPayer} FCFA</b></p>
                     </div>
 
                     <details style="margin-top:8px; font-size:12px; color:#64748b;">
-                        <summary style="cursor:pointer; font-weight:600;">▶ 📄 Historique des avances (${listeAvances.length})</summary>
-                        <ul style="margin:6px 0 0 0; padding-left:18px;">
-                            ${listeAvances.length === 0 ? '<li>Aucune avance enregistrée</li>' : ''}
-                            ${listeAvances.map(a => `
-                                <li style="margin-bottom:4px;">
-                                    ${a.date ? new Date(a.date.seconds * 1000).toLocaleDateString('fr-FR') : 'N/A'} : <strong>${a.montant} FCFA</strong>
-                                    <button onclick="window.supprimerAvanceFirebase('${a.id}')" style="background:none; border:none; color:#ef4444; font-size:12px; cursor:pointer; margin-left:4px;" title="Annuler cette avance">❌</button>
-                                </li>
-                            `).join('')}
-                        </ul>
+                        <summary style="cursor:pointer; font-weight:bold;">📄 Historique des avances (${listeAvances.length})</summary>
+                        <ul style="padding-left:20px; margin:5px 0;">${detailsAvancesHtml}</ul>
                     </details>
                 </div>
             `;
@@ -2260,340 +1858,85 @@ window.chargerHistoriquePaie = async () => {
 
         container.innerHTML = html;
 
-    } catch (err) {
+    } catch(err) {
         console.error("Erreur chargement paie :", err);
-        container.innerHTML = '<p style="text-align:center; color:#ef4444;">Erreur lors du chargement des données.</p>';
+        container.innerHTML = '<p style="text-align:center; color:#dc2626;">Erreur lors du chargement des données.</p>';
     }
 };
 
-// --- FONCTION : SUPPRIMER UNE AVANCE ---
-window.supprimerAvanceFirebase = async (avanceId) => {
-    if (!confirm("Voulez-vous vraiment annuler cette avance ?")) return;
-    try {
-        await deleteDoc(doc(db, "avances_paie", avanceId));
-        alert("✅ Avance annulée avec succès !");
-        window.chargerHistoriquePaie();
-    } catch (err) {
-        console.error("Erreur suppression avance :", err);
-        alert("Erreur lors de l'annulation.");
-    }
-};
+// --- SAUVEGARDE DE L'AVANCE DANS FIREBASE ---
+window.enregistrerAvanceFirebase = async () => {
+    const select = document.getElementById('nomOuvrierSelect');
+    const montantInput = document.getElementById('montantAvance');
+    
+    const employeId = select.value;
+    const montant = parseFloat(montantInput.value);
+    const nomEmploye = select.options[select.selectedIndex]?.getAttribute('data-nom') || 'Ouvrier';
 
-// --- FONCTION : SOLDER / RÉINITIALISER LA PAIE ---
-window.solderPaieOuvrier = async (employeId, nomEmploye, nbAvances) => {
-    if (nbAvances === 0) {
-        alert("Cet ouvrier n'a aucune avance à solder.");
+    if (!employeId) {
+        alert("Veuillez sélectionner un ouvrier.");
         return;
     }
-    if (!confirm(`Solder le compte de ${nomEmploye} ? Cela va archiver/remettre les avances à zéro.`)) return;
-    
+    if (!montant || montant <= 0) {
+        alert("Veuillez saisir un montant valide.");
+        return;
+    }
+
     try {
-        const avancesSnap = await getDocs(collection(db, "avances_paie"));
-        avancesSnap.forEach(async (docSnap) => {
-            if (docSnap.data().employeId === employeId) {
-                await deleteDoc(doc(db, "avances_paie", docSnap.id));
-            }
+        await addDoc(collection(db, "avances_paie"), {
+            employeId: employeId,
+            nomEmploye: nomEmploye,
+            montant: montant,
+            date: new Date().toLocaleDateString('fr-FR'),
+            createdAt: serverTimestamp()
         });
-        alert(`✅ Compte soldé pour ${nomEmploye} !`);
-        window.chargerHistoriquePaie();
-    } catch (err) {
-        console.error("Erreur lors du solde :", err);
-        alert("Erreur lors du traitement.");
+        alert(`✅ Avance de ${montant} FCFA enregistrée pour ${nomEmploye} !`);
+        montantInput.value = '';
+        
+        if (typeof window.chargerHistoriquePaie === 'function') {
+            window.chargerHistoriquePaie();
+        }
+
+    } catch(err) {
+        console.error("Erreur enregistrement avance :", err);
+        alert("Erreur lors de l'enregistrement de l'avance.");
     }
 };
 
-// --- FONCTION : SUPPRIMER UN OUVRIER ---
-window.supprimerOuvrierFirebase = async (employeId, nomEmploye) => {
-    if (!confirm(`Êtes-vous sûr de vouloir supprimer définitivement ${nomEmploye} ?`)) return;
+// --- SAUVEGARDE DU NOUVEL OUVRIER DANS FIREBASE ---
+window.enregistrerNouvelOuvrierFirebase = async () => {
+    const nom = document.getElementById('insNom').value.trim();
+    const tel = document.getElementById('insTel').value.trim();
+    const poste = document.getElementById('insPoste').value.trim();
+    const salaire = parseFloat(document.getElementById('insSalaireBase').value) || 0;
+
+    if (!nom) {
+        alert("Veuillez saisir le nom complet de l'employé.");
+        return;
+    }
+
     try {
-        await deleteDoc(doc(db, "employes", employeId));
-        alert(`✅ ${nomEmploye} a été supprimé de la base.`);
-        window.chargerHistoriquePaie();
-    } catch (err) {
-        console.error("Erreur suppression ouvrier :", err);
-        alert("Erreur lors de la suppression.");
-    }
-};
-        
-  let panierVente = [];
-
-// 1. Ajouter un article au panier
-window.ajouterAuPanier = function() {
-    const select = document.getElementById('cartProductSelect');
-    const qtyInput = document.getElementById('cartProductQty');
-    const selectedId = select.value;
-    const qty = parseInt(qtyInput.value) || 1;
-
-    if (!selectedId) {
-        alert("Veuillez sélectionner un article !");
-        return;
-    }
-
-    const item = localStock.find(s => s.id === selectedId);
-    if (!item) return;
-
-    if (item.qte < qty) {
-        alert(`Stock insuffisant ! Il ne reste que ${item.qte} unité(s) en stock.`);
-        return;
-    }
-
-    const indexExiste = panierVente.findIndex(p => p.id === selectedId);
-    if (indexExiste > -1) {
-        if (item.qte < (panierVente[indexExiste].qte + qty)) {
-            alert(`Stock insuffisant pour ajouter cette quantité supplémentaire.`);
-            return;
-        }
-        panierVente[indexExiste].qte += qty;
-    } else {
-        panierVente.push({
-            id: item.id,
-            nom: item.nom,
-            prix: Number(item.prix),
-            qte: qty
+        await addDoc(collection(db, "employes"), {
+            nom: nom,
+            tel: tel,
+            poste: poste,
+            salaireBase: salaire,
+            role: "employe",
+            createdAt: serverTimestamp()
         });
-    }
-
-    qtyInput.value = 1;
-    afficherPanier();
-};
-
-// 2. Afficher et mettre à jour le tableau du panier
-window.afficherPanier = function() {
-    const tbody = document.getElementById('cartTableBody');
-    tbody.innerHTML = '';
-    let total = 0;
-
-    if (panierVente.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Panier vide pour le moment</td></tr>`;
-        document.getElementById('cartTotalDisplay').innerText = '0 FCFA';
-        calculerMonnaie();
-        return;
-    }
-
-    panierVente.forEach((p, index) => {
-        const lineTotal = p.prix * p.qte;
-        total += lineTotal;
-        tbody.innerHTML += `
-            <tr style="border-bottom:1px solid #f1f5f9;">
-                <td style="padding:8px; font-weight:bold;">${p.nom}</td>
-                <td style="padding:8px; text-align:center;">${p.prix.toLocaleString()} FCFA</td>
-                <td style="padding:8px; text-align:center;">
-                    <button type="button" onclick="modifierQtePanier(${index}, -1)" style="border:none; background:#cbd5e1; border-radius:4px; padding:2px 8px; font-weight:bold; cursor:pointer;">-</button>
-                    <span style="margin:0 6px; font-weight:bold;">${p.qte}</span>
-                    <button type="button" onclick="modifierQtePanier(${index}, 1)" style="border:none; background:#cbd5e1; border-radius:4px; padding:2px 8px; font-weight:bold; cursor:pointer;">+</button>
-                </td>
-                <td style="padding:8px; text-align:right; font-weight:bold;">${lineTotal.toLocaleString()} FCFA</td>
-                <td style="padding:8px; text-align:center;">
-                    <button type="button" onclick="supprimerDuPanier(${index})" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">🗑️</button>
-                </td>
-            </tr>
-        `;
-    });
-
-    document.getElementById('cartTotalDisplay').innerText = `${total.toLocaleString()} FCFA`;
-    calculerMonnaie();
-};
-
-// 3. Modifier la quantité ou supprimer
-window.modifierQtePanier = function(index, delta) {
-    const itemStock = localStock.find(s => s.id === panierVente[index].id);
-    const nouvelleQte = panierVente[index].qte + delta;
-
-    if (nouvelleQte <= 0) {
-        supprimerDuPanier(index);
-        return;
-    }
-    if (itemStock && itemStock.qte < nouvelleQte) {
-        alert(`Stock disponible dépassé ! (${itemStock.qte} max)`);
-        return;
-    }
-
-    panierVente[index].qte = nouvelleQte;
-    afficherPanier();
-};
-
-window.supprimerDuPanier = function(index) {
-    panierVente.splice(index, 1);
-    afficherPanier();
-};
-
-// 4. Gestion du mode de paiement & monnaie
-window.toggleMontantRecu = function() {
-    const mode = document.getElementById('cartPaymentMode').value;
-    const divRecu = document.getElementById('divMontantRecu');
-    divRecu.style.display = (mode === 'Espèces') ? 'block' : 'none';
-    calculerMonnaie();
-};
-
-window.calculerMonnaie = function() {
-    const mode = document.getElementById('cartPaymentMode').value;
-    const divMonnaie = document.getElementById('divMonnaie');
-    
-    if (mode !== 'Espèces' || panierVente.length === 0) {
-        divMonnaie.style.display = 'none';
-        return;
-    }
-
-    const total = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
-    const recu = Number(document.getElementById('cartAmountReceived').value) || 0;
-
-    if (recu > 0) {
-        divMonnaie.style.display = 'block';
-        const monnaie = recu - total;
-        document.getElementById('cartChangeDisplay').innerText = monnaie >= 0 ? `${monnaie.toLocaleString()} FCFA` : `Incomplet (${monnaie.toLocaleString()} FCFA)`;
-    } else {
-        divMonnaie.style.display = 'none';
-    }
-};
-
-// 5. Valider et enregistrer la vente globale dans Firebase
-window.validerPanierVente = async function() {
-    if (panierVente.length === 0) {
-        alert("Le panier est vide ! Veuillez ajouter au moins un article.");
-        return;
-    }
-
-    const modePaiement = document.getElementById('cartPaymentMode').value;
-    const totalVente = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
-
-    if (confirm(`Confirmer la vente de ${panierVente.length} article(s) pour un total de ${totalVente.toLocaleString()} FCFA (${modePaiement}) ?`)) {
-        try {
-            // Enregistrement dans la collection "ventes"
-            await addDoc(collection(db, "ventes"), {
-                articles: panierVente,
-                total: totalVente,
-                modePaiement: modePaiement,
-                date: new Date().toISOString(),
-                vendeur: (typeof currentUser !== 'undefined' && currentUser && (currentUser.email || currentUser.nom)) ? (currentUser.email || currentUser.nom) : 'Comptoir',
-                });
-            // Mise à jour des stocks dans Firebase pour chaque article
-            for (let item of panierVente) {
-                const itemStock = localStock.find(s => s.id === item.id);
-                if (itemStock) {
-                    const nouvelleQte = itemStock.qte - item.qte;
-                    await updateDoc(doc(db, "stock", item.id), { qte: nouvelleQte });
-                }
-            }
-
-            alert("✅ Vente enregistrée et stock mis à jour avec succès !");
-            panierVente = [];
-            document.getElementById('cartAmountReceived').value = '';
-            afficherPanier();
-            if (typeof chargerStock === 'function') chargerStock();
-        } catch (err) {
-            alert("Erreur lors de la validation : " + err.message);
-        }
-    }
-};
-// --- GESTION DES PANIERS EN ATTENTE (SANS REDEMANDER LE NOM) ---
-
-let paniersEnAttente = [];
-let clientEnAttenteActuel = null; // Garde en mémoire le nom du client en cours
-
-// 1. Mettre en attente (Demande le nom UNIQUEMENT si c'est un nouveau client)
-window.mettrePanierEnAttente = function() {
-    if (panierVente.length === 0) {
-        alert("Le panier est vide ! Impossible de le mettre en attente.");
-        return;
-    }
-
-    let nomClient = clientEnAttenteActuel;
-    
-    // On demande le nom UNIQUEMENT si ce n'est pas un panier déjà repris
-    if (!nomClient) {
-        nomClient = prompt("Nom du client ou note (ex: Client Jean, Acompte 5000) :", "Client comptoir");
-        if (!nomClient) return; // Annulé par l'utilisateur
-    }
-
-    const totalVente = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
-    
-    const panierSuspendu = {
-        id: 'attente_' + Date.now(),
-        client: nomClient,
-        articles: [...panierVente],
-        total: totalVente,
-        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-
-    paniersEnAttente.push(panierSuspendu);
-    
-    // Réinitialisation du panier et de la mémoire du client
-    panierVente = [];
-    clientEnAttenteActuel = null;
-    
-    afficherPanier();
-    afficherPaniersEnAttente();
-    alert(`✅ Panier de "${nomClient}" enregistré en attente.`);
-};
-
-// 2. Afficher la liste des paniers en attente
-window.afficherPaniersEnAttente = function() {
-    let container = document.getElementById('paniersEnAttenteContainer');
-    if (!container) {
-        const posContainer = document.getElementById('posContainer');
-        if (!posContainer) return;
-        container = document.createElement('div');
-        container.id = 'paniersEnAttenteContainer';
-        container.style.cssText = "margin-top:15px; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:12px;";
-        posContainer.after(container);
-    }
-
-    if (paniersEnAttente.length === 0) {
-        container.innerHTML = '';
-        container.style.display = 'none';
-        return;
-    }
-
-    container.style.display = 'block';
-    let html = `<h4 style="margin:0 0 8px 0; color:#b45309; font-size:14px;">⏳ Paniers en attente / Acomptes (${paniersEnAttente.length})</h4>`;
-    html += `<div style="display:flex; flex-direction:column; gap:6px;">`;
-
-    paniersEnAttente.forEach((p, index) => {
-        html += `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:8px; border-radius:6px; border:1px solid #fef3c7; font-size:13px;">
-                <div>
-                    <strong>👤 ${p.client}</strong> (${p.articles.length} art.) - <span style="color:#16a34a; font-weight:bold;">${p.total.toLocaleString()} FCFA</span> <small style="color:#64748b;">(${p.date})</small>
-                </div>
-                <div style="display:flex; gap:6px;">
-                    <button type="button" onclick="restaurerPanier(${index})" style="background:#2563eb; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px;">Reprendre</button>
-                    <button type="button" onclick="supprimerPanierAttente(${index})" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px;">🗑️</button>
-                </div>
-            </div>
-        `;
-    });
-
-    html += `</div>`;
-    container.innerHTML = html;
-};
-
-window.restaurerPanier = function(index) {
-    if (panierVente.length > 0) {
-        if (!confirm("Un panier est déjà en cours. Voulez-vous le remplacer ?")) {
-            return;
-        }
-    }
-
-    const panierChoisi = paniersEnAttente[index];
-    panierVente = [...panierChoisi.articles];
-    clientEnAttenteActuel = panierChoisi.client;
-
-    paniersEnAttente.splice(index, 1);
-
-    afficherPanier();
-    afficherPaniersEnAttente();
-};
+        alert(`✅ Fiche créée pour ${nom} !`);
+        document.getElementById('insNom').value = '';
+        document.getElementById('insTel').value = '';
+        document.getElementById('insPoste').value = '';
+        document.getElementById('insSalaireBase').value = '';
         
-
-// 4. Supprimer un panier en attente
-window.supprimerPanierAttente = function(index) {
-    if (confirm("Voulez-vous vraiment supprimer ce panier en attente ?")) {
-        paniersEnAttente.splice(index, 1);
-        afficherPaniersEnAttente();
+        window.ouvrirGestionOuvriers();
+    } catch(err) {
+        console.error("Erreur création employé :", err);
+        alert("Erreur lors de la création de la fiche employé.");
     }
 };
 
-        
     </script>
-
 </body>
 </html>
