@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GB Casual & Glory Herbal - Système Intégré</title>
+    <!-- Favicon & Icône mobile -->
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="apple-touch-icon" href="logo.jpg">
+    <!-- Librairie de Scanner Code-Barres / QR Code -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f1f5f9; padding: 15px; color: #1e293b; }
+        .container { max-width: 850px; background: #ffffff; margin: 0 auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+
+        header { text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; }
+        .logo-img-container { width: 80px; height: 80px; margin: 0 auto 10px auto; border-radius: 50%; overflow: hidden; border: 3px solid #1e3a8a; background: #fff; }
+        .logo-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        header h1 { font-size: 24px; color: #0f172a; letter-spacing: 0.5px; }
+        header p { color: #64748b; font-size: 13px; font-weight: 500; }
+        .brand-pills { display: flex; justify-content: center; gap: 10px; margin-top: 8px; font-size: 11px; font-weight: bold; }
+        .pill-gb { background: #fce7f3; color: #be185d; padding: 3px 10px; border-radius: 12px; border: 1px solid #fbcfe8; }
+        .pill-gh { background: #dcfce7; color: #15803d; padding: 3px 10px; border-radius: 12px; border: 1px solid #bbf7d0; }
+
+        .rdv-notification-card {
+            background: #fffbeb; border: 2px solid #f59e0b; border-radius: 10px;
+            padding: 12px 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+        }
+        .rdv-notification-card h3 { font-size: 13px; color: #b45309; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .rdv-item-notify {
+            background: #ffffff; border-left: 4px solid #f59e0b; padding: 8px 12px;
+            border-radius: 6px; margin-bottom: 6px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        #loginScreen, #appScreen { display: none; }
+        #loginScreen.active, #appScreen.active { display: block; }
+        .user-badge { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #334155; font-weight: bold; }
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+
+        .tabs-main { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 10px 12px; border: none; background: #f1f5f9; color: #64748b; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 12px; text-align: center; white-space: nowrap; transition: all 0.2s; }
+        .tab-btn.gb-casual.active { background: #be185d; color: white; box-shadow: 0 2px 8px rgba(190, 24, 93, 0.3); }
+        .tab-btn.glory-herbal.active { background: #15803d; color: white; box-shadow: 0 2px 8px rgba(21, 128, 61, 0.3); }
+        .tab-btn.depenses.active { background: #dc2626; color: white; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3); }
+        .tab-btn.stock.active { background: #0284c7; color: white; }
+        .tab-btn.admin.active { background: #7e22ce; color: white; }
+
+        .section-pane { display: none; }
+        .section-pane.active { display: block; }
+
+        .sub-tabs { display: flex; gap: 6px; margin-bottom: 15px; background: #f8fafc; padding: 5px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .sub-tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #64748b; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: center; }
+        .sub-tab-btn.active { background: #ffffff; color: #15803d; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        .finance-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        @media (max-width: 600px) { .finance-cards { grid-template-columns: 1fr; } }
+        .f-card { padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #cbd5e1; }
+        .f-card.gb { background: #fdf2f8; border-color: #fbcfe8; color: #be185d; }
+        .f-card.gh { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+        .f-card.total { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+        .f-card.depense { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+        .f-card.benefice { background: #f0fdf4; border-color: #86efac; color: #166534; }
+        .f-card h4 { font-size: 11px; text-transform: uppercase; margin-bottom: 4px; opacity: 0.9; }
+        .f-card .amount { font-size: 16px; font-weight: bold; }
+
+        .channel-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .c-card { padding: 8px 12px; border-radius: 6px; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+
+        .period-filter-bar { display: flex; gap: 6px; margin-bottom: 12px; }
+        .period-btn { flex: 1; padding: 6px; border: 1px solid #cbd5e1; background: #ffffff; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; color: #475569; }
+        .period-btn.active { background: #1e3a8a; color: white; border-color: #1e3a8a; }
+
+        .form-group { margin-bottom: 12px; }
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 600px) { .form-grid-2 { grid-template-columns: 1fr; } }
+        label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #334155; }
+        input[type="text"], input[type="password"], input[type="number"], select, textarea { width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
+        textarea { resize: vertical; min-height: 60px; }
+        .btn-valider { width: 100%; background-color: #15803d; color: white; border: none; padding: 12px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        .btn-valider.gb { background-color: #be185d; }
+        .btn-valider.depense-btn { background-color: #dc2626; }
+        .btn-valider.stock-btn { background-color: #0284c7; }
+        .btn-update { background-color: #d97706; color: white; border: none; padding: 12px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; width: 100%; }
+
+        .patient-cover-card {
+            background: linear-gradient(135deg, #166534 0%, #15803d 50%, #22c55e 100%);
+            border-radius: 10px; padding: 20px; color: white; position: relative; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        }
+        .cover-badge { background: white; color: #15803d; padding: 5px 12px; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 13px; margin-bottom: 8px; }
+        .cover-subtitle { font-size: 11px; opacity: 0.95; margin-bottom: 15px; font-style: italic; }
+        .cover-title { font-size: 19px; font-weight: bold; text-align: center; margin: 12px 0 4px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .cover-confidential { text-align: center; font-size: 11px; margin-bottom: 15px; opacity: 0.9; }
+
+        .cover-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
+        .cover-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+        .cover-field { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); border-radius: 5px; padding: 6px 10px; }
+        .cover-field label { color: #f0fdf4; font-size: 10px; text-transform: uppercase; margin: 0; }
+        .cover-field input, .cover-field select { background: transparent; border: none; color: white; width: 100%; font-size: 13px; padding: 2px 0; outline: none; }
+
+        .medical-sheet { background: #ffffff; border: 2px solid #15803d; border-radius: 8px; padding: 15px; margin-top: 15px; }
+        .medical-header { text-align: center; border-bottom: 2px solid #15803d; padding-bottom: 8px; margin-bottom: 12px; }
+        .medical-header h3 { font-size: 11px; color: #166534; letter-spacing: 0.5px; }
+        .medical-header h2 { font-size: 15px; color: #166534; margin-top: 2px; font-weight: bold; }
+
+        .medical-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 600px) { .medical-layout { grid-template-columns: 1fr; } }
+
+        .med-box { border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 10px; overflow: hidden; }
+        .med-box-title { background: #f1f5f9; color: #0f172a; font-size: 11px; font-weight: bold; padding: 5px 8px; border-bottom: 1px solid #cbd5e1; }
+        .med-box-content { padding: 8px; }
+
+        .rdv-shortcut-btn {
+            background: #e2e8f0; border: none; padding: 5px 8px; font-size: 10px;
+            border-radius: 4px; cursor: pointer; margin-right: 4px; margin-top: 4px; font-weight: bold; color: #334155;
+        }
+
+        .patient-card-result { background: #ffffff; border-left: 5px solid #15803d; border-radius: 8px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; border-left-width: 5px; }
+        .sale-item { background: #ffffff; border-left: 4px solid #be185d; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #f1f5f9; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .sale-item.gh { border-left-color: #15803d; }
+        .sale-item.emp { border-left-color: #7e22ce; }
+        .depense-item { background: #ffffff; border-left: 4px solid #dc2626; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #f1f5f9; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        
+        .stock-item { background: #ffffff; border-left: 4px solid #0284c7; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #f1f5f9; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .stock-item.low { border-left-color: #ef4444; background: #fef2f2; }
+        .stock-img-thumb { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; margin-right: 10px; }
+
+        .stock-dashboard-alert { background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
+        .stock-dashboard-alert h3 { font-size: 13px; color: #991b1b; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .stock-alert-item { background: #ffffff; border-left: 4px solid #ef4444; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
+
+        .badge-stock { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; display: inline-block; }
+        .badge-stock.ok { background: #dcfce7; color: #15803d; }
+        .badge-stock.low { background: #fee2e2; color: #991b1b; }
+
+        .btn-action { background: #15803d; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; margin-top: 6px; margin-right: 4px; }
+        .btn-wa { background: #10b981; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-edit-patient { background: #d97706; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; margin-top: 6px; margin-right: 4px; }
+        .btn-reappro { background: #0284c7; color: white; border: none; padding: 4px 8px; font-size: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+        .followup-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; margin-top: 10px; }
+        .followup-item { background: #ffffff; border-left: 3px solid #22c55e; border: 1px solid #cbd5e1; border-left-width: 3px; padding: 8px; border-radius: 4px; margin-bottom: 6px; font-size: 12px; }
+        .stock-log-item { background: #f8fafc; border-left: 3px solid #0284c7; padding: 6px 10px; border-radius: 4px; font-size: 11px; margin-bottom: 4px; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); display: none;
+            justify-content: center; align-items: center; z-index: 1000; padding: 15px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: white; border-radius: 12px; width: 100%; max-width: 450px;
+            padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative;
+        }
+        .receipt-box {
+            border: 2px dashed #cbd5e1; padding: 15px; border-radius: 8px;
+            background: #fafafa; font-family: monospace, monospace; font-size: 12px;
+            margin-bottom: 15px; white-space: pre-wrap; line-height: 1.4; color: #0f172a; max-height: 300px; overflow-y: auto;
+        }
+        .modal-actions { display: flex; gap: 8px; }
+        .btn-modal { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; text-align: center; }
+        .btn-modal.copy { background: #0284c7; color: white; }
+        .btn-modal.print { background: #15803d; color: white; }
+        .btn-modal.close { background: #64748b; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo-img-container">
+                <img src="logo.jpg" alt="GB Casual">
+            </div>
+            <h1>GB CASUAL</h1>
+            <p>Application de Gestion d'Entreprise</p>
+            <div class="brand-pills">
+                <span class="pill-gb">🛍️ Lingerie & Cosmétiques</span>
+                <span class="pill-gh">🌿 Clinique Glory Herbal</span>
+            </div>
+        </header>
+
+        <!-- ECRAN DE CONNEXION -->
+        <div id="loginScreen" class="active">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="userCode">Code Secret :</label>
+                    <input type="password" id="userCode" placeholder="Entrez votre code secret" required>
+                </div>
+                <button type="submit" class="btn-valider gb">Se connecter</button>
+                <p id="errorMsg" style="color:#ef4444; font-size:12px; text-align:center; display:none; margin-top:8px;">Code secret incorrect.</p>
+            </form>
+        </div>
+
+        <!-- ECRAN PRINCIPAL -->
+        <div id="appScreen">
+            <div class="user-badge">
+                <span id="userInfoDisplay">Connecté</span>
+                <button type="button" class="btn-logout" onclick="deconnecter()">Déconnexion</button>
+            </div>
+
+            <!-- BANDEAU NOTIFICATION DES RDV DU JOUR -->
+            <div id="rdvNotificationBanner" class="rdv-notification-card" style="display:none;">
+                <h3>🔔 RENDEZ-VOUS DU JOUR (Glory Herbal)</h3>
+                <div id="rdvListTodayContainer"></div>
+            </div>
+
+            <div class="tabs-main">
+                <button class="tab-btn gb-casual active" onclick="switchTab('ventes')" id="btnTabVentes">🛍️ Ventes</button>
+                <button class="tab-btn depenses" onclick="switchTab('depenses')" id="btnTabDepenses" style="display:none;">💸 Dépenses</button>
+                <button class="tab-btn glory-herbal" onclick="switchTab('patients')" id="btnTabPatients">🩺 Glory Herbal</button>
+                <button class="tab-btn stock" onclick="switchTab('stock')" id="btnTabStock">📦 Stocks</button>
+                <button class="tab-btn admin" onclick="switchTab('admin')" id="btnTabAdmin" style="display:none;">⚙️ Admin</button>
+          <button class="tab-btn admin" id="btnTabOuvriers" style="display:none;" onclick="ouvrirGestionOuvriers()">👥 Ouvriers & Paie</button>
+                
+                
+            </div>
+
+            <!-- TAB 1: VENTES & CAISSE GLOBALE -->
+            <div id="paneVentes" class="section-pane active">
+                <div id="adminFinanceCards" style="display:none;">
+                    <div class="period-filter-bar">
+                        <button class="period-btn active" id="pBtnJour" onclick="filtrerPeriode('jour')">Aujourd'hui</button>
+                        <button class="period-btn" id="pBtnSemaine" onclick="filtrerPeriode('semaine')">Cette Semaine</button>
+                        <button class="period-btn" id="pBtnMois" onclick="filtrerPeriode('mois')">Ce Mois-ci</button>
+                    </div>
+
+                    <div class="finance-cards">
+                        <div class="f-card gb">
+                            <h4>GB Casual</h4>
+                            <div class="amount" id="totalGBCasual">0 F</div>
+                        </div>
+                        <div class="f-card gh">
+                            <h4>Glory Herbal</h4>
+                            <div class="amount" id="totalGloryHerbal">0 F</div>
+                        </div>
+                        <div class="f-card total">
+                            <h4>Total Recettes</h4>
+                            <div class="amount" id="totalGeneral">0 F</div>
+                        </div>
+                    </div>
+
+                    <div class="finance-cards" style="grid-template-columns: 1fr 1fr; margin-bottom: 12px;">
+                        <div class="f-card depense">
+                            <h4>Total Dépenses (-)</h4>
+                            <div class="amount" id="totalDepensesDisplay">0 F</div>
+                        </div>
+                        <div class="f-card benefice">
+                            <h4>Bénéfice Net (=)</h4>
+                            <div class="amount" id="totalBeneficeNetDisplay">0 F</div>
+                        </div>
+                    </div>
+
+                    <div class="channel-cards">
+                        <div class="c-card">
+                            <span>🏪 Boutique :</span>
+                            <strong id="totalCanalBoutique" style="color:#0284c7;">0 F</strong>
+                        </div>
+                        <div class="c-card">
+                            <span>📲 WhatsApp :</span>
+                            <strong id="totalCanalWhatsapp" style="color:#10b981;">0 F</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 style="font-size:15px; margin-bottom:10px; color:#be185d;">Nouvelle Vente GB Casual</h2>
+                
+                <!-- SCANNER CAMERA POUR VENTE -->
+                <div style="margin-bottom:12px; background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:8px; text-align:center;">
+                    <button type="button" class="btn-action" style="background:#15803d; width:100%; padding:10px; font-size:12px; margin:0;" onclick="lancerScannerVente()">📷 Scanner un article pour la vente</button>
+                    <div id="readerVente" style="width:100%; margin-top:10px; display:none;"></div>
+                </div>
+
+                <form id="venteForm" novalidate>
+                    
+                    <div class="form-group">
+                        <label>Sélectionner un produit du stock :</label>
+                        <select id="selectStockVente" onchange="remplirPrixStock()" style="font-size:12px;">
+                            <option value="">-- Choix libre / Hors stock --</option>
+                        </select>
+                    </div>
+                                <div class="form-group">
+                <label>Quantité :</label>
+                <input type="number" id="quantiteVente" value="1" min="1" placeholder="Ex: 1">
+                                </div>
+                    
+                    <div class="form-group">
+                        <label>Canal de Vente :</label>
+                        <select id="canalVente" required>
+                            <option value="boutique">Boutique Physique (Espèces)</option>
+                            <option value="whatsapp">Commande WhatsApp (Mobile Money)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom du Client :</label>
+                        <input type="text" id="nomClient" placeholder="Ex: Mme Lawson" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone Client (Optionnel) :</label>
+                        <input type="text" id="telClientVente" placeholder="Ex: 97000000">
+                    </div>
+                    <div class="form-group">
+                        <label>Montant (FCFA) :</label>
+                        <input type="number" id="montantTotal" placeholder="Ex: 15000" required>
+                    </div>
+                    <button type="submit" class="btn-valider gb">Enregistrer Vente GB Casual</button>
+                </form>
+
+                <h2 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;" id="titleRecettes">Historique des Recettes</h2>
+                <div style="display:flex; gap:8px; margin-bottom:8px;">
+                    <input type="text" id="searchVente" placeholder="🔍 Rechercher client ou vendeur..." onkeyup="chargerVentes()" style="font-size:12px; flex:2;">
+                    <select id="filtrePole" onchange="chargerVentes()" style="font-size:12px; flex:1;">
+                        <option value="tous">Tous les pôles</option>
+                        <option value="gb">GB Casual</option>
+                        <option value="gh">Glory Herbal</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
+                    <label style="font-size:11px; margin:0; white-space:nowrap;">📅 Filtrer par date :</label>
+                    <input type="text" id="filtreDateSpecifique" placeholder="Ex: 2026-10-11" onkeyup="chargerVentes()" onchange="chargerVentes()" style="font-size:12px; padding:5px; flex:1;">
+                    <button type="button" class="btn-action" style="margin:0; padding:6px 10px; background:#64748b;" onclick="reinitialiserFiltreDate()">Voir tout</button>
+                </div>
+
+                <div id="salesContainer">Chargement des ventes...</div>
+            </div>
+
+            <!-- TAB 2 : GESTION DES DÉPENSES -->
+            <div id="paneDepenses" class="section-pane">
+                <h2 style="font-size:15px; margin-bottom:10px; color:#dc2626;">Enregistrer une Sortie d'Argent / Dépense</h2>
+                <form id="depenseForm">
+                    <div class="form-group">
+                        <label>Pôle Concerné :</label>
+                        <select id="depensePole" required>
+                            <option value="gb">GB Casual (Lingerie, Cosmétiques, Gaines)</option>
+                            <option value="gh">Glory Herbal (Plantes, Flacons, Produits Clinique)</option>
+                            <option value="general">Frais Généraux / Commun</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Catégorie de Dépense :</label>
+                        <select id="depenseCategorie" required>
+                            <option value="matieres">Achat Matières Premières / Ingrédients</option>
+                            <option value="emballages">Emballages, Sacs & Flaconnage</option>
+                            <option value="transport">Transport, Course & Livraison</option>
+                            <option value="charges">Charges (Loyer, Électricité, Connexion)</option>
+                            <option value="autre">Autre Dépense / Divers</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Motif / Description de la dépense :</label>
+                        <input type="text" id="depenseMotif" placeholder="Ex: Achat de 2kg d'Alpha Arbutin ou Loyer" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Montant Dépensé (FCFA) :</label>
+                        <input type="number" id="depenseMontant" placeholder="Ex: 25000" required>
+                    </div>
+                    <button type="submit" class="btn-valider depense-btn">Enregistrer la Dépense</button>
+                </form>
+
+                <h2 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;">Historique des Dépenses</h2>
+                <div id="depensesListContainer">Chargement des dépenses...</div>
+            </div>
+
+            <!-- TAB 3: CLINIQUE GLORY HERBAL -->
+            <div id="panePatients" class="section-pane">
+                <div class="sub-tabs">
+                    <button class="sub-tab-btn active" id="btnSubNew" onclick="switchSubTab('form')">📝 Nouvelle Fiche Patient</button>
+                    <button class="sub-tab-btn" id="btnSubList" onclick="switchSubTab('list')">📂 Liste & Fiches Patients</button>
+                </div>
+
+                <div id="subPaneForm" style="display:block;">
+                    <h2 id="formTitle" style="font-size:15px; margin-bottom:12px; color:#15803d;">Saisie de la Fiche du Patient (Glory Herbal)</h2>
+                    
+                    <form id="patientForm">
+                        <input type="hidden" id="editingPatientId" value="">
+
+                        <div class="patient-cover-card">
+                            <div class="cover-badge">GLORYHERBAL</div>
+                            <div class="cover-subtitle">Clinique de Médecine Naturelle à Base de Plantes Médicinales<br><i>Notre apprentissage par la nature est infini</i></div>
+                            
+                            <div class="cover-title">Fichier du Patient</div>
+                            <div class="cover-confidential">(Confidentiel)</div>
+
+                            <div class="cover-grid">
+                                <div class="cover-field">
+                                    <label>NOM :</label>
+                                    <input type="text" id="pNom" required placeholder="Nom et Prénom">
+                                </div>
+                                <div class="cover-field">
+                                    <label>SEXE :</label>
+                                    <select id="pSexe" style="background:#15803d; color:white;">
+                                        <option value="M">M</option>
+                                        <option value="F">F</option>
+                                    </select>
+                                </div>
+                                <div class="cover-field">
+                                    <label>ÂGE :</label>
+                                    <input type="number" id="pAge" required placeholder="Âge">
+                                </div>
+                            </div>
+
+                            <div class="cover-grid-2">
+                                <div class="cover-field">
+                                    <label>N° DE TÉLÉPHONE :</label>
+                                    <input type="text" id="pTel" required placeholder="Téléphone">
+                                </div>
+                                <div class="cover-field">
+                                    <label>RÉGION :</label>
+                                    <input type="text" id="pRegion" placeholder="Région / Ville">
+                                </div>
+                            </div>
+
+                            <div class="cover-grid-2">
+                                <div class="cover-field">
+                                    <label>RÉFÉRÉ(E) PAR :</label>
+                                    <input type="text" id="pRefere" placeholder="Référé par">
+                                </div>
+                                <div class="cover-field">
+                                    <label>DATE CONSULTATION :</label>
+                                    <input type="text" id="pDate" placeholder="Ex: AAAA-MM-JJ">
+                                </div>
+                            </div>
+
+                            <div class="cover-field" style="margin-top:8px;">
+                                <label>ADRESSE :</label>
+                                <input type="text" id="pAdresse" placeholder="Adresse complète">
+                            </div>
+                        </div>
+
+                        <div class="medical-sheet">
+                            <div class="medical-header">
+                                <h3>CLINIQUE DE MÉDECINE NATURELLE À BASE DE PLANTES MÉDICINALES</h3>
+                                <h2>Fiche d'histoire médicale du patient</h2>
+                            </div>
+
+                            <div class="medical-layout">
+                                <div>
+                                    <div class="med-box">
+                                        <div class="med-box-title">Ethnie</div>
+                                        <div class="med-box-content">
+                                            <input type="text" id="pEthnie" placeholder="Ethnie">
+                                        </div>
+                                    </div>
+
+                                    <div class="med-box">
+                                        <div class="med-box-title">Antécédents médicaux et chirurgicaux :</div>
+                                        <div class="med-box-content">
+                                            <textarea id="pAntecedentsMed" placeholder="Détails antécédents médicaux..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="med-box">
+                                        <div class="med-box-title">Antécédents familiaux :</div>
+                                        <div class="med-box-content">
+                                            <textarea id="pAntecedentsFam" placeholder="Antécédents familiaux..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="med-box">
+                                        <div class="med-box-title">Antécédents sociaux :</div>
+                                        <div class="med-box-content">
+                                            <div class="form-group">
+                                                <label>Profession :</label>
+                                                <input type="text" id="pProfession" placeholder="Profession">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Habitation / Mode de vie :</label>
+                                                <textarea id="pAntSociaux" placeholder="Vit seul(e), Tabac, Alcool, Alimentation..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="med-box">
+                                        <div class="med-box-title">Motif de la consultation / Motif principal :</div>
+                                        <div class="med-box-content">
+                                            <textarea id="pMotif" required placeholder="Motif principal de la visite..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="med-box">
+                                        <div class="med-box-title">Plainte(s) principale(s) :</div>
+                                        <div class="med-box-content">
+                                            <textarea id="pPlaintesPrinc" placeholder="Plaintes principales..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="med-box">
+                                        <div class="med-box-title">Plainte(s) secondaire(s) :</div>
+                                        <div class="med-box-content">
+                                            <textarea id="pPlaintesSec" placeholder="Plaintes secondaires..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="med-box">
+                                <div class="med-box-title">Examen :</div>
+                                <div class="med-box-content">
+                                    <textarea id="pExamen" placeholder="Résultats de l'examen clinique..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="med-box">
+                                <div class="med-box-title">Problème(s) du patient / Diagnostic :</div>
+                                <div class="med-box-content">
+                                    <textarea id="pProblemes" placeholder="Diagnostic / Problèmes identifiés..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="med-box" style="border-color:#15803d; background:#f0fdf4;">
+                                <div class="med-box-title" style="background:#dcfce7; color:#166534;">🔔 Prochain Rendez-vous de Suivi / Contrôle</div>
+                                <div class="med-box-content">
+                                    <input type="text" id="pProchainRdv" placeholder="Ex: 2026-10-18 ou Dans 1 semaine" style="font-weight:bold; color:#166534; font-size:14px; background:white;">
+                                    <div style="margin-top:6px;">
+                                        <span style="font-size:10px; color:#166534; font-weight:bold;">Raccourcis rapides :</span><br>
+                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(0)">Aujourd'hui</button>
+                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(7)">Dans 7 jours</button>
+                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(14)">Dans 14 jours</button>
+                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(30)">Dans 1 mois</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top:10px;">
+                                <label>Montant Première Consultation / Prestation (FCFA) :</label>
+                                <input type="number" id="pMontant" placeholder="Ex: 10000">
+                            </div>
+
+                            <button type="submit" id="btnSubmitPatient" class="btn-valider">Enregistrer la Fiche Patient</button>
+                            <button type="button" id="btnCancelEdit" class="btn-action" style="background:#64748b; display:none; margin-top:8px; width:100%; padding:10px;" onclick="annulerModification()">Annuler la modification</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="subPaneList" style="display:none;">
+                    <h2 style="font-size:15px; margin-bottom:12px; color:#15803d;">Fiches Patients & Carnets de Suivi</h2>
+                    <div class="form-group">
+                        <input type="text" id="searchPatient" placeholder="Rechercher par nom ou numéro de téléphone..." onkeyup="filtrerPatients()">
+                    </div>
+                    <div id="patientResultsContainer">Chargement des dossiers...</div>
+                </div>
+            </div>
+
+            <!-- TAB 4: GESTION DU STOCK -->
+            <div id="paneStock" class="section-pane">
+                <h2 style="font-size:16px; color:#0284c7; margin-bottom:12px;">Alertes & Gestion des Stocks</h2>
+                
+                <div id="stockDashboardBanner" class="stock-dashboard-alert" style="display:none;">
+                    <h3>⚠️ PRODUITS EN ALERTE (Reste 3 unités ou moins)</h3>
+                    <p style="font-size:11px; color:#7f1d1d; margin-bottom:8px;">📢 <i>Veuillez signaler immédiatement ces articles à l'employeur pour réapprovisionnement.</i></p>
+                    <div id="stockDashboardListContainer"></div>
+                </div>
+<!-- SECTION PANIER DE VENTE MULTI-ARTICLES -->
+<div id="posContainer" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:16px; margin-top:20px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+    <h3 style="margin-top:0; color:#0f172a; font-size:16px; display:flex; align-items:center; gap:8px;">
+        🛒 Panier de Vente (Multi-articles)
+    </h3>
+    
+    <!-- Choix Produit & Quantité -->
+    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:15px;">
+        <div style="flex:2; min-width:180px;">
+            <label style="font-size:12px; font-weight:bold; color:#475569;">Sélectionner un article :</label>
+            <select id="cartProductSelect" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; background:white;">
+                <option value="">-- Choisir un vêtement --</option>
+            </select>
+        </div>
+        <div style="flex:1; min-width:80px;">
+            <label style="font-size:12px; font-weight:bold; color:#475569;">Qté :</label>
+            <input type="number" id="cartProductQty" value="1" min="1" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; background:white;">
+        </div>
+        <div>
+            <button type="button" onclick="ajouterAuPanier()" style="background:#2563eb; color:white; border:none; padding:9px 16px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px;">➕ Ajouter au panier</button>
+        </div>
+    </div>
+
+    <!-- Tableau du Panier -->
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:13px; background:white; border-radius:8px; overflow:hidden; border:1px solid #e2e8f0;">
+            <thead>
+                <tr style="background:#f1f5f9; color:#334155; text-align:left;">
+                    <th style="padding:10px;">Article</th>
+                    <th style="padding:10px; text-align:center;">Prix Unitaire</th>
+                    <th style="padding:10px; text-align:center;">Qté</th>
+                    <th style="padding:10px; text-align:right;">Total</th>
+                    <th style="padding:10px; text-align:center;">Action</th>
+                </tr>
+            </thead>
+            <tbody id="cartTableBody">
+                <tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Panier vide pour le moment</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Résumé & Mode de Paiement -->
+    <div style="background:white; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid #f1f5f9;">
+            <span style="font-size:16px; font-weight:bold; color:#0f172a;">TOTAL À PAYER :</span>
+            <span id="cartTotalDisplay" style="font-size:22px; font-weight:bold; color:#16a34a;">0 FCFA</span>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+            <div style="flex:1; min-width:140px;">
+                <label style="font-size:12px; font-weight:bold; color:#475569;">Mode de Paiement :</label>
+                <select id="cartPaymentMode" onchange="toggleMontantRecu()" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px;">
+                    <option value="Espèces">💵 Espèces</option>
+                    <option value="Mobile Money">📱 Mobile Money (Flooz / T-Money / Moov)</option>
+                    <option value="Carte / TPE">💳 Carte / TPE</option>
+                    <option value="Crédit / En attente">⏳ Crédit / En attente</option>
+                </select>
+            </div>
+            <div id="divMontantRecu" style="flex:1; min-width:120px;">
+                <label style="font-size:12px; font-weight:bold; color:#475569;">Montant Reçu (FCFA) :</label>
+                <input type="number" id="cartAmountReceived" oninput="calculerMonnaie()" placeholder="ex: 10000" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px;">
+            </div>
+        </div>
+
+        <div id="divMonnaie" style="display:none; font-weight:bold; font-size:14px; color:#2563eb; margin-bottom:12px; text-align:right;">
+            Monnaie à rendre : <span id="cartChangeDisplay">0 FCFA</span>
+        </div>
+
+        <button type="button" onclick="validerPanierVente()" style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">
+            ✅ Valider & Enregistrer la Vente
+        </button>
+    </div>
+</div>
+                
+                
+                <div id="adminStockSection" style="display:none;">
+                    <form id="stockForm">
+                        
+                        
+                        <input type="hidden" id="editingStockId" value="">
+                        
+                        <div class="form-group">
+                            <label>Pôle d'activité :</label>
+                            <select id="stockPole" required>
+                                <option value="gb">GB Casual (Gaines, Lingerie, Cosmétiques)</option>
+                                <option value="gh">Glory Herbal (Soins & Plantes)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nom ou Code-Barres du Produit :</label>
+                            <input type="text" id="stockNom" placeholder="Ex: Gaine Minceur ou Code-barres" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prix Unitaire (FCFA) :</label>
+                            <input type="number" id="stockPrix" placeholder="Ex: 12000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantité en stock :</label>
+                            <input type="number" id="stockQte" placeholder="Ex: 20" required>
+                        </div>
+                        <div class="form-group">
+                            <label id="lblStockImage">📷 Photo du Produit (Optionnel) :</label>
+                            <input type="file" id="stockImageInput" accept="image/*" style="font-size:12px; padding:5px;">
+                            <small id="txtImageNote" style="display:none; color:#d97706; font-size:11px;"><i>Laissez vide si vous souhaitez conserver la photo actuelle.</i></small>
+                        </div>
+                        <button type="submit" id="btnSubmitStock" class="btn-valider stock-btn">Ajouter au Catalogue</button>
+                        <button type="button" id="btnCancelEditStock" class="btn-action" style="background:#64748b; display:none; margin-top:8px; width:100%; padding:10px;" onclick="annulerEditStock()">Annuler la modification</button>
+                    </form>
+
+                    <h3 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;">Stock Disponible (Vue d'ensemble)</h3>
+                    <div id="stockContainer">Chargement du stock...</div>
+
+                    <h3 style="font-size:14px; margin:20px 0 8px 0; color:#0f172a;">📋 Historique des Mouvements de Stock</h3>
+                    <div id="stockLogsContainer" style="max-height:180px; overflow-y:auto; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">Chargement du journal...</div>
+                </div>
+
+                <div id="employeStockMessage" style="display:none; text-align:center; padding:20px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0; margin-top:10px;">
+                    <p style="font-size:13px; color:#64748b;">🟢 Si aucun produit n'est affiché ci-dessus, tous les stocks sont à un niveau suffisant.</p>
+                </div>
+            </div>
+
+            <!-- TAB 5: ADMIN & GESTION DU PERSONNEL -->
+            <div id="paneAdmin" class="section-pane">
+                <div style="background:#f3e8ff; border:1px solid #d8b4fe; border-radius:8px; padding:15px; margin-bottom:20px;">
+                    <h2 style="font-size:15px; color:#7e22ce; margin-bottom:8px;">🔒 Sécurité Administrateur</h2>
+                    <form id="changeAdminCodeForm">
+                        <div class="form-group">
+                            <label>Nouveau Code Secret Administrateur :</label>
+                            <input type="text" id="newAdminCode" placeholder="Ex: 5839" required>
+                        </div>
+                        <button type="submit" class="btn-valider" style="background-color:#7e22ce;">Changer mon Code Admin</button>
+                    </form>
+                </div>
+
+                <!-- FORMULAIRE EMPLOYES -->
+                <div style="background:#ffffff; border:2px solid #7e22ce; border-radius:8px; padding:15px; margin-bottom:20px;">
+                    <h2 id="employeFormTitle" style="font-size:16px; color:#7e22ce; margin-bottom:12px;">👔 Fiche & Inscription de l'Employé(e)</h2>
+                    <form id="employeForm">
+                        <input type="hidden" id="editingEmpId" value="">
+                        
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Nom & Prénom :</label>
+                                <input type="text" id="empNom" placeholder="Ex: Sarah Kodjo" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Âge :</label>
+                                <input type="number" id="empAge" placeholder="Ex: 26">
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Situation matrimoniale :</label>
+                                <select id="empSituation">
+                                    <option value="Célibataire">Célibataire</option>
+                                    <option value="Marié(e)">Marié(e)</option>
+                                    <option value="Fiancé(e)">Fiancé(e)</option>
+                                    <option value="Divorcé(e)">Divorcé(e)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Numéro de Téléphone :</label>
+                                <input type="text" id="empTel" placeholder="Ex: 97000000" required>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Lieu de Résidence / Localisation :</label>
+                                <input type="text" id="empLieu" placeholder="Ex: Porto-Novo, Quartier Avakpa">
+                            </div>
+                            <div class="form-group">
+                                <label>Code Secret d'Accès Connexion :</label>
+                                <input type="text" id="empCode" placeholder="Ex: 1234" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btnSubmitEmp" class="btn-valider" style="background-color:#7e22ce;">Créer la Fiche Employé</button>
+                        <button type="button" id="btnCancelEditEmp" class="btn-action" style="background:#64748b; display:none; margin-top:8px; width:100%; padding:10px;" onclick="annulerEditEmploye()">Annuler la modification</button>
+                    </form>
+                </div>
+
+                <h3 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;">👥 Registre des Employés</h3>
+                <div id="employesContainer">Chargement des employés...</div>
+
+                <!-- SAUVEGARDE & RESTAURATION -->
+                <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:15px; margin-top:25px; margin-bottom:20px;">
+                    <h2 style="font-size:15px; color:#166534; margin-bottom:8px;">💾 Sauvegarde & Restauration de Sécurité</h2>
+                    <p style="font-size:11px; color:#166534; margin-bottom:10px;">
+                        Téléchargez une sauvegarde locale de vos données ou restaurez vos informations à partir d'un fichier de sauvegarde.
+                    </p>
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <button type="button" id="btnExporterDonnees" style="background:#0284c7; color:white; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; flex:1;">
+                            📥 Exporter les données (Sauvegarde)
+                        </button>
+                    </div>
+                    <div>
+                        <label for="inputFichierBackup" style="background:#15803d; color:white; padding:8px 12px; border-radius:6px; font-weight:bold; display:inline-block; cursor:pointer; font-size:12px; text-align:center; width:100%;">
+                            📂 Restaurer une sauvegarde (Fichier JSON)
+                        </label>
+                        <input type="file" id="inputFichierBackup" accept=".json" style="display:none;">
+                    </div>
+                </div>
+
+                <!-- ZONE DE RÉINITIALISATION CLOUD -->
+                <div style="padding: 15px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; margin-bottom:20px;">
+                    <h3 style="font-size: 13px; color: #dc2626; margin-bottom: 8px;">⚠️ Remise à zéro pour Livraison Client</h3>
+                    <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">
+                        Effacer toutes les ventes, dépenses, patients, stocks et employés de la base cloud pour livrer une application propre.
+                    </p>
+                    <button type="button" id="resetCloudBtn" style="background-color: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 12px;">
+                        🗑️ Vider toutes les données de test (Cloud)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE REÇU / CARNET DE SUIVI -->
+    <div id="receiptModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-size:15px; margin-bottom:10px; color:#0f172a;" id="modalTitleText">🧾 Reçu de Paiement</h3>
+            <div id="receiptTextContent" class="receipt-box"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal copy" onclick="copierTexteRecu()">📋 Copier le texte</button>
+                <button type="button" class="btn-modal print" onclick="imprimerModalRecu()">🖨️ PDF / Imprimer</button>
+                <button type="button" class="btn-modal close" onclick="fermerModalRecu()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script JavaScript Firebase & Scanner -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, updateDoc, deleteDoc, orderBy, query, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6uhTxtZRCRWfsN7hL1rB3aFosMn2jRc",
+            authDomain: "gb-casual.firebaseapp.com",
+            projectId: "gb-casual",
+            storageBucket: "gb-casual.firebasestorage.app",
+            messagingSenderId: "896499619613",
+            appId: "1:896499619613:web:94d618f034158ef6c133f4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let localPatients = [];
+        let localStock = [];
+        let localVentes = [];
+        let localDepenses = [];
+        let localEmployes = [];
+        let currentPeriod = 'jour';
+        let currentReceiptText = "";
+        let html5QrCodeScanner = null;
+
+        document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
+
+        window.setRdvShortcut = (days) => {
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + days);
+            document.getElementById('pProchainRdv').value = targetDate.toISOString().split('T')[0];
+        };
+
+        async function getAdminCodeFromDB() {
+            try {
+                const docSnap = await getDoc(doc(db, "parametres", "securite"));
+                if (docSnap.exists() && docSnap.data().adminCode) {
+                    return docSnap.data().adminCode;
+                }
+            } catch (e) {}
+            return "9999";
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.getElementById('userCode').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.style.display = 'none';
+
+            const currentAdminCode = await getAdminCodeFromDB();
+            if (code === currentAdminCode) {
+                currentUser = { nom: "Administrateur", role: "admin" };
+                lancerApplication();
+                    if (currentUser && currentUser.role === 'admin') {
+        const btnOuvriers = document.getElementById('btnTabOuvriers');
+        if (btnOuvriers) btnOuvriers.style.display = 'inline-block';
+    } else {
+        const btnOuvriers = document.getElementById('btnTabOuvriers');
+        if (btnOuvriers) btnOuvriers.style.display = 'none';
+                    }
+                
+                return;
+            }
+
+            try {
+                const empSnap = await getDocs(collection(db, "employes"));
+                let userFound = null;
+                empSnap.forEach(d => {
+                    if (d.data().code === code) {
+                      userFound = { nom: d.data().nom, role: "employe" };
+                    }
+                });
+
+                if (userFound) {
+                    currentUser = userFound;
+                    lancerApplication();
+                                    const btnOuvriers = document.getElementById('btnTabOuvriers');
+                if (btnOuvriers) btnOuvriers.style.display = 'none';
+                    
+                } else {
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        document.getElementById('changeAdminCodeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newCode = document.getElementById('newAdminCode').value.trim();
+            if (!newCode) return;
+
+            try {
+                await setDoc(doc(db, "parametres", "securite"), { adminCode: newCode });
+                alert("Code secret Administrateur modifié avec succès !");
+                document.getElementById('newAdminCode').value = '';
+            } catch (err) {
+                alert("Erreur lors de la modification du code.");
+            }
+        });
+
+        function lancerApplication() {
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('appScreen').classList.add('active');
+            document.getElementById('userInfoDisplay').textContent = currentUser.nom + " (" + (currentUser.role === 'admin' ? 'Entrepreneur' : 'Employé') + ")";
+            
+            if(currentUser.role === 'admin') {
+                document.getElementById('btnTabAdmin').style.display = "inline-block";
+                document.getElementById('btnTabDepenses').style.display = "inline-block";
+                document.getElementById('adminFinanceCards').style.display = "block";
+                document.getElementById('adminStockSection').style.display = "block";
+                document.getElementById('employeStockMessage').style.display = "none";
+                document.getElementById('titleRecettes').textContent = "Historique Général des Recettes";
+                chargerEmployes();
+            } else {
+                document.getElementById('btnTabAdmin').style.display = "none";
+                document.getElementById('btnTabDepenses').style.display = "none";
+                document.getElementById('adminFinanceCards').style.display = "none";
+                document.getElementById('adminStockSection').style.display = "none";
+                document.getElementById('employeStockMessage').style.display = "block";
+                document.getElementById('titleRecettes').textContent = "Mes Ventes de la Journée";
+            }
+            
+            chargerVentes();
+            if(currentUser.role === 'admin') chargerDepenses();
+            chargerPatients();
+            chargerStock();
+            if(currentUser.role === 'admin') chargerMouvementsStock();
+        }
+
+        window.deconnecter = () => { location.reload(); };
+
+        window.switchTab = (tab) => {
+            document.querySelectorAll('.section-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            if (tab === 'ventes') {
+                document.getElementById('paneVentes').classList.add('active');
+                document.getElementById('btnTabVentes').classList.add('active');
+                chargerVentes();
+            } else if (tab === 'depenses' && currentUser.role === 'admin') {
+                document.getElementById('paneDepenses').classList.add('active');
+                document.getElementById('btnTabDepenses').classList.add('active');
+                chargerDepenses();
+            } else if (tab === 'patients') {
+                document.getElementById('panePatients').classList.add('active');
+                document.getElementById('btnTabPatients').classList.add('active');
+                chargerPatients();
+            } else if (tab === 'stock') {
+                document.getElementById('paneStock').classList.add('active');
+                document.getElementById('btnTabStock').classList.add('active');
+                chargerStock();
+                if(currentUser.role === 'admin') chargerMouvementsStock();
+            } else if (tab === 'admin' && currentUser.role === 'admin') {
+                document.getElementById('paneAdmin').classList.add('active');
+                document.getElementById('btnTabAdmin').classList.add('active');
+            }
+        };
+
+        window.switchSubTab = (sub) => {
+            document.getElementById('subPaneForm').style.display = sub === 'form' ? 'block' : 'none';
+            document.getElementById('subPaneList').style.display = sub === 'list' ? 'block' : 'none';
+            
+            document.getElementById('btnSubNew').classList.toggle('active', sub === 'form');
+            document.getElementById('btnSubList').classList.toggle('active', sub === 'list');
+
+            if(sub === 'list') chargerPatients();
+        };
+
+        window.filtrerPeriode = (p) => {
+            currentPeriod = p;
+            document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+            if(p === 'jour') document.getElementById('pBtnJour').classList.add('active');
+            if(p === 'semaine') document.getElementById('pBtnSemaine').classList.add('active');
+            if(p === 'mois') document.getElementById('pBtnMois').classList.add('active');
+            calculerRapportFinancier();
+        };
+
+        window.reinitialiserFiltreDate = () => {
+            document.getElementById('filtreDateSpecifique').value = '';
+            chargerVentes();
+        };
+
+        // --- SCANNER DE CODE-BARRES PAR CAMERA ---
+        window.lancerScannerVente = () => {
+            const readerDiv = document.getElementById('readerVente');
+            if (readerDiv.style.display === 'none') {
+                readerDiv.style.display = 'block';
+                const html5QrCode = new Html5Qrcode("readerVente");
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    { fps: 10, qrbox: { width: 250, height: 150 } },
+                    (decodedText, decodedResult) => {
+                        // Trouvé ! On cherche le produit dans le stock par son nom ou code
+                        const matchedItem = localStock.find(i => i.nom.toLowerCase() === decodedText.toLowerCase() || i.id === decodedText);
+                        if (matchedItem) {
+                            document.getElementById('selectStockVente').value = matchedItem.id;
+                            remplirPrixStock();
+                            alert("✅ Article scanné et sélectionné : " + matchedItem.nom);
+                        } else {
+                            alert("⚠️ Code scanné : " + decodedText + " (Aucun article correspondant exact dans le stock)");
+                        }
+                        html5QrCode.stop().then(() => { readerDiv.style.display = 'none'; }).catch(err => {});
+                    },
+                    (errorMessage) => {
+                        // Erreurs de scan en direct (ignorées pour ne pas saturer)
+                    }
+                ).catch(err => {
+                    alert("Erreur d'accès à la caméra : " + err);
+                    readerDiv.style.display = 'none';
+                });
+            } else {
+                readerDiv.style.display = 'none';
+            }
+        };
+// Fonction pour afficher et imprimer le QR code d'un article existant
+window.afficherQRCodeArticle = function(nomArticle, prixArticle) {
+    let modal = document.getElementById('qrCodeModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'qrCodeModal';
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); display:flex; align-items:center; justify-content:center; z-index:9999;';
+        document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+        <div style="background:white; padding:25px; border-radius:14px; text-align:center; max-width:320px; width:90%; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+            <h3 style="margin-top:0; color:#1e293b; font-size:18px;">${nomArticle}</h3>
+            <p style="color:#2563eb; font-weight:bold; font-size:16px; margin: 8px 0 15px 0;">${prixArticle} FCFA</p>
+            <div id="modalQrContainer" style="display:flex; justify-content:center; margin:15px 0;"></div>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+                <button onclick="window.print()" style="background:#2563eb; color:white; border:none; padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:bold;">🖨️ Imprimer</button>
+                <button onclick="document.getElementById('qrCodeModal').style.display='none'" style="background:#64748b; color:white; border:none; padding:10px 18px; border-radius:8px; cursor:pointer;">Fermer</button>
+            </div>
+        </div>
+    `;
+
+    modal.style.display = 'flex';
+
+    new QRCode(document.getElementById('modalQrContainer'), {
+        text: nomArticle,
+        width: 160,
+        height: 160,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+};
+        
+
+        // Enregistrement & Modification de Stock
+        document.getElementById('stockForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(currentUser.role !== 'admin') return;
+
+            const editId = document.getElementById('editingStockId').value;
+            const nomP = document.getElementById('stockNom').value.trim();
+            const poleP = document.getElementById('stockPole').value;
+            const prixP = Number(document.getElementById('stockPrix').value);
+            const qteP = Number(document.getElementById('stockQte').value);
+            const imageInput = document.getElementById('stockImageInput');
+
+            let imageBase64 = "";
+            if (imageInput.files && imageInput.files[0]) {
+                imageBase64 = await convertirImageEnBase64(imageInput.files[0]);
+            }
+
+            try {
+                if (editId) {
+                    const existingItem = localStock.find(i => i.id === editId);
+                    const stockDataToUpdate = {
+                        pole: poleP,
+                        nom: nomP,
+                        prix: prixP,
+                        qte: qteP,
+                        image: imageBase64 || (existingItem ? existingItem.image || "" : "")
+                    };
+
+                    await setDoc(doc(db, "stock", editId), stockDataToUpdate, { merge: true });
+
+                    await addDoc(collection(db, "mouvements_stock"), {
+                        texte: "✏️ Modification de l'article " + nomP + " (Nouveau prix: " + prixP + " F, Qte: " + qteP + ")",
+                        date: new Date().toLocaleString('fr-FR'),
+                        createdAt: serverTimestamp()
+                    });
+
+                    alert("Article mis à jour avec succès !");
+                } else {
+                    await addDoc(collection(db, "stock"), {
+                        pole: poleP,
+                        nom: nomP,
+                        prix: prixP,
+                        qte: qteP,
+                        image: imageBase64
+                    });
+
+                    await addDoc(collection(db, "mouvements_stock"), {
+                        texte: "➕ Ajout de " + qteP + " unités de " + nomP,
+                        date: new Date().toLocaleString('fr-FR'),
+                        createdAt: serverTimestamp()
+                    });
+
+                    alert("Produit ajouté au stock !");
+                }
+
+                annulerEditStock();
+                chargerStock();
+                chargerMouvementsStock();
+            } catch (err) { alert("Erreur : " + err.message); }
+        });
+
+        window.editerStock = (id) => {
+            const item = localStock.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('editingStockId').value = item.id;
+            document.getElementById('stockPole').value = item.pole || 'gb';
+            document.getElementById('stockNom').value = item.nom || '';
+            document.getElementById('stockPrix').value = item.prix || '';
+            document.getElementById('stockQte').value = item.qte || 0;
+
+            document.getElementById('btnSubmitStock').textContent = "Enregistrer la modification";
+            document.getElementById('btnSubmitStock').className = "btn-update";
+            document.getElementById('btnCancelEditStock').style.display = "block";
+            document.getElementById('txtImageNote').style.display = "block";
+
+            window.scrollTo({ top: document.getElementById('adminStockSection').offsetTop, behavior: 'smooth' });
+        };
+
+        window.annulerEditStock = () => {
+            document.getElementById('editingStockId').value = '';
+            document.getElementById('stockForm').reset();
+            document.getElementById('btnSubmitStock').textContent = "Ajouter au Catalogue";
+            document.getElementById('btnSubmitStock').className = "btn-valider stock-btn";
+            document.getElementById('btnCancelEditStock').style.display = "none";
+            document.getElementById('txtImageNote').style.display = "none";
+        };
+
+        window.supprimerStock = async (id, nom) => {
+            if(currentUser.role !== 'admin') return;
+            if (confirm("Voulez-vous vraiment SUPPRIMER définitivement l'article '" + nom + "' du catalogue ?")) {
+                try {
+                    await deleteDoc(doc(db, "stock", id));
+
+                    await addDoc(collection(db, "mouvements_stock"), {
+                        texte: "🗑️ Suppression de l'article " + nom + " du catalogue",
+                        date: new Date().toLocaleString('fr-FR'),
+                        createdAt: serverTimestamp()
+                    });
+
+                    alert("Article supprimé du stock.");
+                    chargerStock();
+                    chargerMouvementsStock();
+                } catch (err) {
+                    alert("Erreur lors de la suppression.");
+                }
+            }
+        };
+
+        function convertirImageEnBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function chargerStock() {
+            try {
+                const snap = await getDocs(collection(db, "stock"));
+                localStock = [];
+                let html = "";
+                let alertItems = [];
+                let selectOptions = '<option value="">-- Choix libre / Hors stock --</option>';
+
+                snap.forEach(d => {
+                    const st = { id: d.id, ...d.data() };
+                    localStock.push(st);
+
+                    const isLow = st.qte <= 3;
+                    if (isLow) alertItems.push(st);
+
+                    const badgeClass = isLow ? 'badge-stock low' : 'badge-stock ok';
+                    const badgeText = isLow ? '⚠️ Stock Critique (' + st.qte + ' restants)' : '🟢 En Stock (' + st.qte + ')';
+                    const itemClass = isLow ? 'stock-item low' : 'stock-item';
+                    
+                    const imgTag = st.image ? `<img src="${st.image}" class="stock-img-thumb" alt="produit">` : `<div style="width:45px; height:45px; background:#e2e8f0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-right:10px;">📦</div>`;
+
+                        const adminActions = currentUser.role === 'admin' ? `
+        <div style="margin-top:6px;">
+            <button type="button" class="btn-action" style="font-size:10px; padding:4px 8px; background:#f59e0b; color:white; border:none; border-radius:4px; cursor:pointer;" onclick="editerStock('${st.id}')">Modifier / Photo</button>
+            <button type="button" class="btn-action" style="background:#ef4444; font-size:10px; padding:4px 8px; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:4px;" onclick="supprimerStock('${st.id}')">Supprimer</button>
+            <button type="button" class="btn-action" style="background:#8b5cf6; font-size:10px; padding:4px 8px; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:4px;" onclick="afficherQRCodeArticle('${st.nom}', '${st.prix}')">📱 QR Code</button>
+        </div>
+    ` : '';
+
+                    html += `<div class="${itemClass}"><div style="display:flex; align-items:center;">${imgTag}<div><strong>${st.nom}</strong> (${st.pole === 'gb' ? '🛍️ GB Casual' : '🌿 Glory Herbal'})<br><small style="color:#64748b;">Prix : ${st.prix.toLocaleString()} F</small>${adminActions}</div></div><div><span class="${badgeClass}">${badgeText}</span></div></div>`;
+
+                    selectOptions += `<option value="${st.id}">${st.nom} - ${st.prix} FCFA (Stock: ${st.qte})</option>`;
+                });
+
+               if (document.getElementById('cartProductSelect')) {
+    document.getElementById('cartProductSelect').innerHTML = selectOptions;
+               }
+                
+                const banner = document.getElementById('stockDashboardBanner');
+                const listContainer = document.getElementById('stockDashboardListContainer');
+
+                if (alertItems.length > 0) {
+                    let dashHtml = "";
+                    alertItems.forEach(item => {
+                        const btnReappro = currentUser.role === 'admin' 
+                            ? `<button type="button" class="btn-reappro" onclick="reapprovisionnerRapide('${item.id}', '${item.nom}', ${item.qte})">➕ Réapprovisionner (+5)</button>` 
+                            : `<span style="color:#dc2626; font-weight:bold; font-size:11px;">⚠️ Alerte à transmettre</span>`;
+
+                        dashHtml += `
+                            <div class="stock-alert-item">
+                                <div>
+                                    <strong>${item.nom}</strong> (${item.pole === 'gb' ? '🛍️ GB' : '🌿 GH'})<br>
+                                    <small style="color:#991b1b; font-weight:bold;">Restant : ${item.qte} unité(s)</small>
+                                </div>
+                                ${btnReappro}
+                            </div>
+                        `;
+                    });
+                    listContainer.innerHTML = dashHtml;
+                    banner.style.display = 'block';
+                } else {
+                    banner.style.display = 'none';
+                }
+
+                if(currentUser.role === 'admin') {
+                    document.getElementById('stockContainer').innerHTML = html || "<p style='text-align:center;'>Aucun produit en stock.</p>";
+                }
+                document.getElementById('selectStockVente').innerHTML = selectOptions;
+            } catch (err) {}
+        }
+
+        window.reapprovisionnerRapide = async (id, nom, qteActuelle) => {
+            if(currentUser.role !== 'admin') return;
+            const ajout = 5;
+            const nouvelleQte = qteActuelle + ajout;
+            try {
+                await setDoc(doc(db, "stock", id), { qte: nouvelleQte }, { merge: true });
+
+                await addDoc(collection(db, "mouvements_stock"), {
+                    texte: "📦 Réapprovisionnement rapide (+5) de " + nom + " (Stock actuel: " + nouvelleQte + ")",
+                    date: new Date().toLocaleString('fr-FR'),
+                    createdAt: serverTimestamp()
+                });
+
+                alert("Stock réapprovisionné de +5 unités pour " + nom + " !");
+                chargerStock();
+                chargerMouvementsStock();
+            } catch (err) {
+                alert("Erreur lors de la mise à jour du stock.");
+            }
+        };
+
+        async function chargerMouvementsStock() {
+            try {
+                const snap = await getDocs(query(collection(db, "mouvements_stock"), orderBy("createdAt", "desc")));
+                let html = "";
+                snap.forEach(d => {
+                    const m = d.data();
+                    html += '<div class="stock-log-item"><strong>' + m.date + '</strong> - ' + m.texte + '</div>';
+                });
+                document.getElementById('stockLogsContainer').innerHTML = html || "<p style='font-size:11px;'>Aucun mouvement enregistré.</p>";
+            } catch(e){}
+        }
+
+        // 1. Calcul automatique du Montant Total selon la Quantité
+window.remplirPrixStock = () => {
+    const stockId = document.getElementById('selectStockVente').value;
+    const item = localStock.find(i => i.id === stockId);
+    
+    if (item) {
+        const qteInput = document.getElementById('quantiteVente');
+        let qte = qteInput ? parseInt(qteInput.value) : 1;
+        if (isNaN(qte) || qte < 1) qte = 1;
+
+        // Multiplication automatique du prix par la quantité
+        document.getElementById('montantTotal').value = item.prix * qte;
+    }
+};
+
+// Réaction immédiate lors du changement de quantité ou d'article
+document.getElementById('quantiteVente')?.addEventListener('input', window.remplirPrixStock);
+document.getElementById('selectStockVente')?.addEventListener('change', window.remplirPrixStock);
+
+
+// 2. Traitement complet de la Vente et Déduction exacte du Stock
+document.getElementById('venteForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const stockId = document.getElementById('selectStockVente').value;
+    const qteInput = document.getElementById('quantiteVente');
+    
+    // Récupération dynamique de la quantité (ex: 6)
+    let quantite = qteInput ? parseInt(qteInput.value) : 1;
+    if (isNaN(quantite) || quantite < 1) quantite = 1;
+
+    // Récupération du montant total
+    const montantTotal = Number(document.getElementById('montantTotal').value) || 0;
+
+    // Client et téléphone optionnels ("Client de passage" par défaut)
+    const clientInput = document.getElementById('nomClient').value.trim();
+    const telInput = document.getElementById('telClientVente').value.trim();
+    const client = clientInput !== '' ? clientInput : 'Client de passage';
+    const tel = telInput !== '' ? telInput : 'N/A';
+
+    try {
+        let nomArticle = "Produit / Prestation";
+        
+        if (stockId) {
+            const st = localStock.find(i => i.id === stockId);
+            
+            if (st) {
+                if (st.qte < quantite) {
+                    alert(`Stock insuffisant ! Seules ${st.qte} unité(s) sont disponibles.`);
+                    return;
+                }
+
+                nomArticle = st.nom;
+
+                // 🔻 DÉDUCTION EXACTE DU STOCK (st.qte - quantite)
+                await setDoc(doc(db, "stock", stockId), { 
+                    qte: st.qte - quantite 
+                }, { merge: true });
+
+                // Inscription au journal des mouvements de stock
+                await addDoc(collection(db, "mouvements_stock"), {
+                    texte: `📦 Vente de ${quantite} unité(s) de ${st.nom} (Client: ${client})`,
+                    date: new Date().toLocaleString('fr-FR'),
+                    createdAt: serverTimestamp()
+                });
+            }
+        }
+
+        // Enregistrement de la vente dans Firebase
+        await addDoc(collection(db, "ventes"), {
+            pole: "gb",
+            article: nomArticle,
+            canalVente: document.getElementById('canalVente').value,
+            nomClient: client,
+            telClient: tel,
+            quantite: quantite,
+            montantTotal: montantTotal,
+            employe: currentUser.nom,
+            dateString: new Date().toISOString().split('T')[0],
+            dateCreation: serverTimestamp()
+        });
+
+        alert("Vente enregistrée avec succès !");
+        
+        // Remise à zéro propre du formulaire
+        document.getElementById('venteForm').reset();
+        if (qteInput) qteInput.value = 1;
+        document.getElementById('montantTotal').value = '';
+
+        if (typeof chargerVentes === 'function') chargerVentes();
+        if (typeof chargerStock === 'function') chargerStock();
+
+    } catch (err) {
+        alert("Erreur lors de l'enregistrement de la vente : " + err.message);
+    }
+});
+        
+
+        document.getElementById('depenseForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(currentUser.role !== 'admin') return;
+
+            const pole = document.getElementById('depensePole').value;
+            const categorie = document.getElementById('depenseCategorie').value;
+            const motif = document.getElementById('depenseMotif').value.trim();
+            const montant = Number(document.getElementById('depenseMontant').value);
+
+            try {
+                await addDoc(collection(db, "depenses"), {
+                    pole: pole,
+                    categorie: categorie,
+                    motif: motif,
+                    montant: montant,
+                    agent: currentUser.nom,
+                    dateString: new Date().toISOString().split('T')[0],
+                    dateCreation: serverTimestamp()
+                });
+
+                alert("Dépense enregistrée !");
+                e.target.reset();
+                chargerDepenses();
+                chargerVentes();
+            } catch (err) { alert("Erreur lors de l'enregistrement de la dépense."); }
+        });
+
+        async function chargerDepenses() {
+            if(currentUser.role !== 'admin') return;
+            try {
+                const snap = await getDocs(query(collection(db, "depenses"), orderBy("dateCreation", "desc")));
+                localDepenses = [];
+                let html = "";
+                snap.forEach(d => {
+                    const dep = { id: d.id, ...d.data() };
+                    localDepenses.push(dep);
+
+                    html += `
+                        <div class="depense-item">
+                            <div>
+                                <strong>${dep.motif}</strong> (${dep.pole === 'gb' ? '🛍️ GB' : dep.pole === 'gh' ? '🌿 GH' : '🏢 Général'})<br>
+                                <small style="color:#64748b;">Catégorie : ${dep.categorie} | Par : ${dep.agent} | Date : ${dep.dateString}</small>
+                            </div>
+                            <div style="text-align:right;">
+                                <strong style="color:#dc2626;">-${dep.montant.toLocaleString()} F</strong>
+                                <br><button class="btn-action" style="background:#ef4444; font-size:10px; padding:2px 6px;" onclick="supprimerDepense('${dep.id}')">Supprimer</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('depensesListContainer').innerHTML = html || "<p style='text-align:center; color:#64748b;'>Aucune dépense enregistrée.</p>";
+                calculerRapportFinancier();
+            } catch (err) {}
+        }
+
+        window.supprimerDepense = async (id) => {
+            if(currentUser.role !== 'admin') return;
+            if (confirm("Voulez-vous supprimer cette dépense ?")) {
+                await deleteDoc(doc(db, "depenses", id));
+                chargerDepenses();
+                chargerVentes();
+            }
+        };
+
+        async function chargerVentes() {
+            try {
+                const snap = await getDocs(query(collection(db, "ventes"), orderBy("dateCreation", "desc")));
+                localVentes = [];
+                snap.forEach(d => localVentes.push({ id: d.id, ...d.data() }));
+
+                if(currentUser.role === 'admin') calculerRapportFinancier();
+                afficherVentes();
+            } catch (err) {}
+        }
+
+        function calculerRapportFinancier() {
+            if(currentUser.role !== 'admin') return;
+            let totalGb = 0, totalGh = 0;
+            let totalBoutique = 0, totalWhatsapp = 0;
+            let totalDepenses = 0;
+            const now = new Date();
+
+            localVentes.forEach(v => {
+                const montant = Number(v.montantTotal) || 0;
+                const pole = v.pole || (v.nomClient && v.nomClient.includes("Glory Herbal") ? "gh" : "gb");
+                const canal = v.canalVente || "boutique";
+                
+                let vDate = v.dateString ? new Date(v.dateString) : new Date();
+
+                let include = false;
+                if (currentPeriod === 'jour') {
+                    include = v.dateString === now.toISOString().split('T')[0];
+                } else if (currentPeriod === 'semaine') {
+                    const diffTime = Math.abs(now - vDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    include = diffDays <= 7;
+                } else if (currentPeriod === 'mois') {
+                    include = vDate.getMonth() === now.getMonth() && vDate.getFullYear() === now.getFullYear();
+                }
+
+                if (include) {
+                    if (pole === "gb") totalGb += montant;
+                    else totalGh += montant;
+
+                    if (canal === "whatsapp") totalWhatsapp += montant;
+                    else totalBoutique += montant;
+                }
+            });
+
+            localDepenses.forEach(d => {
+                const montant = Number(d.montant) || 0;
+                let dDate = d.dateString ? new Date(d.dateString) : new Date();
+
+                let include = false;
+                if (currentPeriod === 'jour') {
+                    include = d.dateString === now.toISOString().split('T')[0];
+                } else if (currentPeriod === 'semaine') {
+                    const diffTime = Math.abs(now - dDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    include = diffDays <= 7;
+                } else if (currentPeriod === 'mois') {
+                    include = dDate.getMonth() === now.getMonth() && dDate.getFullYear() === now.getFullYear();
+                }
+
+                if (include) totalDepenses += montant;
+            });
+
+            const totalRecettes = totalGb + totalGh;
+            const beneficeNet = totalRecettes - totalDepenses;
+
+            document.getElementById('totalGBCasual').textContent = totalGb.toLocaleString() + " F";
+            document.getElementById('totalGloryHerbal').textContent = totalGh.toLocaleString() + " F";
+            document.getElementById('totalGeneral').textContent = totalRecettes.toLocaleString() + " F";
+
+            document.getElementById('totalCanalBoutique').textContent = totalBoutique.toLocaleString() + " F";
+            document.getElementById('totalCanalWhatsapp').textContent = totalWhatsapp.toLocaleString() + " F";
+
+            document.getElementById('totalDepensesDisplay').textContent = totalDepenses.toLocaleString() + " F";
+            
+            const benefDisplay = document.getElementById('totalBeneficeNetDisplay');
+            benefDisplay.textContent = beneficeNet.toLocaleString() + " F";
+            benefDisplay.style.color = beneficeNet >= 0 ? "#166534" : "#dc2626";
+        }
+
+        function afficherVentes() {
+            const queryText = document.getElementById('searchVente').value.toLowerCase();
+            const filtrePole = document.getElementById('filtrePole').value;
+            const filtreDate = document.getElementById('filtreDateSpecifique').value.trim();
+            const dateAujourdhui = new Date().toISOString().split('T')[0];
+
+            let html = "";
+            localVentes.forEach(v => {
+                const pole = v.pole || (v.nomClient && v.nomClient.includes("Glory Herbal") ? "gh" : "gb");
+                const canal = v.canalVente === 'whatsapp' ? '📲 WhatsApp' : '🏪 Boutique';
+                const montant = Number(v.montantTotal) || 0;
+
+                if (currentUser.role === 'employe') {
+                    if (v.dateString !== dateAujourdhui || v.employe !== currentUser.nom) return;
+                } else {
+                    if (filtrePole !== "tous" && filtrePole !== pole) return;
+                    if (filtreDate && v.dateString !== filtreDate) return;
+                    if (queryText && !v.nomClient.toLowerCase().includes(queryText) && !(v.employe && v.employe.toLowerCase().includes(queryText))) return;
+                }
+
+                html += `
+                    <div class="sale-item ${pole}">
+                        <div>
+                            <strong>${v.nomClient}</strong> (${v.telClient || 'N/A'})<br>
+                            <small style="color:#64748b;">${pole === 'gb' ? '🛍️ GB Casual' : '🌿 Glory Herbal'} | ${canal} | Par : ${v.employe || 'Admin'} | Date : ${v.dateString || 'N/A'}</small>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:bold; color:${pole === 'gb' ? '#be185d' : '#15803d'}">${montant.toLocaleString()} F</div>
+                            <button class="btn-wa" style="padding:4px 8px; font-size:10px; margin-top:4px;" onclick="ouvrirModalRecu('${v.id}')">📄 Reçu / Facture</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('salesContainer').innerHTML = html || "<p style='text-align:center; color:#64748b;'>Aucune recette trouvée pour cette sélection.</p>";
+        }
+
+        window.ouvrirModalRecu = (id) => {
+            const v = localVentes.find(i => i.id === id);
+            if (!v) return;
+
+            const nomEtab = 'GB CASUAL';
+            document.getElementById('modalTitleText').textContent = "🧾 Reçu de Paiement";
+            
+            currentReceiptText = `=================================\n          ${nomEtab}\n   Reçu de Paiement / Facture\n=================================\n\nClient(e) : ${v.nomClient}\nTéléphone : ${v.telClient || 'N/A'}\nArticle/Soin : ${v.article || 'Prestation'}\nMontant Payé : ${v.montantTotal.toLocaleString()} FCFA\nAgent : ${v.employe || 'Admin'}\nDate : ${v.dateString || new Date().toLocaleDateString('fr-FR')}\n\n=================================\nMerci de votre confiance ! 🛍️🌿`;
+
+            document.getElementById('receiptTextContent').textContent = currentReceiptText;
+            document.getElementById('receiptModal').classList.add('active');
+        };
+
+        window.ouvrirModalSuiviPatient = (id) => {
+            const p = localPatients.find(i => i.id === id);
+            if (!p) return;
+
+            document.getElementById('modalTitleText').textContent = "🩺 Carnet de Suivi Patient";
+
+            let texteSuivi = `=================================\n       CLINIQUE GLORY HERBAL\n    Fiche de Suivi du Patient\n=================================\n\nPatient(e) : ${p.nom} (${p.sexe}, ${p.age} ans)\nTéléphone : ${p.tel}\nDiagnostic : ${p.problemes || 'Non spécifié'}\nProchain RDV : ${p.prochainRdv || 'Non programmé'}\n\n---------------------------------\nHISTORIQUE DES CONSULTATIONS :\n---------------------------------\n`;
+
+            if (p.historiqueSuivi && p.historiqueSuivi.length > 0) {
+                p.historiqueSuivi.forEach((s, idx) => {
+                    texteSuivi += `\n[Visite N°${idx + 1} - ${s.date}]\n- Notes : ${s.notes}\n- Traitement : ${s.traitement || 'Non spécifié'}\n`;
+                });
+            } else {
+                texteSuivi += `\nAucune consultation ultérieure enregistrée.\n`;
+            }
+
+            texteSuivi += `\n=================================\nGlory Herbal - Santé par les plantes🌿`;
+
+            currentReceiptText = texteSuivi;
+            document.getElementById('receiptTextContent').textContent = currentReceiptText;
+            document.getElementById('receiptModal').classList.add('active');
+        };
+
+        window.fermerModalRecu = () => {
+            document.getElementById('receiptModal').classList.remove('active');
+        };
+
+        window.copierTexteRecu = () => {
+            navigator.clipboard.writeText(currentReceiptText).then(() => {
+                alert("Texte copié ! Tu peux le coller directement sur WhatsApp.");
+            }).catch(() => {
+                alert("Copié dans le presse-papier !");
+            });
+        };
+
+        window.imprimerModalRecu = () => {
+            const printWin = window.open('', '', 'width=600,height=600');
+            printWin.document.write('<pre style="font-family:monospace; font-size:13px; padding:20px;">' + currentReceiptText + '</pre>');
+            printWin.document.close();
+            printWin.focus();
+            printWin.print();
+        };
+
+        document.getElementById('patientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('editingPatientId').value;
+            const rdvValue = document.getElementById('pProchainRdv').value.trim();
+
+            const dataPatient = {
+                nom: document.getElementById('pNom').value,
+                sexe: document.getElementById('pSexe').value,
+                age: document.getElementById('pAge').value,
+                tel: document.getElementById('pTel').value,
+                region: document.getElementById('pRegion').value,
+                refere: document.getElementById('pRefere').value,
+                date: document.getElementById('pDate').value,
+                adresse: document.getElementById('pAdresse').value,
+                ethnie: document.getElementById('pEthnie').value,
+                antecedentsMed: document.getElementById('pAntecedentsMed').value,
+                antecedentsFam: document.getElementById('pAntecedentsFam').value,
+                profession: document.getElementById('pProfession').value,
+                antSociaux: document.getElementById('pAntSociaux').value,
+                motif: document.getElementById('pMotif').value,
+                plaintesPrinc: document.getElementById('pPlaintesPrinc').value,
+                plaintesSec: document.getElementById('pPlaintesSec').value,
+                examen: document.getElementById('pExamen').value,
+                problemes: document.getElementById('pProblemes').value,
+                prochainRdv: rdvValue,
+                montant: Number(document.getElementById('pMontant').value) || 0
+            };
+
+            try {
+                if (editId) {
+                    await setDoc(doc(db, "fiches_patients", editId), dataPatient, { merge: true });
+                    alert("Fiche patient mise à jour !");
+                } else {
+                    dataPatient.agent = currentUser.nom;
+                    dataPatient.createdAt = serverTimestamp();
+                    dataPatient.historiqueSuivi = [];
+                    
+                    await addDoc(collection(db, "fiches_patients"), dataPatient);
+
+                    if(dataPatient.montant > 0) {
+                        await addDoc(collection(db, "ventes"), {
+                            pole: "gh",
+                            article: "Première Consultation / Soin",
+                            canalVente: "boutique",
+                            nomClient: dataPatient.nom + " (Glory Herbal)",
+                            telClient: dataPatient.tel,
+                            montantTotal: dataPatient.montant,
+                            modePaiement: "especes",
+                            employe: currentUser.nom,
+                            dateString: dataPatient.date,
+                            dateCreation: serverTimestamp()
+                        });
+                    }
+                    alert("Fiche patient créée !");
+                }
+
+                annulerModification();
+                await chargerPatients();
+                switchSubTab('list');
+            } catch (err) {
+                alert("Erreur : " + err.message);
+            }
+        });
+
+        async function chargerPatients() {
+            try {
+                const snap = await getDocs(query(collection(db, "fiches_patients"), orderBy("createdAt", "desc")));
+                localPatients = [];
+                snap.forEach(d => localPatients.push({ id: d.id, ...d.data() }));
+                afficherPatients(localPatients);
+                verifierNotificationsRdv(localPatients);
+            } catch (err) {
+                document.getElementById('patientResultsContainer').innerHTML = "<p style='text-align:center;'>Aucun dossier trouvé.</p>";
+            }
+        }
+
+        function verifierNotificationsRdv(liste) {
+            const today = new Date().toISOString().split('T')[0];
+            const rdvAujourdhui = liste.filter(p => p.prochainRdv && p.prochainRdv.includes(today));
+
+            const banner = document.getElementById('rdvNotificationBanner');
+            const container = document.getElementById('rdvListTodayContainer');
+
+            if (rdvAujourdhui.length > 0) {
+                let htmlNotify = "";
+                rdvAujourdhui.forEach(p => {
+                    htmlNotify += `
+                        <div class="rdv-item-notify">
+                            <div>
+                                <strong>👤 ${p.nom}</strong> (${p.tel})<br>
+                                <small style="color:#b45309;">RDV : ${p.prochainRdv}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = htmlNotify;
+                banner.style.display = 'block';
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
+        function afficherPatients(liste) {
+            let html = "";
+            if (liste.length === 0) {
+                document.getElementById('patientResultsContainer').innerHTML = "<p style='text-align:center; color:#64748b;'>Aucun dossier patient.</p>";
+                return;
+            }
+
+            liste.forEach(p => {
+                let suiviListHtml = "";
+                if (p.historiqueSuivi && p.historiqueSuivi.length > 0) {
+                    p.historiqueSuivi.forEach(s => {
+                        suiviListHtml += '<div class="followup-item"><strong>📅 ' + s.date + '</strong> - ' + s.notes + '<br><small style="color:#15803d;">Traitement : ' + (s.traitement || 'Non spécifié') + ' | Payé : ' + (s.montant ? s.montant + ' F' : '0 F') + '</small></div>';
+                    });
+                } else {
+                    suiviListHtml = "<p style='font-size:11px; color:#64748b; font-style:italic;'>Aucune visite de suivi enregistrée.</p>";
+                }
+
+                const displayRdv = (p.prochainRdv && p.prochainRdv.trim() !== '') 
+                    ? '📅 Prochain RDV : <strong style="color:#15803d; font-size:13px;">' + p.prochainRdv + '</strong>' 
+                    : '📅 <span style="color:#94a3b8;">Aucun RDV programmé</span>';
+
+                html += '<div class="patient-card-result"><div><div style="font-weight:bold; font-size:14px;">' + p.nom + ' (' + p.sexe + ', ' + p.age + ' ans)</div><div style="font-size:12px; color:#64748b;">📞 ' + p.tel + ' | 📍 ' + (p.region || 'N/A') + ' | Fiche du: ' + p.date + '</div></div><div style="font-size:12px; color:#334155; margin-top:4px;"><strong>Motif :</strong> ' + p.motif + '<br><strong>Diagnostic :</strong> ' + (p.problemes || 'Non renseigné') + '<br>' + displayRdv + '</div><div style="margin-top:8px;"><button class="btn-action" onclick="toggleDetails(\'' + p.id + '\')">📋 Fiche Complète</button><button class="btn-edit-patient" onclick="editerPatient(\'' + p.id + '\')">✏️ Modifier / RDV</button><button class="btn-wa" onclick="ouvrirModalSuiviPatient(\'' + p.id + '\')">📲 Partager Carnet (WA)</button></div><div class="followup-section"><h4 style="font-size:12px; color:#15803d; margin-bottom:6px;">🩺 Carnet de Suivi :</h4><div id="suiviList-' + p.id + '">' + suiviListHtml + '</div><div style="margin-top:8px; border-top:1px solid #cbd5e1; padding-top:8px;"><label style="font-size:11px;">Ajouter une consultation de contrôle :</label><input type="text" id="suiviNote-' + p.id + '" placeholder="Observations..." style="font-size:11px; padding:6px; margin-bottom:4px;"><input type="text" id="suiviTraitement-' + p.id + '" placeholder="Traitement prescrit..." style="font-size:11px; padding:6px; margin-bottom:4px;"><div style="display:flex; gap:5px;"><input type="number" id="suiviMontant-' + p.id + '" placeholder="Montant (F)" style="font-size:11px; padding:6px; flex:1;"><button type="button" class="btn-action" style="margin:0; width:auto;" onclick="ajouterVisiteSuivi(\'' + p.id + '\')">+ Enregistrer</button></div></div></div><div id="details-' + p.id + '" style="display:none; margin-top:10px; font-size:11px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0;"><p><strong>Adresse :</strong> ' + (p.adresse || 'N/A') + '</p><p><strong>Référé par :</strong> ' + (p.refere || 'N/A') + '</p><p><strong>Antécédents :</strong> ' + (p.antecedentsMed || 'Aucun') + '</p></div></div>';
+            });
+            document.getElementById('patientResultsContainer').innerHTML = html;
+        }
+
+        window.ajouterVisiteSuivi = async (patientId) => {
+            const note = document.getElementById('suiviNote-' + patientId).value.trim();
+            const traitement = document.getElementById('suiviTraitement-' + patientId).value.trim();
+            const montant = Number(document.getElementById('suiviMontant-' + patientId).value) || 0;
+
+            if(!note) return alert("Veuillez saisir une observation.");
+
+            const dateJour = new Date().toLocaleDateString('fr-FR');
+            const nouvelleVisite = { date: dateJour, notes: note, traitement: traitement, montant: montant };
+
+            try {
+                await setDoc(doc(db, "fiches_patients", patientId), {
+                    historiqueSuivi: arrayUnion(nouvelleVisite)
+                }, { merge: true });
+
+                if(montant > 0) {
+                    const p = localPatients.find(i => i.id === patientId);
+                    await addDoc(collection(db, "ventes"), {
+                        pole: "gh",
+                        article: "Consultation de contrôle",
+                        canalVente: "boutique",
+                        nomClient: (p ? p.nom : "Patient") + " (Suivi)",
+                        telClient: p ? p.tel : '',
+                        montantTotal: montant,
+                        employe: currentUser.nom,
+                        dateString: new Date().toISOString().split('T')[0],
+                        dateCreation: serverTimestamp()
+                    });
+                }
+
+                alert("Visite enregistrée !");
+                chargerPatients();
+            } catch (err) { alert("Erreur."); }
+        };
+
+        window.toggleDetails = (id) => {
+            const el = document.getElementById('details-' + id);
+            if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        };
+
+        window.editerPatient = (id) => {
+            const p = localPatients.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('editingPatientId').value = p.id;
+            document.getElementById('pNom').value = p.nom || '';
+            document.getElementById('pSexe').value = p.sexe || 'M';
+            document.getElementById('pAge').value = p.age || '';
+            document.getElementById('pTel').value = p.tel || '';
+            document.getElementById('pRegion').value = p.region || '';
+            document.getElementById('pRefere').value = p.refere || '';
+            document.getElementById('pDate').value = p.date || new Date().toISOString().split('T')[0];
+            document.getElementById('pAdresse').value = p.adresse || '';
+            document.getElementById('pEthnie').value = p.ethnie || '';
+            document.getElementById('pAntecedentsMed').value = p.antecedentsMed || '';
+            document.getElementById('pAntecedentsFam').value = p.antecedentsFam || '';
+            document.getElementById('pProfession').value = p.profession || '';
+            document.getElementById('pAntSociaux').value = p.antSociaux || '';
+            document.getElementById('pMotif').value = p.motif || '';
+            document.getElementById('pPlaintesPrinc').value = p.plaintesPrinc || '';
+            document.getElementById('pPlaintesSec').value = p.plaintesSec || '';
+            document.getElementById('pExamen').value = p.examen || '';
+            document.getElementById('pProblemes').value = p.problemes || '';
+            document.getElementById('pProchainRdv').value = p.prochainRdv || '';
+            document.getElementById('pMontant').value = p.montant || '';
+
+            document.getElementById('formTitle').textContent = "✏️ Modification pour " + p.nom;
+            document.getElementById('btnSubmitPatient').textContent = "Enregistrer les modifications";
+            document.getElementById('btnSubmitPatient').className = "btn-update";
+            document.getElementById('btnCancelEdit').style.display = "block";
+
+            switchSubTab('form');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.annulerModification = () => {
+            document.getElementById('editingPatientId').value = '';
+            document.getElementById('patientForm').reset();
+            document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('pProchainRdv').value = '';
+            document.getElementById('formTitle').textContent = "Saisie de la Fiche du Patient (Glory Herbal)";
+            document.getElementById('btnSubmitPatient').textContent = "Enregistrer la Fiche Patient";
+            document.getElementById('btnSubmitPatient').className = "btn-valider";
+            document.getElementById('btnCancelEdit').style.display = "none";
+        };
+
+        window.filtrerPatients = () => {
+            const q = document.getElementById('searchPatient').value.toLowerCase();
+            const filtres = localPatients.filter(p => p.nom.toLowerCase().includes(q) || p.tel.includes(q));
+            afficherPatients(filtres);
+        };
+
+        document.getElementById('employeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(currentUser.role !== 'admin') return;
+
+            const editId = document.getElementById('editingEmpId').value;
+            const empData = {
+                nom: document.getElementById('empNom').value.trim(),
+                age: document.getElementById('empAge').value.trim(),
+                situation: document.getElementById('empSituation').value,
+                tel: document.getElementById('empTel').value.trim(),
+                lieu: document.getElementById('empLieu').value.trim(),
+                code: document.getElementById('empCode').value.trim()
+            };
+
+            try {
+                if (editId) {
+                    await setDoc(doc(db, "employes", editId), empData, { merge: true });
+                    alert("Employé mis à jour !");
+                } else {
+                    empData.createdAt = serverTimestamp();
+                    await addDoc(collection(db, "employes"), empData);
+                    alert("Employé enregistré !");
+                }
+                
+                annulerEditEmploye();
+                chargerEmployes();
+            } catch (err) { alert("Erreur."); }
+        });
+
+        async function chargerEmployes() {
+            if(currentUser.role !== 'admin') return;
+            try {
+                const snap = await getDocs(collection(db, "employes"));
+                localEmployes = [];
+                let html = "";
+                snap.forEach(d => {
+                    const emp = { id: d.id, ...d.data() };
+                    localEmployes.push(emp);
+
+                    html += `
+                        <div class="sale-item emp">
+                            <div>
+                                <strong style="color:#7e22ce; font-size:14px;">${emp.nom}</strong> (${emp.age ? emp.age + ' ans' : 'N/A'}, ${emp.situation || 'Célibataire'})<br>
+                                <small style="color:#475569;">📞 <strong>${emp.tel || 'N/A'}</strong> | 📍 ${emp.lieu || 'N/A'}</small><br>
+                                <small style="color:#64748b;">🔑 Code : <strong>${emp.code}</strong></small>
+                            </div>
+                            <div style="text-align:right;">
+                                <button class="btn-edit-patient" style="font-size:10px; padding:4px 8px; margin:0 0 4px 0;" onclick="editerEmploye('${emp.id}')">✏️ Modifier</button><br>
+                                <button class="btn-action" style="background:#ef4444; font-size:10px; padding:4px 8px; margin:0;" onclick="supprimerEmploye('${emp.id}')">Supprimer</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('employesContainer').innerHTML = html || "<p style='text-align:center; color:#64748b;'>Aucun employé enregistré.</p>";
+            } catch (err) {}
+        }
+
+        window.editerEmploye = (id) => {
+            const emp = localEmployes.find(e => e.id === id);
+            if (!emp) return;
+
+            document.getElementById('editingEmpId').value = emp.id;
+            document.getElementById('empNom').value = emp.nom || '';
+            document.getElementById('empAge').value = emp.age || '';
+            document.getElementById('empSituation').value = emp.situation || 'Célibataire';
+            document.getElementById('empTel').value = emp.tel || '';
+            document.getElementById('empLieu').value = emp.lieu || '';
+            document.getElementById('empCode').value = emp.code || '';
+
+            document.getElementById('employeFormTitle').textContent = "✏️ Modification de " + emp.nom;
+            document.getElementById('btnSubmitEmp').textContent = "Mettre à jour";
+            document.getElementById('btnSubmitEmp').className = "btn-update";
+            document.getElementById('btnCancelEditEmp').style.display = "block";
+
+            window.scrollTo({ top: document.getElementById('paneAdmin').offsetTop, behavior: 'smooth' });
+        };
+
+        window.annulerEditEmploye = () => {
+            document.getElementById('editingEmpId').value = '';
+            document.getElementById('employeForm').reset();
+            document.getElementById('employeFormTitle').textContent = "👔 Fiche & Inscription de l'Employé(e)";
+            document.getElementById('btnSubmitEmp').textContent = "Créer la Fiche Employé";
+            document.getElementById('btnSubmitEmp').className = "btn-valider";
+            document.getElementById('btnSubmitEmp').style.backgroundColor = "#7e22ce";
+            document.getElementById('btnCancelEditEmp').style.display = "none";
+        };
+
+        window.supprimerEmploye = async (id) => {
+            if(currentUser.role !== 'admin') return;
+            if (confirm("Supprimer cet employé ?")) {
+                await deleteDoc(doc(db, "employes", id));
+                chargerEmployes();
+            }
+        };
+
+        document.getElementById('btnExporterDonnees')?.addEventListener('click', () => {
+            if(currentUser.role !== 'admin') return;
+            try {
+                const sauvegarde = {
+                    localStorageData: { ...localStorage },
+                    dateSauvegarde: new Date().toISOString()
+                };
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sauvegarde, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", "gb_casual_backup_" + new Date().toISOString().split('T')[0] + ".json");
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+                alert("✅ Sauvegarde exportée !");
+            } catch (error) { alert("Erreur."); }
+        });
+
+        document.getElementById('inputFichierBackup')?.addEventListener('change', (event) => {
+            if(currentUser.role !== 'admin') return;
+            const fichier = event.target.files[0];
+            if (!fichier) return;
+
+            const lecteur = new FileReader();
+            lecteur.onload = function(e) {
+                try {
+                    const donneesImportees = JSON.parse(e.target.result);
+                    if (confirm("Restaurer cette sauvegarde ?")) {
+                        if (donneesImportees.localStorageData) {
+                            for (const cle in donneesImportees.localStorageData) {
+                                localStorage.setItem(cle, donneesImportees.localStorageData[cle]);
+                            }
+                        }
+                        alert("Restauré avec succès !");
+                        location.reload();
+                    }
+                } catch (erreur) { alert("Fichier invalide."); }
+            };
+            lecteur.readAsText(fichier);
+        });
+
+        // Fonction pour vider complètement le Cloud Firebase
+        document.getElementById('resetCloudBtn')?.addEventListener('click', async () => {
+            if(currentUser.role !== 'admin') return;
+            if (confirm("⚠️ Êtes-vous sûr de vouloir EFFACER TOUTES LES DONNÉES DU CLOUD (ventes, dépenses, patients, stock, employés) ? Cette action est irréversible pour préparer la livraison.")) {
+                try {
+                    const collectionsToClean = ["ventes", "depenses", "fiches_patients", "stock", "employes", "mouvements_stock"];
+                    
+                    for (const colName of collectionsToClean) {
+                        const snap = await getDocs(collection(db, colName));
+                        for (const d of snap.docs) {
+                            await deleteDoc(doc(db, colName, d.id));
+                        }
+                    }
+
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    alert("✅ Base de données Cloud nettoyée avec succès ! L'application est maintenant vierge.");
+                    location.reload();
+                } catch (err) {
+                    alert("Erreur lors de la réinitialisation cloud : " + err.message);
+                }
+            }
+        });
+        function ouvrirQRCode(nomProduit) {
+    document.getElementById("modalQRTitre").innerText = nomProduit;
+    const container = document.getElementById("qrcodeContainer");
+    container.innerHTML = "";
+    
+    new QRCode(container, {
+        text: nomProduit,
+        width: 180,
+        height: 180
+    });
+    
+    document.getElementById("modalQRCode").classList.add("active");
+}
+
+function fermerModalQR() {
+    document.getElementById("modalQRCode").classList.remove("active");
+}
+
+function imprimerFenetreQR() {
+    const contenu = document.getElementById("modalQRCode").innerHTML;
+    const popup = window.open('', '_blank', 'width=450,height=550');
+    popup.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Impression QR Code</title>
+            <style>
+              body { text-align: center; font-family: 'Segoe UI', sans-serif; padding: 20px; background: #fff; }
+              .modal-card { border: 2px dashed #2c3e50; padding: 20px; border-radius: 10px; display: inline-block; }
+              .btn-modal { display: none; }
+            </style>
+          </head>
+          <body>
+            <div class="modal-card">${contenu}</div>
+            <script>window.print();<\/script>
+          </body>
+        </html>
+    `);
+}
+
+// --- FONCTION D'AFFICHAGE DU MODULE GESTION DES OUVRIERS ---
+window.ouvrirGestionOuvriers = () => {
+    const modalId = 'ouvriersModalOverlay';
+    let existingModal = document.getElementById(modalId);
+    if (existingModal) existingModal.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = modalId;
+    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index:9999; padding:10px; box-sizing:border-box;';
+
+    overlay.innerHTML = `
+        <div style="background:white; border-radius:12px; width:100%; max-width:500px; max-height:90vh; overflow-y:auto; padding:20px; box-shadow:0 5px 20px rgba(0,0,0,0.3); font-family:sans-serif;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:15px;">
+                <h2 style="margin:0; color:#0284c7; font-size:18px;">👥 Gestion des Ouvriers & Paie</h2>
+                <button onclick="document.getElementById('${modalId}').remove()" style="background:none; border:none; font-size:20px; cursor:pointer;">❌</button>
+            </div>
+
+            <!-- Formulaire d'ajout d'un ouvrier -->
+            <div style="background:#f8fafc; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #e2e8f0;">
+                <h4 style="margin-top:0; color:#334155; font-size:14px;">➕ Ajouter un ouvrier</h4>
+                <input type="text" id="nomOuvrier" placeholder="Nom & Prénom" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                <div style="display:flex; gap:8px;">
+                    <input type="number" id="salaireJour" placeholder="Salaire / jour (FCFA)" style="width:50%; padding:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                    <button type="button" onclick="ajouterOuvrier()" style="width:50%; background:#0284c7; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Enregistrer</button>
+                </div>
+            </div>
+
+            <!-- Liste des ouvriers et pointage -->
+            <h4 style="margin-bottom:10px; color:#334155; font-size:14px;">📋 Pointage & Salaires du Mois</h4>
+            <div id="listeOuvriersContainer" style="display:flex; flex-direction:column; gap:10px;">
+                <!-- Les cartes des ouvriers s'afficheront ici dynamiquement -->
+                <p style="text-align:center; color:#94a3b8; font-size:13px;">Aucun ouvrier enregistré pour le moment.</p>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+};
+        
+        
+// --- MODULE CENTRALISÉ : GESTION DES OUVRIERS & PAIE (ADMIN ONLY) ---
+window.ouvrirGestionOuvriers = async () => {
+    // Sécurité : réservé à l'Admin
+    if (typeof currentUser !== 'undefined' && currentUser && currentUser.role !== 'admin') {
+        alert("⛔ Accès refusé : Cette section est strictly réservée à l'administrateur.");
+        return;
+    }
+
+    const modalId = 'ouvriersModalOverlay';
+    let existingModal = document.getElementById(modalId);
+    if (existingModal) existingModal.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = modalId;
+    overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index:9999; padding:10px; box-sizing:border-box;';
+
+    // Charger la liste des employés depuis Firebase pour le menu déroulant
+    let optionsEmployes = '<option value="">-- Sélectionner un ouvrier --</option>';
+    try {
+        const snap = await getDocs(collection(db, "employes"));
+        snap.forEach(docSnap => {
+            const data = docSnap.data();
+            optionsEmployes += `<option value="${docSnap.id}" data-nom="${data.nom || ''}">${data.nom || 'Sans nom'} - ${data.poste || 'Ouvrier'}</option>`;
+        });
+    } catch(err) {
+        console.error("Erreur chargement employés :", err);
+    }
+
+    overlay.innerHTML = `
+        <div style="background:white; border-radius:12px; width:100%; max-width:550px; max-height:90vh; overflow-y:auto; padding:20px; box-shadow:0 5px 20px rgba(0,0,0,0.3); font-family:sans-serif;">
+            
+            <!-- En-tête -->
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #e2e8f0; padding-bottom:10px; margin-bottom:15px;">
+                <h2 style="margin:0; color:#0284c7; font-size:18px;">👥 Module Personnel & Paie (Admin)</h2>
+                <button onclick="document.getElementById('${modalId}').remove()" style="background:none; border:none; font-size:20px; cursor:pointer;">❌</button>
+            </div>
+
+            <!-- Onglets Internes -->
+            <div style="display:flex; gap:8px; margin-bottom:15px; border-bottom:1px solid #cbd5e1; padding-bottom:8px;">
+                <button id="subBtnPointage" onclick="afficherSousOngletOuvrier('pointage')" style="flex:1; padding:8px; border:none; background:#0284c7; color:white; font-weight:bold; border-radius:6px; cursor:pointer;">📋 Présences & Paie</button>
+                <button id="subBtnInscription" onclick="afficherSousOngletOuvrier('inscription')" style="flex:1; padding:8px; border:1px solid #cbd5e1; background:#f8fafc; color:#334155; font-weight:bold; border-radius:6px; cursor:pointer;">📝 Inscription / Fiches</button>
+            </div>
+
+            <!-- SECTION 1 : POINTAGE ET SALAIRES -->
+            <div id="secOuvrierPointage">
+                <div style="background:#f8fafc; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #e2e8f0;">
+                    <h4 style="margin-top:0; color:#334155; font-size:14px;">⚡ Enregistrer un Acompte / Pointage</h4>
+                    <select id="nomOuvrierSelect" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                        ${optionsEmployes}
+                    </select>
+                    <div style="display:flex; gap:8px;">
+                        <input type="number" id="montantAvance" placeholder="Montant Avance (FCFA)" style="width:60%; padding:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                        <button type="button" onclick="enregistrerAvanceFirebase()" style="width:40%; background:#16a34a; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Ajouter</button>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom:10px; color:#334155; font-size:14px;">📋 Suivi du Personnel</h4>
+                <div id="listeOuvriersContainer" style="display:flex; flex-direction:column; gap:10px;">
+                    <p style="text-align:center; color:#94a3b8; font-size:13px;">Sélectionnez un ouvrier ou enregistrez une avance.</p>
+                </div>
+            </div>
+
+            <!-- SECTION 2 : INSCRIPTION & FICHE -->
+            <div id="secOuvrierInscription" style="display:none;">
+                <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+                    <h4 style="margin-top:0; color:#334155; font-size:14px;">📝 Nouvelle Fiche Employé</h4>
+                    <input type="text" id="insNom" placeholder="Nom Complet" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                    <input type="text" id="insTel" placeholder="Numéro de Téléphone" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                    <input type="text" id="insPoste" placeholder="Poste / Rôle" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                    <input type="number" id="insSalaireBase" placeholder="Salaire Journalier ou Mensuel (FCFA)" style="width:100%; padding:8px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                    <button type="button" onclick="enregistrerNouvelOuvrierFirebase()" style="width:100%; background:#0284c7; color:white; border:none; padding:10px; border-radius:5px; font-weight:bold; cursor:pointer;">Enregistrer l'employé</button>
+                </div>
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+};
+        
+
+// Basculement des sous-onglets
+// Basculement des sous-onglets avec chargement automatique (Corrigé)
+window.afficherSousOngletOuvrier = (onglet) => {
+    const secPointage = document.getElementById('secOuvrierPointage');
+    const secInscription = document.getElementById('secOuvrierInscription');
+    const btnPointage = document.getElementById('subBtnPointage');
+    const btnInscription = document.getElementById('subBtnInscription');
+
+    if (onglet === 'pointage') {
+        if (secPointage) secPointage.style.display = 'block';
+        if (secInscription) secInscription.style.display = 'none';
+        if (btnPointage) {
+            btnPointage.style.background = '#0284c7';
+            btnPointage.style.color = 'white';
+        }
+        if (btnInscription) {
+            btnInscription.style.background = '#f8fafc';
+            btnInscription.style.color = '#334155';
+        }
+
+        // ➡️ Charge automatiquement les fiches de paie et ouvriers
+        if (typeof window.chargerHistoriquePaie === 'function') {
+            window.chargerHistoriquePaie();
+        }
+    } else {
+        if (secPointage) secPointage.style.display = 'none';
+        if (secInscription) secInscription.style.display = 'block';
+        if (btnInscription) {
+            btnInscription.style.background = '#0284c7';
+            btnInscription.style.color = 'white';
+        }
+        if (btnPointage) {
+            btnPointage.style.background = '#f8fafc';
+            btnPointage.style.color = '#334155';
+        }
+    }
+};
+ 
+// --- CHARGER ET AFFICHER L'HISTORIQUE DES AVANCES ET LA PAIE ---
+window.chargerHistoriquePaie = async () => {
+    const container = document.getElementById('listeOuvriersContainer');
+    if (!container) return;
+
+    container.innerHTML = '<p style="text-align:center; color:#0284c7;">Chargement des données...</p>';
+
+    try {
+        const empSnap = await getDocs(collection(db, "employes"));
+        const avancesSnap = await getDocs(collection(db, "avances_paie"));
+
+        let avancesParEmploye = {};
+        avancesSnap.forEach(docSnap => {
+            const data = docSnap.data();
+            if (!avancesParEmploye[data.employeId]) {
+                avancesParEmploye[data.employeId] = [];
+            }
+            avancesParEmploye[data.employeId].push({ id: docSnap.id, ...data });
+        });
+
+        let html = '';
+
+        if (empSnap.empty) {
+            container.innerHTML = '<p style="text-align:center; color:#64748b;">Aucun ouvrier enregistré.</p>';
+            return;
+        }
+
+        empSnap.forEach(docSnap => {
+            const emp = docSnap.data();
+            const empId = docSnap.id;
+            const listeAvances = avancesParEmploye[empId] || [];
+
+            let totalAvances = 0;
+            listeAvances.forEach(a => totalAvances += (parseFloat(a.montant) || 0));
+
+            const salaireBase = parseFloat(emp.salaireBase) || 0;
+            const resteAPayer = salaireBase - totalAvances;
+
+            html += `
+                <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-between:space-between; align-items:center;">
+                        <strong style="color:#0f172a; font-size:15px;">👤 ${emp.nom}</strong>
+                        <div>
+                            <span style="font-size:11px; background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:12px; font-weight:600;">${emp.poste || 'Ouvrier'}</span>
+                            <button onclick="window.supprimerOuvrierFirebase('${empId}', '${emp.nom}')" title="Supprimer cet ouvrier" style="background:none; border:none; color:#ef4444; font-size:14px; cursor:pointer; margin-left:6px;">🗑️</button>
+                        </div>
+                    </div>
+                    <div style="margin-top:8px; font-size:13px; color:#475569; line-height:1.6;">
+                        💰 Salaire prévu : <strong>${salaireBase} FCFA</strong><br>
+                        📉 Total Avances : <strong style="color:#dc2626;">${totalAvances} FCFA</strong><br>
+                        💵 Reste à Payer : <strong style="color:${resteAPayer >= 0 ? '#16a34a' : '#dc2626'};">${resteAPayer} FCFA</strong>
+                    </div>
+
+                    <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                        <button onclick="window.solderPaieOuvrier('${empId}', '${emp.nom}', ${listeAvances.length})" style="background:#16a34a; color:white; border:none; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;">
+                            💸 Solder / Réinitialiser
+                        </button>
+                    </div>
+
+                    <details style="margin-top:8px; font-size:12px; color:#64748b;">
+                        <summary style="cursor:pointer; font-weight:600;">▶ 📄 Historique des avances (${listeAvances.length})</summary>
+                        <ul style="margin:6px 0 0 0; padding-left:18px;">
+                            ${listeAvances.length === 0 ? '<li>Aucune avance enregistrée</li>' : ''}
+                            ${listeAvances.map(a => `
+                                <li style="margin-bottom:4px;">
+                                    ${a.date ? new Date(a.date.seconds * 1000).toLocaleDateString('fr-FR') : 'N/A'} : <strong>${a.montant} FCFA</strong>
+                                    <button onclick="window.supprimerAvanceFirebase('${a.id}')" style="background:none; border:none; color:#ef4444; font-size:12px; cursor:pointer; margin-left:4px;" title="Annuler cette avance">❌</button>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </details>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error("Erreur chargement paie :", err);
+        container.innerHTML = '<p style="text-align:center; color:#ef4444;">Erreur lors du chargement des données.</p>';
+    }
+};
+
+// --- FONCTION : SUPPRIMER UNE AVANCE ---
+window.supprimerAvanceFirebase = async (avanceId) => {
+    if (!confirm("Voulez-vous vraiment annuler cette avance ?")) return;
+    try {
+        await deleteDoc(doc(db, "avances_paie", avanceId));
+        alert("✅ Avance annulée avec succès !");
+        window.chargerHistoriquePaie();
+    } catch (err) {
+        console.error("Erreur suppression avance :", err);
+        alert("Erreur lors de l'annulation.");
+    }
+};
+
+// --- FONCTION : SOLDER / RÉINITIALISER LA PAIE ---
+window.solderPaieOuvrier = async (employeId, nomEmploye, nbAvances) => {
+    if (nbAvances === 0) {
+        alert("Cet ouvrier n'a aucune avance à solder.");
+        return;
+    }
+    if (!confirm(`Solder le compte de ${nomEmploye} ? Cela va archiver/remettre les avances à zéro.`)) return;
+    
+    try {
+        const avancesSnap = await getDocs(collection(db, "avances_paie"));
+        avancesSnap.forEach(async (docSnap) => {
+            if (docSnap.data().employeId === employeId) {
+                await deleteDoc(doc(db, "avances_paie", docSnap.id));
+            }
+        });
+        alert(`✅ Compte soldé pour ${nomEmploye} !`);
+        window.chargerHistoriquePaie();
+    } catch (err) {
+        console.error("Erreur lors du solde :", err);
+        alert("Erreur lors du traitement.");
+    }
+};
+
+// --- FONCTION : SUPPRIMER UN OUVRIER ---
+window.supprimerOuvrierFirebase = async (employeId, nomEmploye) => {
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer définitivement ${nomEmploye} ?`)) return;
+    try {
+        await deleteDoc(doc(db, "employes", employeId));
+        alert(`✅ ${nomEmploye} a été supprimé de la base.`);
+        window.chargerHistoriquePaie();
+    } catch (err) {
+        console.error("Erreur suppression ouvrier :", err);
+        alert("Erreur lors de la suppression.");
+    }
+};
+        
+  let panierVente = [];
+
+// 1. Ajouter un article au panier
+window.ajouterAuPanier = function() {
+    const select = document.getElementById('cartProductSelect');
+    const qtyInput = document.getElementById('cartProductQty');
+    const selectedId = select.value;
+    const qty = parseInt(qtyInput.value) || 1;
+
+    if (!selectedId) {
+        alert("Veuillez sélectionner un article !");
+        return;
+    }
+
+    const item = localStock.find(s => s.id === selectedId);
+    if (!item) return;
+
+    if (item.qte < qty) {
+        alert(`Stock insuffisant ! Il ne reste que ${item.qte} unité(s) en stock.`);
+        return;
+    }
+
+    const indexExiste = panierVente.findIndex(p => p.id === selectedId);
+    if (indexExiste > -1) {
+        if (item.qte < (panierVente[indexExiste].qte + qty)) {
+            alert(`Stock insuffisant pour ajouter cette quantité supplémentaire.`);
+            return;
+        }
+        panierVente[indexExiste].qte += qty;
+    } else {
+        panierVente.push({
+            id: item.id,
+            nom: item.nom,
+            prix: Number(item.prix),
+            qte: qty
+        });
+    }
+
+    qtyInput.value = 1;
+    afficherPanier();
+};
+
+// 2. Afficher et mettre à jour le tableau du panier
+window.afficherPanier = function() {
+    const tbody = document.getElementById('cartTableBody');
+    tbody.innerHTML = '';
+    let total = 0;
+
+    if (panierVente.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Panier vide pour le moment</td></tr>`;
+        document.getElementById('cartTotalDisplay').innerText = '0 FCFA';
+        calculerMonnaie();
+        return;
+    }
+
+    panierVente.forEach((p, index) => {
+        const lineTotal = p.prix * p.qte;
+        total += lineTotal;
+        tbody.innerHTML += `
+            <tr style="border-bottom:1px solid #f1f5f9;">
+                <td style="padding:8px; font-weight:bold;">${p.nom}</td>
+                <td style="padding:8px; text-align:center;">${p.prix.toLocaleString()} FCFA</td>
+                <td style="padding:8px; text-align:center;">
+                    <button type="button" onclick="modifierQtePanier(${index}, -1)" style="border:none; background:#cbd5e1; border-radius:4px; padding:2px 8px; font-weight:bold; cursor:pointer;">-</button>
+                    <span style="margin:0 6px; font-weight:bold;">${p.qte}</span>
+                    <button type="button" onclick="modifierQtePanier(${index}, 1)" style="border:none; background:#cbd5e1; border-radius:4px; padding:2px 8px; font-weight:bold; cursor:pointer;">+</button>
+                </td>
+                <td style="padding:8px; text-align:right; font-weight:bold;">${lineTotal.toLocaleString()} FCFA</td>
+                <td style="padding:8px; text-align:center;">
+                    <button type="button" onclick="supprimerDuPanier(${index})" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">🗑️</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('cartTotalDisplay').innerText = `${total.toLocaleString()} FCFA`;
+    calculerMonnaie();
+};
+
+// 3. Modifier la quantité ou supprimer
+window.modifierQtePanier = function(index, delta) {
+    const itemStock = localStock.find(s => s.id === panierVente[index].id);
+    const nouvelleQte = panierVente[index].qte + delta;
+
+    if (nouvelleQte <= 0) {
+        supprimerDuPanier(index);
+        return;
+    }
+    if (itemStock && itemStock.qte < nouvelleQte) {
+        alert(`Stock disponible dépassé ! (${itemStock.qte} max)`);
+        return;
+    }
+
+    panierVente[index].qte = nouvelleQte;
+    afficherPanier();
+};
+
+window.supprimerDuPanier = function(index) {
+    panierVente.splice(index, 1);
+    afficherPanier();
+};
+
+// 4. Gestion du mode de paiement & monnaie
+window.toggleMontantRecu = function() {
+    const mode = document.getElementById('cartPaymentMode').value;
+    const divRecu = document.getElementById('divMontantRecu');
+    divRecu.style.display = (mode === 'Espèces') ? 'block' : 'none';
+    calculerMonnaie();
+};
+
+window.calculerMonnaie = function() {
+    const mode = document.getElementById('cartPaymentMode').value;
+    const divMonnaie = document.getElementById('divMonnaie');
+    
+    if (mode !== 'Espèces' || panierVente.length === 0) {
+        divMonnaie.style.display = 'none';
+        return;
+    }
+
+    const total = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
+    const recu = Number(document.getElementById('cartAmountReceived').value) || 0;
+
+    if (recu > 0) {
+        divMonnaie.style.display = 'block';
+        const monnaie = recu - total;
+        document.getElementById('cartChangeDisplay').innerText = monnaie >= 0 ? `${monnaie.toLocaleString()} FCFA` : `Incomplet (${monnaie.toLocaleString()} FCFA)`;
+    } else {
+        divMonnaie.style.display = 'none';
+    }
+};
+
+// 5. Valider et enregistrer la vente globale dans Firebase
+window.validerPanierVente = async function() {
+    if (panierVente.length === 0) {
+        alert("Le panier est vide ! Veuillez ajouter au moins un article.");
+        return;
+    }
+
+    const modePaiement = document.getElementById('cartPaymentMode').value;
+    const totalVente = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
+
+    if (confirm(`Confirmer la vente de ${panierVente.length} article(s) pour un total de ${totalVente.toLocaleString()} FCFA (${modePaiement}) ?`)) {
+        try {
+            // Enregistrement dans la collection "ventes"
+            await addDoc(collection(db, "ventes"), {
+                articles: panierVente,
+                total: totalVente,
+                modePaiement: modePaiement,
+                date: new Date().toISOString(),
+                vendeur: (typeof currentUser !== 'undefined' && currentUser) ? currentUser.email : 'Caissier'
+            });
+
+            // Mise à jour des stocks dans Firebase pour chaque article
+            for (let item of panierVente) {
+                const itemStock = localStock.find(s => s.id === item.id);
+                if (itemStock) {
+                    const nouvelleQte = itemStock.qte - item.qte;
+                    await updateDoc(doc(db, "stock", item.id), { qte: nouvelleQte });
+                }
+            }
+
+            alert("✅ Vente enregistrée et stock mis à jour avec succès !");
+            panierVente = [];
+            document.getElementById('cartAmountReceived').value = '';
+            afficherPanier();
+            if (typeof chargerStock === 'function') chargerStock();
+        } catch (err) {
+            alert("Erreur lors de la validation : " + err.message);
+        }
+    }
+};
+        
+    </script>
+
+</body>
+</html>
