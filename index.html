@@ -1,1 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GB Casual & Glory Herbal - Système Intégré</title>
+    <!-- Favicon & Icône mobile -->
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="apple-touch-icon" href="logo.jpg">
+    
+    <!-- Feuille de style CSS externe -->
+    <link rel="stylesheet" href="style.css">
 
+    <!-- Librairies externes (Scanner Code-Barres & QR Code) -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo-img-container">
+                <img src="logo.jpg" alt="GB Casual">
+            </div>
+            <h1>GB CASUAL</h1>
+            <p>Application de Gestion d'Entreprise</p>
+            <div class="brand-pills">
+                <span class="pill-gb">🛍️ Lingerie & Cosmétiques</span>
+                <span class="pill-gh">🌿 Clinique Glory Herbal</span>
+            </div>
+        </header>
+
+        <!-- ECRAN DE CONNEXION -->
+        <div id="loginScreen" class="active">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="userCode">Code Secret :</label>
+                    <input type="password" id="userCode" placeholder="Entrez votre code secret" required>
+                </div>
+                <button type="submit" class="btn-valider gb">Se connecter</button>
+                <p id="errorMsg" style="color:#ef4444; font-size:12px; text-align:center; display:none; margin-top:8px;">Code secret incorrect.</p>
+            </form>
+        </div>
+
+        <!-- ECRAN PRINCIPAL -->
+        <div id="appScreen">
+            <div class="user-badge">
+                <span id="userInfoDisplay">Connecté</span>
+                <button type="button" class="btn-logout" onclick="deconnecter()">Déconnexion</button>
+            </div>
+
+            <!-- BANDEAU NOTIFICATION DES RDV DU JOUR -->
+            <div id="rdvNotificationBanner" class="rdv-notification-card" style="display:none;">
+                <h3>🔔 RENDEZ-VOUS DU JOUR (Glory Herbal)</h3>
+                <div id="rdvListTodayContainer"></div>
+            </div>
+
+            <div class="tabs-main">
+                <button class="tab-btn gb-casual active" onclick="switchTab('ventes')" id="btnTabVentes">🛍️ Ventes</button>
+                <button class="tab-btn depenses" onclick="switchTab('depenses')" id="btnTabDepenses" style="display:none;">💸 Dépenses</button>
+                <button class="tab-btn glory-herbal" onclick="switchTab('patients')" id="btnTabPatients">🩺 Glory Herbal</button>
+                <button class="tab-btn stock" onclick="switchTab('stock')" id="btnTabStock">📦 Stocks</button>
+                <button class="tab-btn admin" onclick="switchTab('admin')" id="btnTabAdmin" style="display:none;">⚙️ Admin</button>
+                <button class="tab-btn admin" id="btnTabOuvriers" style="display:none;" onclick="ouvrirGestionOuvriers()">👥 Ouvriers & Paie</button>
+            </div>
+
+            <!-- TAB 1: VENTES & CAISSE GLOBALE -->
+            <div id="paneVentes" class="section-pane active">
+                <div id="adminFinanceCards" style="display:none;">
+                    <div class="period-filter-bar">
+                        <button class="period-btn active" id="pBtnJour" onclick="filtrerPeriode('jour')">Aujourd'hui</button>
+                        <button class="period-btn" id="pBtnSemaine" onclick="filtrerPeriode('semaine')">Cette Semaine</button>
+                        <button class="period-btn" id="pBtnMois" onclick="filtrerPeriode('mois')">Ce Mois-ci</button>
+                    </div>
+
+                    <div class="finance-cards">
+                        <div class="f-card gb">
+                            <h4>GB Casual</h4>
+                            <div class="amount" id="totalGBCasual">0 F</div>
+                        </div>
+                        <div class="f-card gh">
+                            <h4>Glory Herbal</h4>
+                            <div class="amount" id="totalGloryHerbal">0 F</div>
+                        </div>
+                        <div class="f-card total">
+                            <h4>Total Recettes</h4>
+                            <div class="amount" id="totalGeneral">0 F</div>
+                        </div>
+                    </div>
+
+                    <div class="finance-cards" style="grid-template-columns: 1fr 1fr; margin-bottom: 12px;">
+                        <div class="f-card depense">
+                            <h4>Total Dépenses (-)</h4>
+                            <div class="amount" id="totalDepensesDisplay">0 F</div>
+                        </div>
+                        <div class="f-card benefice">
+                            <h4>Bénéfice Net (=)</h4>
+                            <div class="amount" id="totalBeneficeNetDisplay">0 F</div>
+                        </div>
+                    </div>
+
+                    <div class="channel-cards">
+                        <div class="c-card">
+                            <span>🏪 Boutique :</span>
+                            <strong id="totalCanalBoutique" style="color:#0284c7;">0 F</strong>
+                        </div>
+                        <div class="c-card">
+                            <span>📲 WhatsApp :</span>
+                            <strong id="totalCanalWhatsapp" style="color:#10b981;">0 F</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 style="font-size:15px; margin-bottom:10px; color:#be185d;">Nouvelle Vente GB Casual</h2>
+                
+                <!-- SCANNER CAMERA POUR VENTE -->
+                <div style="margin-bottom:12px; background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:8px; text-align:center;">
+                    <button type="button" class="btn-action" style="background:#15803d; width:100%; padding:10px; font-size:12px; margin:0;" onclick="lancerScannerVente()">📷 Scanner un article pour la vente</button>
+                    <div id="readerVente" style="width:100%; margin-top:10px; display:none;"></div>
+                </div>
+
+                <form id="venteForm" novalidate>
+                    <div class="form-group">
+                        <label>Sélectionner un produit du stock :</label>
+                        <select id="selectStockVente" onchange="remplirPrixStock()" style="font-size:12px;">
+                            <option value="">-- Choix libre / Hors stock --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantité :</label>
+                        <input type="number" id="quantiteVente" value="1" min="1" placeholder="Ex: 1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Canal de Vente :</label>
+                        <select id="canalVente" required>
+                            <option value="boutique">Boutique Physique (Espèces)</option>
+                            <option value="whatsapp">Commande WhatsApp (Mobile Money)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom du Client :</label>
+                        <input type="text" id="nomClient" placeholder="Ex: Mme Lawson" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone Client (Optionnel) :</label>
+                        <input type="text" id="telClientVente" placeholder="Ex: 97000000">
+                    </div>
+                    <div class="form-group">
+                        <label>Montant (FCFA) :</label>
+                        <input type="number" id="montantTotal" placeholder="Ex: 15000" required>
+                    </div>
+                    <button type="submit" class="btn-valider gb">Enregistrer Vente GB Casual</button>
+                </form>
+
+                <h2 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;" id="titleRecettes">Historique des Recettes</h2>
+                <div style="display:flex; gap:8px; margin-bottom:8px;">
+                    <input type="text" id="searchVente" placeholder="🔍 Rechercher client ou vendeur..." onkeyup="chargerVentes()" style="font-size:12px; flex:2;">
+                    <select id="filtrePole" onchange="chargerVentes()" style="font-size:12px; flex:1;">
+                        <option value="tous">Tous les pôles</option>
+                        <option value="gb">GB Casual</option>
+                        <option value="gh">Glory Herbal</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
+                    <label style="font-size:11px; margin:0; white-space:nowrap;">📅 Filtrer par date :</label>
+                    <input type="text" id="filtreDateSpecifique" placeholder="Ex: 2026-10-11" onkeyup="chargerVentes()" onchange="chargerVentes()" style="font-size:12px; padding:5px; flex:1;">
+                    <button type="button" class="btn-action" style="margin:0; padding:6px 10px; background:#64748b;" onclick="reinitialiserFiltreDate()">Voir tout</button>
+                </div>
+
+                <div id="salesContainer">Chargement des ventes...</div>
+            </div>
+
+            <!-- TAB 2 : GESTION DES DÉPENSES -->
+            <div id="paneDepenses" class="section-pane">
+                <h2 style="font-size:15px; margin-bottom:10px; color:#dc2626;">Enregistrer une Sortie d'Argent / Dépense</h2>
+                <form id="depenseForm">
+                    <div class="form-group">
+                        <label>Pôle Concerné :</label>
+                        <select id="depensePole" required>
+                            <option value="gb">GB Casual (Lingerie, Cosmétiques, Gaines)</option>
+                            <option value="gh">Glory Herbal (Plantes, Flacons, Produits Clinique)</option>
+                            <option value="general">Frais Généraux / Commun</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Catégorie de Dépense :</label>
+                        <select id="depenseCategorie" required>
+                            <option value="matieres">Achat Matières Premières / Ingrédients</option>
+                            <option value="emballages">Emballages, Sacs & Flaconnage</option>
+                            <option value="transport">Transport, Course & Livraison</option>
+                            <option value="charges">Charges (Loyer, Électricité, Connexion)</option>
+                            <option value="autre">Autre Dépense / Divers</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Motif / Description de la dépense :</label>
+                        <input type="text" id="depenseMotif" placeholder="Ex: Achat de 2kg d'Alpha Arbutin ou Loyer" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Montant Dépensé (FCFA) :</label>
+                        <input type="number" id="depenseMontant" placeholder="Ex: 25000" required>
+                    </div>
+                    <button type="submit" class="btn-valider depense-btn">Enregistrer la Dépense</button>
+                </form>
+
+                <h2 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;">Historique des Dépenses</h2>
+                <div id="depensesListContainer">Chargement des dépenses...</div>
+            </div>
+
+            <!-- TAB 3: CLINIQUE GLORY HERBAL -->
+            <div id="panePatients" class="section-pane">
+                <div class="sub-tabs">
+                    <button class="sub-tab-btn active" id="btnSubNew" onclick="switchSubTab('form')">📝 Nouvelle Fiche Patient</button>
+                    <button class="sub-tab-btn" id="btnSubList" onclick="switchSubTab('list')">📂 Liste & Fiches Patients</button>
+                </div>
+
+                <div id="subPaneForm" style="display:block;">
+                    <h2 id="formTitle" style="font-size:15px; margin-bottom:12px; color:#15803d;">Saisie de la Fiche du Patient (Glory Herbal)</h2>
+                    
+                    <form id="patientForm">
+                        <input type="hidden" id="editingPatientId" value="">
+
+                        <div class="patient-cover-card">
+                            <div class="cover-badge">GLORYHERBAL</div>
+                            <div class="cover-subtitle">Clinique de Médecine Naturelle à Base de Plantes Médicinales<br><i>Notre apprentissage par la nature est infini</i></div>
+                            
+                            <div class="cover-title">Fichier du Patient</div>
+                            <div class="cover-confidential">(Confidentiel)</div>
+
+                            <div class="cover-grid">
+                                <div class="cover-field">
+                                    <label>NOM :</label>
+                                    <input type="text" id="pNom" required placeholder="Nom et Prénom">
+                                </div>
+                                <div class="cover-field">
+                                    <label>SEXE :</label>
+                                    <select id="pSexe" style="background:#15803d; color:white;">
+                                        <option value="M">M</option>
+                                        <option value="F">F</option>
+                                    </select>
+                                </div>
+                                <div class="cover-field">
+                                    <label>ÂGE :</label>
+                                    <input type="number" id="pAge" required placeholder="Âge">
+                                </div>
+                            </div>
+
+                            <div class="cover-grid-2">
+                                <div class="cover-field">
+                                    <label>N° DE TÉLÉPHONE :</label>
+                                    <input type="text" id="pTel" required placeholder="Téléphone">
+                                </div>
+                                <div class="cover-field">
+                                    <label>RÉGION :</label>
+                                    <input type="text" id="pRegion" placeholder="Région / Ville">
+                                </div>
+                            </div>
+
+                            <div class="cover-grid-2">
+                                <div class="cover-field">
+                                    <label>RÉFÉRÉ(E) PAR :</label>
+                                    <input type="text" id="pRefere" placeholder="Référé par">
+                                </div>
+                                <div class="cover-field">
+                                    <label>DATE CONSULTATION :</label>
+                                    <input type="text" id="pDate" placeholder="Ex: AAAA-MM-JJ">
+                                </div>
+                            </div>
+
+                            <div class="cover-field" style="margin-top:8px;">
+                                <label>ADRESSE :</label>
+                                <input type="text" id="pAdresse" placeholder="Adresse complète">
+                            </div>
+                        </div>
+
+                        <div class="medical-sheet">
+                            <div class="medical-header">
+                                <h3>CLINIQUE DE MÉDECINE NATURELLE À BASE DE PLANTES MÉDICINALES</h3>
+                                <h2>Fiche d'histoire médicale du patient</h2>
+                            </div>
+
+                            <div class="medical-layout">
+                                <div>
+                                    <div class="med-box">
+                                        <div class="med-box-title">Ethnie</div>
+                                        <div class="med-box-content">
+                                            <input type="text" id="pEthnie" placeholder="Ethnie">
+                                        </div>
+                                    </div>
+
+                                    <div class="med-box">
+                                        <div class="med-box-title">Antécédents médicaux et chirurgicaux :</div>
+                                        <div class="med-box-content">
+                                            <textarea id="pAntecedentsMed" placeholder="Détails antécédents médicaux..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="med-box">
+                                        <div class="med-box-title">Antécédents familiaux :</div>
+                                        <div class="med-box-content">
+                                            <textarea id="pAntecedentsFam" placeholder="Antécédents familiaux..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="med-box">
+                                        <div class="med-box-title">Antécédents sociaux :</div>
+                                        <div class="med-box-content">
+                                            <div class="form-group">
+                                                <label>Profession :</label>
+                                                <input type="text" id="pProfession" placeholder="Profession">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Habitation / Mode de vie :</label>
+                                                <textarea id="pAntSociaux" placeholder="Vit seul(e), Tabac, Alcool, Alimentation..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="med-box">
+                                        <div class="med-box-title">Motif de la consultation / Motif principal :</div>
+                                        <div class="med-box-content">
+                                            <textarea id="pMotif" required placeholder="Motif principal de la visite..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="med-box">
+                                        <div class="med-box-title">Plainte(s) principale(s) :</div>
+                                        <div class="med-box-content">
+                                            <textarea id="pPlaintesPrinc" placeholder="Plaintes principales..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="med-box">
+                                        <div class="med-box-title">Plainte(s) secondaire(s) :</div>
+                                        <div class="med-box-content">
+                                            <textarea id="pPlaintesSec" placeholder="Plaintes secondaires..."></textarea>
+                                        </div>
+                                    <
