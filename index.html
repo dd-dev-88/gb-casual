@@ -338,4 +338,166 @@
                                         <div class="med-box-content">
                                             <textarea id="pPlaintesSec" placeholder="Plaintes secondaires..."></textarea>
                                         </div>
-                                    <
+                                        </div>
+
+                            <div class="med-box">
+                                <div class="med-box-title">Examen :</div>
+                                <div class="med-box-content">
+                                    <textarea id="pExamen" placeholder="Résultats de l'examen clinique..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="med-box">
+                                <div class="med-box-title">Problème(s) du patient / Diagnostic :</div>
+                                <div class="med-box-content">
+                                    <textarea id="pProblemes" placeholder="Diagnostic / Problèmes identifiés..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="med-box" style="border-color:#15803d; background:#f0fdf4;">
+                                <div class="med-box-title" style="background:#dcfce7; color:#166534;">🔔 Prochain Rendez-vous de Suivi / Contrôle</div>
+                                <div class="med-box-content">
+                                    <input type="text" id="pProchainRdv" placeholder="Ex: 2026-10-18 ou Dans 1 semaine" style="font-weight:bold; color:#166534; font-size:14px; background:white;">
+                                    <div style="margin-top:6px;">
+                                        <span style="font-size:10px; color:#166534; font-weight:bold;">Raccourcis rapides :</span><br>
+                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(0)">Aujourd'hui</button>
+                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(7)">Dans 7 jours</button>
+                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(14)">Dans 14 jours</button>
+                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(30)">Dans 1 mois</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top:10px;">
+                                <label>Montant Première Consultation / Prestation (FCFA) :</label>
+                                <input type="number" id="pMontant" placeholder="Ex: 10000">
+                            </div>
+
+                            <button type="submit" id="btnSubmitPatient" class="btn-valider">Enregistrer la Fiche Patient</button>
+                            <button type="button" id="btnCancelEdit" class="btn-action" style="background:#64748b; display:none; margin-top:8px; width:100%; padding:10px;" onclick="annulerModification()">Annuler la modification</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="subPaneList" style="display:none;">
+                    <h2 style="font-size:15px; margin-bottom:12px; color:#15803d;">Fiches Patients & Carnets de Suivi</h2>
+                    <div class="form-group">
+                        <input type="text" id="searchPatient" placeholder="Rechercher par nom ou numéro de téléphone..." onkeyup="filtrerPatients()">
+                    </div>
+                    <div id="patientResultsContainer">Chargement des dossiers...</div>
+                </div>
+                        </div>
+                                                        <input type="text" id="empCode" placeholder="Ex: 1234" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btnSubmitEmp" class="btn-valider" style="background-color:#7e22ce;">Créer la Fiche Employé</button>
+                        <button type="button" id="btnCancelEditEmp" class="btn-action" style="background:#64748b; display:none; margin-top:8px; width:100%; padding:10px;" onclick="annulerEditEmploye()">Annuler la modification</button>
+                    </form>
+                </div>
+
+                <h3 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;">👥 Registre des Employés</h3>
+                <div id="employesContainer">Chargement des employés...</div>
+
+                <!-- SAUVEGARDE & RESTAURATION -->
+                <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:15px; margin-top:25px; margin-bottom:20px;">
+                    <h2 style="font-size:15px; color:#166534; margin-bottom:8px;">💾 Sauvegarde & Restauration de Sécurité</h2>
+                    <p style="font-size:11px; color:#166534; margin-bottom:10px;">
+                        Téléchargez une sauvegarde locale de vos données ou restaurez vos informations à partir d'un fichier de sauvegarde.
+                    </p>
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <button type="button" id="btnExporterDonnees" style="background:#0284c7; color:white; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; flex:1;">
+                            📥 Exporter les données (Sauvegarde)
+                        </button>
+                    </div>
+                    <div>
+                        <label for="inputFichierBackup" style="background:#15803d; color:white; padding:8px 12px; border-radius:6px; font-weight:bold; display:inline-block; cursor:pointer; font-size:12px; text-align:center; width:100%;">
+                            📂 Restaurer une sauvegarde (Fichier JSON)
+                        </label>
+                        <input type="file" id="inputFichierBackup" accept=".json" style="display:none;">
+                    </div>
+                    <div>
+                            <button type="button" onclick="ajouterAuPanier()" style="background:#2563eb; color:white; border:none; padding:9px 16px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px;">➕ Ajouter au panier</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x:auto;">
+                        <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:13px; background:white; border-radius:8px; overflow:hidden; border:1px solid #e2e8f0;">
+                            <thead>
+                                <tr style="background:#f1f5f9; color:#334155; text-align:left;">
+                                    <th style="padding:10px;">Article</th>
+                                    <th style="padding:10px; text-align:center;">Prix Unitaire</th>
+                                    <th style="padding:10px; text-align:center;">Qté</th>
+                                    <th style="padding:10px; text-align:right;">Total</th>
+                                    <th style="padding:10px; text-align:center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartTableBody">
+                                <tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Panier vide pour le moment</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="background:white; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid #f1f5f9;">
+                            <span style="font-size:16px; font-weight:bold; color:#0f172a;">TOTAL À PAYER :</span>
+                            <span id="cartTotalDisplay" style="font-size:22px; font-weight:bold; color:#16a34a;">0 FCFA</span>
+                        </div>
+
+                        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+                            <div style="flex:1; min-width:140px;">
+                                <label style="font-size:12px; font-weight:bold; color:#475569;">Mode de Paiement :</label>
+                                <select id="cartPaymentMode" onchange="toggleMontantRecu()" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px;">
+                                    <option value="Espèces">💵 Espèces</option>
+                                    <option value="Mobile Money">📱 Mobile Money (Flooz / T-Money / Moov)</option>
+                                    <option value="Carte / TPE">💳 Carte / TPE</option>
+                                    <option value="Crédit / En attente">⏳ Crédit / En attente</option>
+                                </select>
+                            </div>
+                            <div id="divMontantRecu" style="flex:1; min-width:120px;">
+                                <label style="font-size:12px; font-weight:bold; color:#475569;">Montant Reçu (FCFA) :</label>
+                                <input type="number" id="cartAmountReceived" oninput="calculerMonnaie()" placeholder="ex: 10000" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px;">
+                            </div>
+                        </div>
+
+                        <div id="divMonnaie" style="display:none; font-weight:bold; font-size:14px; color:#2563eb; margin-bottom:12px; text-align:right;">
+                            Monnaie à rendre : <span id="cartChangeDisplay">0 FCFA</span>
+                        </div>
+
+                        <button type="button" onclick="validerPanierVente()" style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">
+                            ✅ Valider & Enregistrer la Vente
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="adminStockSection" style="display:none;">
+                    <form id="stockForm">
+                        <input type="hidden" id="editingStockId" value="">
+                        
+                        <div class="form-group">
+                            <label>Pôle d'activité :</label>
+                            <select id="stockPole" required>
+                                <option value="gb">GB Casual (Gaines, Lingerie, Cosmétiques)</option>
+                                <option value="gh">Glory Herbal (Soins & Plantes)</option>
+                            </select>
+                        </div>
+                        
+    <!-- MODALE REÇU / CARNET DE SUIVI -->
+    <div id="receiptModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-size:15px; margin-bottom:10px; color:#0f172a;" id="modalTitleText">🧾 Reçu de Paiement</h3>
+            <div id="receiptTextContent" class="receipt-box"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal copy" onclick="copierTexteRecu()">📋 Copier le texte</button>
+                <button type="button" class="btn-modal print" onclick="imprimerModalRecu()">🖨️ PDF / Imprimer</button>
+                <button type="button" class="btn-modal close" onclick="fermerModalRecu()">Fermer</button>
+            </div>
+        </div>
+    </div>
+    <!-- Script JavaScript principal -->
+    <script type="module" src="app.js">
+        
+    </script>
+
+</body>
+            </html>
