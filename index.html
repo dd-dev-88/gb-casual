@@ -3,501 +3,618 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GB Casual & Glory Herbal - Système Intégré</title>
-    <!-- Favicon & Icône mobile -->
-    <link rel="icon" type="image/jpeg" href="logo.jpg">
-    <link rel="apple-touch-icon" href="logo.jpg">
-    
-    <!-- Feuille de style CSS externe -->
+    <title>Système de Gestion GB Casual & Glory Herbal</title>
+    <!-- CSS Découplé -->
     <link rel="stylesheet" href="style.css">
-
-    <!-- Librairies externes (Scanner Code-Barres & QR Code) -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- QR Code & Scanner CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <div class="logo-img-container">
-                <img src="logo.jpg" alt="GB Casual">
-            </div>
-            <h1>GB CASUAL</h1>
-            <p>Application de Gestion d'Entreprise</p>
-            <div class="brand-pills">
-                <span class="pill-gb">🛍️ Lingerie & Cosmétiques</span>
-                <span class="pill-gh">🌿 Clinique Glory Herbal</span>
-            </div>
-        </header>
+<div class="container">
+    <header>
+        <div class="logo-img-container">
+            <img src="logo.jpg" alt="Logo Entreprise">
+        </div>
+        <h1>GB CASUAL & GLORY HERBAL</h1>
+        <p>Plateforme Intégrée de Gestion Commerciale & Médicale</p>
+        <div class="brand-pills">
+            <span class="pill-gb">🛍️ GB CASUAL</span>
+            <span class="pill-gh">🌿 GLORY HERBAL</span>
+        </div>
+    </header>
 
-        <!-- ECRAN DE CONNEXION -->
-        <div id="loginScreen" class="active">
+    <!-- BANNIÈRE NOTIFICATION RDV -->
+    <div id="rdvNotificationBanner" class="rdv-notification-card" style="display:none;">
+        <h3>🔔 Rappel des Rendez-vous Patient du Jour !</h3>
+        <div id="rdvListTodayContainer"></div>
+    </div>
+
+    <!-- ECRAN DE CONNEXION -->
+    <div id="loginScreen" class="active">
+        <div style="max-width:350px; margin: 30px auto; background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #cbd5e1; text-align:center;">
+            <h3 style="margin-bottom:15px; color:#1e293b;">Connexion Sécurisée</h3>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="userCode">Code Secret :</label>
-                    <input type="password" id="userCode" placeholder="Entrez votre code secret" required>
+                    <label style="text-align:left;">Code d'accès personnel :</label>
+                    <input type="password" id="userCode" placeholder="Entrez votre code..." required style="text-align:center; font-size:16px; letter-spacing:2px;">
                 </div>
-                <button type="submit" class="btn-valider gb">Se connecter</button>
-                <p id="errorMsg" style="color:#ef4444; font-size:12px; text-align:center; display:none; margin-top:8px;">Code secret incorrect.</p>
+                <button type="submit" class="btn-valider" style="margin-top:5px;">Se Connecter</button>
             </form>
-        </div>
-
-        <!-- ECRAN PRINCIPAL -->
-        <div id="appScreen">
-            <div class="user-badge">
-                <span id="userInfoDisplay">Connecté</span>
-                <button type="button" class="btn-logout" onclick="deconnecter()">Déconnexion</button>
-            </div>
-
-            <!-- BANDEAU NOTIFICATION DES RDV DU JOUR -->
-            <div id="rdvNotificationBanner" class="rdv-notification-card" style="display:none;">
-                <h3>🔔 RENDEZ-VOUS DU JOUR (Glory Herbal)</h3>
-                <div id="rdvListTodayContainer"></div>
-            </div>
-
-            <div class="tabs-main">
-                <button class="tab-btn gb-casual active" onclick="switchTab('ventes')" id="btnTabVentes">🛍️ Ventes</button>
-                <button class="tab-btn depenses" onclick="switchTab('depenses')" id="btnTabDepenses" style="display:none;">💸 Dépenses</button>
-                <button class="tab-btn glory-herbal" onclick="switchTab('patients')" id="btnTabPatients">🩺 Glory Herbal</button>
-                <button class="tab-btn stock" onclick="switchTab('stock')" id="btnTabStock">📦 Stocks</button>
-                <button class="tab-btn admin" onclick="switchTab('admin')" id="btnTabAdmin" style="display:none;">⚙️ Admin</button>
-                <button class="tab-btn admin" id="btnTabOuvriers" style="display:none;" onclick="ouvrirGestionOuvriers()">👥 Ouvriers & Paie</button>
-            </div>
-
-            <!-- TAB 1: VENTES & CAISSE GLOBALE -->
-            <div id="paneVentes" class="section-pane active">
-                <div id="adminFinanceCards" style="display:none;">
-                    <div class="period-filter-bar">
-                        <button class="period-btn active" id="pBtnJour" onclick="filtrerPeriode('jour')">Aujourd'hui</button>
-                        <button class="period-btn" id="pBtnSemaine" onclick="filtrerPeriode('semaine')">Cette Semaine</button>
-                        <button class="period-btn" id="pBtnMois" onclick="filtrerPeriode('mois')">Ce Mois-ci</button>
-                    </div>
-
-                    <div class="finance-cards">
-                        <div class="f-card gb">
-                            <h4>GB Casual</h4>
-                            <div class="amount" id="totalGBCasual">0 F</div>
-                        </div>
-                        <div class="f-card gh">
-                            <h4>Glory Herbal</h4>
-                            <div class="amount" id="totalGloryHerbal">0 F</div>
-                        </div>
-                        <div class="f-card total">
-                            <h4>Total Recettes</h4>
-                            <div class="amount" id="totalGeneral">0 F</div>
-                        </div>
-                    </div>
-
-                    <div class="finance-cards" style="grid-template-columns: 1fr 1fr; margin-bottom: 12px;">
-                        <div class="f-card depense">
-                            <h4>Total Dépenses (-)</h4>
-                            <div class="amount" id="totalDepensesDisplay">0 F</div>
-                        </div>
-                        <div class="f-card benefice">
-                            <h4>Bénéfice Net (=)</h4>
-                            <div class="amount" id="totalBeneficeNetDisplay">0 F</div>
-                        </div>
-                    </div>
-
-                    <div class="channel-cards">
-                        <div class="c-card">
-                            <span>🏪 Boutique :</span>
-                            <strong id="totalCanalBoutique" style="color:#0284c7;">0 F</strong>
-                        </div>
-                        <div class="c-card">
-                            <span>📲 WhatsApp :</span>
-                            <strong id="totalCanalWhatsapp" style="color:#10b981;">0 F</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <h2 style="font-size:15px; margin-bottom:10px; color:#be185d;">Nouvelle Vente GB Casual</h2>
-                
-                <!-- SCANNER CAMERA POUR VENTE -->
-                <div style="margin-bottom:12px; background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:8px; text-align:center;">
-                    <button type="button" class="btn-action" style="background:#15803d; width:100%; padding:10px; font-size:12px; margin:0;" onclick="lancerScannerVente()">📷 Scanner un article pour la vente</button>
-                    <div id="readerVente" style="width:100%; margin-top:10px; display:none;"></div>
-                </div>
-
-                <form id="venteForm" novalidate>
-                    <div class="form-group">
-                        <label>Sélectionner un produit du stock :</label>
-                        <select id="selectStockVente" onchange="remplirPrixStock()" style="font-size:12px;">
-                            <option value="">-- Choix libre / Hors stock --</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Quantité :</label>
-                        <input type="number" id="quantiteVente" value="1" min="1" placeholder="Ex: 1">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Canal de Vente :</label>
-                        <select id="canalVente" required>
-                            <option value="boutique">Boutique Physique (Espèces)</option>
-                            <option value="whatsapp">Commande WhatsApp (Mobile Money)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Nom du Client :</label>
-                        <input type="text" id="nomClient" placeholder="Ex: Mme Lawson" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Téléphone Client (Optionnel) :</label>
-                        <input type="text" id="telClientVente" placeholder="Ex: 97000000">
-                    </div>
-                    <div class="form-group">
-                        <label>Montant (FCFA) :</label>
-                        <input type="number" id="montantTotal" placeholder="Ex: 15000" required>
-                    </div>
-                    <button type="submit" class="btn-valider gb">Enregistrer Vente GB Casual</button>
-                </form>
-
-                <h2 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;" id="titleRecettes">Historique des Recettes</h2>
-                <div style="display:flex; gap:8px; margin-bottom:8px;">
-                    <input type="text" id="searchVente" placeholder="🔍 Rechercher client ou vendeur..." onkeyup="chargerVentes()" style="font-size:12px; flex:2;">
-                    <select id="filtrePole" onchange="chargerVentes()" style="font-size:12px; flex:1;">
-                        <option value="tous">Tous les pôles</option>
-                        <option value="gb">GB Casual</option>
-                        <option value="gh">Glory Herbal</option>
-                    </select>
-                </div>
-                <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
-                    <label style="font-size:11px; margin:0; white-space:nowrap;">📅 Filtrer par date :</label>
-                    <input type="text" id="filtreDateSpecifique" placeholder="Ex: 2026-10-11" onkeyup="chargerVentes()" onchange="chargerVentes()" style="font-size:12px; padding:5px; flex:1;">
-                    <button type="button" class="btn-action" style="margin:0; padding:6px 10px; background:#64748b;" onclick="reinitialiserFiltreDate()">Voir tout</button>
-                </div>
-
-                <div id="salesContainer">Chargement des ventes...</div>
-            </div>
-
-            <!-- TAB 2 : GESTION DES DÉPENSES -->
-            <div id="paneDepenses" class="section-pane">
-                <h2 style="font-size:15px; margin-bottom:10px; color:#dc2626;">Enregistrer une Sortie d'Argent / Dépense</h2>
-                <form id="depenseForm">
-                    <div class="form-group">
-                        <label>Pôle Concerné :</label>
-                        <select id="depensePole" required>
-                            <option value="gb">GB Casual (Lingerie, Cosmétiques, Gaines)</option>
-                            <option value="gh">Glory Herbal (Plantes, Flacons, Produits Clinique)</option>
-                            <option value="general">Frais Généraux / Commun</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Catégorie de Dépense :</label>
-                        <select id="depenseCategorie" required>
-                            <option value="matieres">Achat Matières Premières / Ingrédients</option>
-                            <option value="emballages">Emballages, Sacs & Flaconnage</option>
-                            <option value="transport">Transport, Course & Livraison</option>
-                            <option value="charges">Charges (Loyer, Électricité, Connexion)</option>
-                            <option value="autre">Autre Dépense / Divers</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Motif / Description de la dépense :</label>
-                        <input type="text" id="depenseMotif" placeholder="Ex: Achat de 2kg d'Alpha Arbutin ou Loyer" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Montant Dépensé (FCFA) :</label>
-                        <input type="number" id="depenseMontant" placeholder="Ex: 25000" required>
-                    </div>
-                    <button type="submit" class="btn-valider depense-btn">Enregistrer la Dépense</button>
-                </form>
-
-                <h2 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;">Historique des Dépenses</h2>
-                <div id="depensesListContainer">Chargement des dépenses...</div>
-            </div>
-
-            <!-- TAB 3: CLINIQUE GLORY HERBAL -->
-            <div id="panePatients" class="section-pane">
-                <div class="sub-tabs">
-                    <button class="sub-tab-btn active" id="btnSubNew" onclick="switchSubTab('form')">📝 Nouvelle Fiche Patient</button>
-                    <button class="sub-tab-btn" id="btnSubList" onclick="switchSubTab('list')">📂 Liste & Fiches Patients</button>
-                </div>
-
-                <div id="subPaneForm" style="display:block;">
-                    <h2 id="formTitle" style="font-size:15px; margin-bottom:12px; color:#15803d;">Saisie de la Fiche du Patient (Glory Herbal)</h2>
-                    
-                    <form id="patientForm">
-                        <input type="hidden" id="editingPatientId" value="">
-
-                        <div class="patient-cover-card">
-                            <div class="cover-badge">GLORYHERBAL</div>
-                            <div class="cover-subtitle">Clinique de Médecine Naturelle à Base de Plantes Médicinales<br><i>Notre apprentissage par la nature est infini</i></div>
-                            
-                            <div class="cover-title">Fichier du Patient</div>
-                            <div class="cover-confidential">(Confidentiel)</div>
-
-                            <div class="cover-grid">
-                                <div class="cover-field">
-                                    <label>NOM :</label>
-                                    <input type="text" id="pNom" required placeholder="Nom et Prénom">
-                                </div>
-                                <div class="cover-field">
-                                    <label>SEXE :</label>
-                                    <select id="pSexe" style="background:#15803d; color:white;">
-                                        <option value="M">M</option>
-                                        <option value="F">F</option>
-                                    </select>
-                                </div>
-                                <div class="cover-field">
-                                    <label>ÂGE :</label>
-                                    <input type="number" id="pAge" required placeholder="Âge">
-                                </div>
-                            </div>
-
-                            <div class="cover-grid-2">
-                                <div class="cover-field">
-                                    <label>N° DE TÉLÉPHONE :</label>
-                                    <input type="text" id="pTel" required placeholder="Téléphone">
-                                </div>
-                                <div class="cover-field">
-                                    <label>RÉGION :</label>
-                                    <input type="text" id="pRegion" placeholder="Région / Ville">
-                                </div>
-                            </div>
-
-                            <div class="cover-grid-2">
-                                <div class="cover-field">
-                                    <label>RÉFÉRÉ(E) PAR :</label>
-                                    <input type="text" id="pRefere" placeholder="Référé par">
-                                </div>
-                                <div class="cover-field">
-                                    <label>DATE CONSULTATION :</label>
-                                    <input type="text" id="pDate" placeholder="Ex: AAAA-MM-JJ">
-                                </div>
-                            </div>
-
-                            <div class="cover-field" style="margin-top:8px;">
-                                <label>ADRESSE :</label>
-                                <input type="text" id="pAdresse" placeholder="Adresse complète">
-                            </div>
-                        </div>
-
-                        <div class="medical-sheet">
-                            <div class="medical-header">
-                                <h3>CLINIQUE DE MÉDECINE NATURELLE À BASE DE PLANTES MÉDICINALES</h3>
-                                <h2>Fiche d'histoire médicale du patient</h2>
-                            </div>
-
-                            <div class="medical-layout">
-                                <div>
-                                    <div class="med-box">
-                                        <div class="med-box-title">Ethnie</div>
-                                        <div class="med-box-content">
-                                            <input type="text" id="pEthnie" placeholder="Ethnie">
-                                        </div>
-                                    </div>
-
-                                    <div class="med-box">
-                                        <div class="med-box-title">Antécédents médicaux et chirurgicaux :</div>
-                                        <div class="med-box-content">
-                                            <textarea id="pAntecedentsMed" placeholder="Détails antécédents médicaux..."></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="med-box">
-                                        <div class="med-box-title">Antécédents familiaux :</div>
-                                        <div class="med-box-content">
-                                            <textarea id="pAntecedentsFam" placeholder="Antécédents familiaux..."></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="med-box">
-                                        <div class="med-box-title">Antécédents sociaux :</div>
-                                        <div class="med-box-content">
-                                            <div class="form-group">
-                                                <label>Profession :</label>
-                                                <input type="text" id="pProfession" placeholder="Profession">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Habitation / Mode de vie :</label>
-                                                <textarea id="pAntSociaux" placeholder="Vit seul(e), Tabac, Alcool, Alimentation..."></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div class="med-box">
-                                        <div class="med-box-title">Motif de la consultation / Motif principal :</div>
-                                        <div class="med-box-content">
-                                            <textarea id="pMotif" required placeholder="Motif principal de la visite..."></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="med-box">
-                                        <div class="med-box-title">Plainte(s) principale(s) :</div>
-                                        <div class="med-box-content">
-                                            <textarea id="pPlaintesPrinc" placeholder="Plaintes principales..."></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="med-box">
-                                        <div class="med-box-title">Plainte(s) secondaire(s) :</div>
-                                        <div class="med-box-content">
-                                            <textarea id="pPlaintesSec" placeholder="Plaintes secondaires..."></textarea>
-                                        </div>
-                                        </div>
-
-                            <div class="med-box">
-                                <div class="med-box-title">Examen :</div>
-                                <div class="med-box-content">
-                                    <textarea id="pExamen" placeholder="Résultats de l'examen clinique..."></textarea>
-                                </div>
-                            </div>
-
-                            <div class="med-box">
-                                <div class="med-box-title">Problème(s) du patient / Diagnostic :</div>
-                                <div class="med-box-content">
-                                    <textarea id="pProblemes" placeholder="Diagnostic / Problèmes identifiés..."></textarea>
-                                </div>
-                            </div>
-
-                            <div class="med-box" style="border-color:#15803d; background:#f0fdf4;">
-                                <div class="med-box-title" style="background:#dcfce7; color:#166534;">🔔 Prochain Rendez-vous de Suivi / Contrôle</div>
-                                <div class="med-box-content">
-                                    <input type="text" id="pProchainRdv" placeholder="Ex: 2026-10-18 ou Dans 1 semaine" style="font-weight:bold; color:#166534; font-size:14px; background:white;">
-                                    <div style="margin-top:6px;">
-                                        <span style="font-size:10px; color:#166534; font-weight:bold;">Raccourcis rapides :</span><br>
-                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(0)">Aujourd'hui</button>
-                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(7)">Dans 7 jours</button>
-                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(14)">Dans 14 jours</button>
-                                        <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(30)">Dans 1 mois</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group" style="margin-top:10px;">
-                                <label>Montant Première Consultation / Prestation (FCFA) :</label>
-                                <input type="number" id="pMontant" placeholder="Ex: 10000">
-                            </div>
-
-                            <button type="submit" id="btnSubmitPatient" class="btn-valider">Enregistrer la Fiche Patient</button>
-                            <button type="button" id="btnCancelEdit" class="btn-action" style="background:#64748b; display:none; margin-top:8px; width:100%; padding:10px;" onclick="annulerModification()">Annuler la modification</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div id="subPaneList" style="display:none;">
-                    <h2 style="font-size:15px; margin-bottom:12px; color:#15803d;">Fiches Patients & Carnets de Suivi</h2>
-                    <div class="form-group">
-                        <input type="text" id="searchPatient" placeholder="Rechercher par nom ou numéro de téléphone..." onkeyup="filtrerPatients()">
-                    </div>
-                    <div id="patientResultsContainer">Chargement des dossiers...</div>
-                </div>
-                        </div>
-                                                        <input type="text" id="empCode" placeholder="Ex: 1234" required>
-                            </div>
-                        </div>
-
-                        <button type="submit" id="btnSubmitEmp" class="btn-valider" style="background-color:#7e22ce;">Créer la Fiche Employé</button>
-                        <button type="button" id="btnCancelEditEmp" class="btn-action" style="background:#64748b; display:none; margin-top:8px; width:100%; padding:10px;" onclick="annulerEditEmploye()">Annuler la modification</button>
-                    </form>
-                </div>
-
-                <h3 style="font-size:15px; margin:20px 0 10px 0; color:#0f172a;">👥 Registre des Employés</h3>
-                <div id="employesContainer">Chargement des employés...</div>
-
-                <!-- SAUVEGARDE & RESTAURATION -->
-                <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:15px; margin-top:25px; margin-bottom:20px;">
-                    <h2 style="font-size:15px; color:#166534; margin-bottom:8px;">💾 Sauvegarde & Restauration de Sécurité</h2>
-                    <p style="font-size:11px; color:#166534; margin-bottom:10px;">
-                        Téléchargez une sauvegarde locale de vos données ou restaurez vos informations à partir d'un fichier de sauvegarde.
-                    </p>
-                    <div style="display:flex; gap:10px; margin-bottom:10px;">
-                        <button type="button" id="btnExporterDonnees" style="background:#0284c7; color:white; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; flex:1;">
-                            📥 Exporter les données (Sauvegarde)
-                        </button>
-                    </div>
-                    <div>
-                        <label for="inputFichierBackup" style="background:#15803d; color:white; padding:8px 12px; border-radius:6px; font-weight:bold; display:inline-block; cursor:pointer; font-size:12px; text-align:center; width:100%;">
-                            📂 Restaurer une sauvegarde (Fichier JSON)
-                        </label>
-                        <input type="file" id="inputFichierBackup" accept=".json" style="display:none;">
-                    </div>
-                    <div>
-                            <button type="button" onclick="ajouterAuPanier()" style="background:#2563eb; color:white; border:none; padding:9px 16px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px;">➕ Ajouter au panier</button>
-                        </div>
-                    </div>
-
-                    <div style="overflow-x:auto;">
-                        <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:13px; background:white; border-radius:8px; overflow:hidden; border:1px solid #e2e8f0;">
-                            <thead>
-                                <tr style="background:#f1f5f9; color:#334155; text-align:left;">
-                                    <th style="padding:10px;">Article</th>
-                                    <th style="padding:10px; text-align:center;">Prix Unitaire</th>
-                                    <th style="padding:10px; text-align:center;">Qté</th>
-                                    <th style="padding:10px; text-align:right;">Total</th>
-                                    <th style="padding:10px; text-align:center;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cartTableBody">
-                                <tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Panier vide pour le moment</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div style="background:white; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid #f1f5f9;">
-                            <span style="font-size:16px; font-weight:bold; color:#0f172a;">TOTAL À PAYER :</span>
-                            <span id="cartTotalDisplay" style="font-size:22px; font-weight:bold; color:#16a34a;">0 FCFA</span>
-                        </div>
-
-                        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
-                            <div style="flex:1; min-width:140px;">
-                                <label style="font-size:12px; font-weight:bold; color:#475569;">Mode de Paiement :</label>
-                                <select id="cartPaymentMode" onchange="toggleMontantRecu()" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px;">
-                                    <option value="Espèces">💵 Espèces</option>
-                                    <option value="Mobile Money">📱 Mobile Money (Flooz / T-Money / Moov)</option>
-                                    <option value="Carte / TPE">💳 Carte / TPE</option>
-                                    <option value="Crédit / En attente">⏳ Crédit / En attente</option>
-                                </select>
-                            </div>
-                            <div id="divMontantRecu" style="flex:1; min-width:120px;">
-                                <label style="font-size:12px; font-weight:bold; color:#475569;">Montant Reçu (FCFA) :</label>
-                                <input type="number" id="cartAmountReceived" oninput="calculerMonnaie()" placeholder="ex: 10000" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px;">
-                            </div>
-                        </div>
-
-                        <div id="divMonnaie" style="display:none; font-weight:bold; font-size:14px; color:#2563eb; margin-bottom:12px; text-align:right;">
-                            Monnaie à rendre : <span id="cartChangeDisplay">0 FCFA</span>
-                        </div>
-
-                        <button type="button" onclick="validerPanierVente()" style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">
-                            ✅ Valider & Enregistrer la Vente
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="adminStockSection" style="display:none;">
-                    <form id="stockForm">
-                        <input type="hidden" id="editingStockId" value="">
-                        
-                        <div class="form-group">
-                            <label>Pôle d'activité :</label>
-                            <select id="stockPole" required>
-                                <option value="gb">GB Casual (Gaines, Lingerie, Cosmétiques)</option>
-                                <option value="gh">Glory Herbal (Soins & Plantes)</option>
-                            </select>
-                        </div>
-                        
-    <!-- MODALE REÇU / CARNET DE SUIVI -->
-    <div id="receiptModal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 style="font-size:15px; margin-bottom:10px; color:#0f172a;" id="modalTitleText">🧾 Reçu de Paiement</h3>
-            <div id="receiptTextContent" class="receipt-box"></div>
-            <div class="modal-actions">
-                <button type="button" class="btn-modal copy" onclick="copierTexteRecu()">📋 Copier le texte</button>
-                <button type="button" class="btn-modal print" onclick="imprimerModalRecu()">🖨️ PDF / Imprimer</button>
-                <button type="button" class="btn-modal close" onclick="fermerModalRecu()">Fermer</button>
-            </div>
+            <div id="errorMsg" style="color:#dc2626; font-size:12px; margin-top:10px; display:none; font-weight:bold;">Code incorrect. Réessayez.</div>
         </div>
     </div>
-    <!-- Script JavaScript principal -->
-    <script type="module" src="app.js">
-        
-    </script>
+
+    <!-- ECRAN PRINCIPAL DE L'APPLICATION -->
+    <div id="appScreen">
+        <div class="user-badge">
+            <span id="userInfoDisplay">Connecté</span>
+            <button class="btn-logout" onclick="deconnecter()">Se Déconnecter</button>
+        </div>
+
+        <div class="tabs-main">
+            <button id="btnTabVentes" class="tab-btn gb-casual active" onclick="switchTab('ventes')">🛍️ Recettes & Ventes</button>
+            <button id="btnTabDepenses" class="tab-btn depenses" onclick="switchTab('depenses')" style="display:none;">💸 Dépenses</button>
+            <button id="btnTabPatients" class="tab-btn glory-herbal" onclick="switchTab('patients')">🩺 Dossiers Patients</button>
+            <button id="btnTabStock" class="tab-btn stock" onclick="switchTab('stock')">📦 Stocks</button>
+            <button id="btnTabOuvriers" class="tab-btn" onclick="ouvrirGestionOuvriers()" style="display:none; background:#0284c7; color:white;">👥 Ouvriers</button>
+            <button id="btnTabAdmin" class="tab-btn admin" onclick="switchTab('admin')" style="display:none;">⚙️ Admin</button>
+        </div>
+
+        <!-- SECTION 1 : VENTES ET RECETTES -->
+        <div id="paneVentes" class="section-pane active">
+            
+            <div id="adminFinanceCards" style="display:none;">
+                <div class="period-filter-bar">
+                    <button id="pBtnJour" class="period-btn active" onclick="filtrerPeriode('jour')">Aujourd'hui</button>
+                    <button id="pBtnSemaine" class="period-btn" onclick="filtrerPeriode('semaine')">7 Derniers Jours</button>
+                    <button id="pBtnMois" class="period-btn" onclick="filtrerPeriode('mois')">Ce Mois</button>
+                </div>
+
+                <div class="finance-cards">
+                    <div class="f-card gb">
+                        <h4>🛍️ Recettes GB Casual</h4>
+                        <div class="amount" id="totalGBCasual">0 F</div>
+                    </div>
+                    <div class="f-card gh">
+                        <h4>🌿 Recettes Glory Herbal</h4>
+                        <div class="amount" id="totalGloryHerbal">0 F</div>
+                    </div>
+                    <div class="f-card total">
+                        <h4>📊 TOTAL RECETTES</h4>
+                        <div class="amount" id="totalGeneral">0 F</div>
+                    </div>
+                </div>
+
+                <div class="channel-cards">
+                    <div class="c-card">
+                        <span>🏪 Ventes Boutique :</span>
+                        <strong id="totalCanalBoutique" style="color:#0f172a;">0 F</strong>
+                    </div>
+                    <div class="c-card">
+                        <span>📲 Ventes WhatsApp :</span>
+                        <strong id="totalCanalWhatsapp" style="color:#10b981;">0 F</strong>
+                    </div>
+                </div>
+
+                <div class="finance-cards">
+                    <div class="f-card depense">
+                        <h4>💸 TOTAL DÉPENSES</h4>
+                        <div class="amount" id="totalDepensesDisplay">0 F</div>
+                    </div>
+                    <div class="f-card benefice">
+                        <h4>📈 BÉNÉFICE NET</h4>
+                        <div class="amount" id="totalBeneficeNetDisplay">0 F</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ENREGISTREMENT VENTE -->
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:15px; margin-bottom:20px;">
+                <h3 style="font-size:14px; margin-bottom:12px; color:#1e293b;">🛒 Saisie d'une Nouvelle Vente / Caisse</h3>
+                
+                <form id="venteForm">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Article en Stock :</label>
+                            <div style="display:flex; gap:6px;">
+                                <select id="selectStockVente" style="flex:1;">
+                                    <option value="">-- Choix libre / Hors stock --</option>
+                                </select>
+                                <button type="button" onclick="lancerScannerVente()" style="background:#2563eb; color:white; border:none; padding:0 10px; border-radius:6px; cursor:pointer;" title="Scanner un QR Code">📷</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantité :</label>
+                            <input type="number" id="quantiteVente" value="1" min="1">
+                        </div>
+                    </div>
+
+                    <div id="readerVente" style="width:100%; max-width:300px; margin:10px auto; display:none;"></div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Canal de Vente :</label>
+                            <select id="canalVente">
+                                <option value="boutique">🏪 Vente en Boutique</option>
+                                <option value="whatsapp">📲 Vente WhatsApp / En ligne</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Montant Total Payé (FCFA) :</label>
+                            <input type="number" id="montantTotal" placeholder="Ex: 5000" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Nom du Client (Optionnel) :</label>
+                            <input type="text" id="nomClient" placeholder="Nom et Prénom">
+                        </div>
+                        <div class="form-group">
+                            <label>Téléphone Client (WhatsApp) :</label>
+                            <input type="text" id="telClientVente" placeholder="Ex: +228 90 00 00 00">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-valider gb">Enregistrer la Vente & Editer Reçu</button>
+                </form>
+
+                <hr style="margin:20px 0; border:none; border-top:1px dashed #cbd5e1;">
+
+                <!-- PANIER MULTI-ARTICLES -->
+                <h4 style="font-size:13px; color:#334155; margin-bottom:10px;">🛒 Option Panier Multi-Articles</h4>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <select id="cartProductSelect">
+                            <option value="">-- Sélectionner un produit --</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display:flex; gap:6px;">
+                        <input type="number" id="cartProductQty" value="1" min="1" style="width:80px;">
+                        <button type="button" onclick="ajouterAuPanier()" style="background:#0284c7; color:white; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer; flex:1;">+ Ajouter au Panier</button>
+                    </div>
+                </div>
+
+                <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;">
+                    <thead>
+                        <tr style="background:#f1f5f9; border-bottom:2px solid #cbd5e1; text-align:left;">
+                            <th style="padding:8px;">Article</th>
+                            <th style="padding:8px; text-align:center;">Prix Unit.</th>
+                            <th style="padding:8px; text-align:center;">Qté</th>
+                            <th style="padding:8px; text-align:right;">Total</th>
+                            <th style="padding:8px; text-align:center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartTableBody">
+                        <tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Panier vide pour le moment</td></tr>
+                    </tbody>
+                </table>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0;">
+                    <div>
+                        <span style="font-size:12px; color:#64748b;">Total Panier :</span>
+                        <strong id="cartTotalDisplay" style="font-size:18px; color:#0f172a; margin-left:8px;">0 FCFA</strong>
+                    </div>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <select id="cartPaymentMode" onchange="toggleMontantRecu()" style="padding:6px; font-size:12px; border-radius:6px;">
+                            <option value="Espèces">💵 Espèces</option>
+                            <option value="TMoney / Flooz">📲 TMoney / Flooz</option>
+                            <option value="Carte">💳 Carte Bancaire</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="divMontantRecu" style="margin-top:10px;">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Montant Reçu du Client (Espèces) :</label>
+                            <input type="number" id="cartAmountReceived" placeholder="Ex: 10000" oninput="calculerMonnaie()">
+                        </div>
+                        <div class="form-group" id="divMonnaie" style="display:none;">
+                            <label>Monnaie à rendre :</label>
+                            <div id="cartChangeDisplay" style="font-size:18px; font-weight:bold; color:#166534; padding-top:6px;">0 FCFA</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" onclick="validerPanierVente()" class="btn-valider" style="background:#166534; margin-top:10px;">✅ Valider la Vente du Panier</button>
+            </div>
+
+            <!-- HISTORIQUE DES RECETTES -->
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:15px;">
+                <h3 id="titleRecettes" style="font-size:14px; margin-bottom:12px; color:#1e293b;">Historique des Recettes</h3>
+                
+                <div class="form-grid-2" style="margin-bottom:12px;">
+                    <input type="text" id="searchVente" placeholder="🔍 Rechercher client ou agent..." oninput="afficherVentes()">
+                    <div style="display:flex; gap:6px;">
+                        <select id="filtrePole" onchange="afficherVentes()">
+                            <option value="tous">Tous les Pôles</option>
+                            <option value="gb">🛍️ GB Casual</option>
+                            <option value="gh">🌿 Glory Herbal</option>
+                        </select>
+                        <input type="date" id="filtreDateSpecifique" onchange="afficherVentes()">
+                        <button type="button" onclick="reinitialiserFiltreDate()" style="background:#64748b; color:white; border:none; padding:0 8px; border-radius:6px; cursor:pointer;">❌</button>
+                    </div>
+                </div>
+
+                <div id="salesContainer"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 2 : DÉPENSES -->
+        <div id="paneDepenses" class="section-pane">
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:15px; margin-bottom:20px;">
+                <h3 style="font-size:14px; margin-bottom:12px; color:#dc2626;">💸 Saisie d'une Dépense / Sortie de Caisse</h3>
+                <form id="depenseForm">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Pôle Concerné :</label>
+                            <select id="depensePole">
+                                <option value="gb">🛍️ GB Casual</option>
+                                <option value="gh">🌿 Glory Herbal</option>
+                                <option value="general">🏢 Charge Générale / Boutique</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Catégorie :</label>
+                            <select id="depenseCategorie">
+                                <option value="Approvisionnement">📦 Achat Stock / Matières</option>
+                                <option value="Loyer / Factures">🏢 Loyer, Eau, Électricité</option>
+                                <option value="Transport">🚚 Transport & Livraison</option>
+                                <option value="Marketing">📢 Publicité & Téléphone</option>
+                                <option value="Salaire / Avance">👥 Avance Ouvrier / Salaire</option>
+                                <option value="Divers">📌 Autre dépense</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Motif / Description :</label>
+                            <input type="text" id="depenseMotif" placeholder="Ex: Achat flacons huile" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Montant (FCFA) :</label>
+                            <input type="number" id="depenseMontant" placeholder="Ex: 15000" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-valider depense-btn">Enregistrer la Dépense</button>
+                </form>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:15px;">
+                <h3 style="font-size:14px; margin-bottom:12px; color:#1e293b;">Historique des Dépenses</h3>
+                <div id="depensesListContainer"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 3 : DOSSIERS PATIENTS (GLORY HERBAL) -->
+        <div id="panePatients" class="section-pane">
+            <div class="sub-tabs">
+                <button id="btnSubNew" class="sub-tab-btn active" onclick="switchSubTab('form')">➕ Nouvelle Fiche Patient</button>
+                <button id="btnSubList" class="sub-tab-btn" onclick="switchSubTab('list')">📋 Liste & Recherche Dossiers</button>
+            </div>
+
+            <!-- SOUS-PANNEAU : FORMULAIRE PATIENT -->
+            <div id="subPaneForm">
+                <form id="patientForm">
+                    <input type="hidden" id="editingPatientId">
+
+                    <div class="patient-cover-card">
+                        <div class="cover-badge">CLINIQUE GLORY HERBAL</div>
+                        <div class="cover-subtitle">Spécialité : Soins par les Plantes & Médecine Naturelle</div>
+                        <h2 class="cover-title" id="formTitle">Fiche de Consultation Médicale</h2>
+                        <div class="cover-confidential">DOSSIER MÉDICAL CONFIDENTIEL</div>
+
+                        <div class="cover-grid">
+                            <div class="cover-field">
+                                <label>Nom & Prénoms :</label>
+                                <input type="text" id="pNom" placeholder="Nom du patient" required>
+                            </div>
+                            <div class="cover-field">
+                                <label>Sexe :</label>
+                                <select id="pSexe">
+                                    <option value="M">Masculin</option>
+                                    <option value="F">Féminin</option>
+                                </select>
+                            </div>
+                            <div class="cover-field">
+                                <label>Âge :</label>
+                                <input type="number" id="pAge" placeholder="Ans" required>
+                            </div>
+                        </div>
+
+                        <div class="cover-grid-2">
+                            <div class="cover-field">
+                                <label>Téléphone :</label>
+                                <input type="text" id="pTel" placeholder="+228..." required>
+                            </div>
+                            <div class="cover-field">
+                                <label>Région / Ville :</label>
+                                <input type="text" id="pRegion" placeholder="Ex: Lomé">
+                            </div>
+                        </div>
+
+                        <div class="cover-grid-2">
+                            <div class="cover-field">
+                                <label>Référé par :</label>
+                                <input type="text" id="pRefere" placeholder="Recommandé par...">
+                            </div>
+                            <div class="cover-field">
+                                <label>Date :</label>
+                                <input type="date" id="pDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="medical-sheet">
+                        <div class="medical-header">
+                            <h3>FICHE D'EXAMEN MÉDICAL & TRAITEMENT</h3>
+                            <h2>EXAMEN CLINIQUE PATIENT</h2>
+                        </div>
+
+                        <div class="medical-layout">
+                            <div>
+                                <div class="med-box">
+                                    <div class="med-box-title">1. ÉTAT CIVIL & ADRESSE</div>
+                                    <div class="med-box-content">
+                                        <div class="form-group">
+                                            <label>Adresse complète :</label>
+                                            <input type="text" id="pAdresse" placeholder="Quartier, Maison...">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Ethnie / Origine :</label>
+                                            <input type="text" id="pEthnie" placeholder="Origine...">
+                                        </div>
+                                    </div>
+                                </div>
+                                                                <div class="med-box">
+                                    <div class="med-box-title">2. ANTÉCÉDENTS PATIENT</div>
+                                    <div class="med-box-content">
+                                        <div class="form-group">
+                                            <label>Antécédents Médicaux :</label>
+                                            <textarea id="pAntecedentsMed" placeholder="Maladies chroniques, allergies..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Antécédents Familiaux :</label>
+                                            <textarea id="pAntecedentsFam" placeholder="Hérédité..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Profession / Activité :</label>
+                                            <input type="text" id="pProfession" placeholder="Metier...">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Mode de Vie / Habits :</label>
+                                            <input type="text" id="pAntSociaux" placeholder="Alimentation, tabac, alcool...">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="med-box">
+                                    <div class="med-box-title">3. SYMPTÔMES & DIAGNOSTIC</div>
+                                    <div class="med-box-content">
+                                        <div class="form-group">
+                                            <label>Motif de Consultation :</label>
+                                            <textarea id="pMotif" placeholder="Raison principale venu..." required></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Plaintes Principales :</label>
+                                            <textarea id="pPlaintesPrinc" placeholder="Douleurs, symptômes..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Plaintes Secondaires :</label>
+                                            <textarea id="pPlaintesSec" placeholder="Autres gênes..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Résultats Examen / Analyse :</label>
+                                            <textarea id="pExamen" placeholder="Constatations physiques..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Diagnostic / Pathologies Retenues :</label>
+                                            <textarea id="pProblemes" placeholder="Maladies identifiées..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="med-box">
+                                    <div class="med-box-title">4. SUIVI & REGLEMENT</div>
+                                    <div class="med-box-content">
+                                        <div class="form-group">
+                                            <label>Date du Prochain RDV :</label>
+                                            <input type="date" id="pProchainRdv">
+                                            <div>
+                                                <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(7)">+7 Jours</button>
+                                                <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(14)">+14 Jours</button>
+                                                <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(30)">+1 Mois</button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Montant Consultation / Soin (FCFA) :</label>
+                                            <input type="number" id="pMontant" placeholder="Ex: 5000">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:10px; margin-top:15px;">
+                            <button type="submit" id="btnSubmitPatient" class="btn-valider" style="flex:2;">Enregistrer la Fiche Patient</button>
+                            <button type="button" id="btnCancelEdit" class="btn-valider" style="flex:1; background:#64748b; display:none;" onclick="annulerModification()">Annuler</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- SOUS-PANNEAU : LISTE & RECHERCHE PATIENTS -->
+            <div id="subPaneList" style="display:none;">
+                <div style="margin-bottom:15px;">
+                    <input type="text" id="searchPatient" placeholder="🔍 Rechercher un patient par nom ou téléphone..." oninput="filtrerPatients()">
+                </div>
+                <div id="patientResultsContainer"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 4 : STOCKS -->
+        <div id="paneStock" class="section-pane">
+            <div id="stockDashboardBanner" class="stock-dashboard-alert" style="display:none;">
+                <h3>⚠️ Alerte Réapprovisionnement - Stock Faible</h3>
+                <div id="stockDashboardListContainer"></div>
+            </div>
+
+            <div id="employeStockMessage" style="display:none; background:#eff6ff; border:1px solid #bfdbfe; padding:12px; border-radius:8px; margin-bottom:15px; color:#1e40af; font-size:13px;">
+                ℹ️ Consutez le stock disponible. Pour toute réapprovisionnement, merci d'avertir l'administrateur.
+            </div>
+
+            <div id="adminStockSection" style="display:none; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:15px; margin-bottom:20px;">
+                <h3 style="font-size:14px; margin-bottom:12px; color:#0284c7;">📦 Gestion du Catalogue & Stock (Admin)</h3>
+                
+                <form id="stockForm">
+                    <input type="hidden" id="editingStockId">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Pôle Produit :</label>
+                            <select id="stockPole">
+                                <option value="gb">🛍️ GB Casual</option>
+                                <option value="gh">🌿 Glory Herbal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nom de l'Article / Produit :</label>
+                            <input type="text" id="stockNom" placeholder="Ex: Savon Alpha Arbutin" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Prix de Vente (FCFA) :</label>
+                            <input type="number" id="stockPrix" placeholder="Ex: 3500" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantité Initiale en Stock :</label>
+                            <input type="number" id="stockQte" placeholder="Ex: 20" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Photo du Produit (Optionnel) :</label>
+                        <input type="file" id="stockImageInput" accept="image/*">
+                        <small id="txtImageNote" style="display:none; color:#d97706;">Laissez vide pour conserver l'image existante.</small>
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <button type="submit" id="btnSubmitStock" class="btn-valider stock-btn" style="flex:2;">Ajouter au Catalogue</button>
+                        <button type="button" id="btnCancelEditStock" class="btn-valider" style="flex:1; background:#64748b; display:none;" onclick="annulerEditStock()">Annuler</button>
+                    </div>
+                </form>
+
+                <hr style="margin:20px 0; border:none; border-top:1px dashed #cbd5e1;">
+
+                <h4 style="font-size:13px; color:#334155; margin-bottom:8px;">📜 Historique des Mouvements de Stock</h4>
+                <div id="stockLogsContainer" style="max-height:150px; overflow-y:auto; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0;"></div>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:15px;">
+                <h3 style="font-size:14px; margin-bottom:12px; color:#1e293b;">Liste des Produits en Stock</h3>
+                <div id="stockContainer"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 5 : ADMINISTRATION -->
+        <div id="paneAdmin" class="section-pane">
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:15px; margin-bottom:20px;">
+                <h3 id="employeFormTitle" style="font-size:14px; margin-bottom:12px; color:#7e22ce;">👔 Fiche & Inscription de l'Employé(e)</h3>
+                <form id="employeForm">
+                    <input type="hidden" id="editingEmpId">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Nom & Prénoms :</label>
+                            <input type="text" id="empNom" placeholder="Nom complet" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Âge :</label>
+                            <input type="number" id="empAge" placeholder="Ex: 25">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Situation Matrimoniale :</label>
+                            <select id="empSituation">
+                                <option value="Célibataire">Célibataire</option>
+                                <option value="Marié(e)">Marié(e)</option>
+                                <option value="Fiancé(e)">Fiancé(e)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Téléphone :</label>
+                            <input type="text" id="empTel" placeholder="+228..." required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Lieu de Résidence :</label>
+                            <input type="text" id="empLieu" placeholder="Quartier / Lomé">
+                        </div>
+                        <div class="form-group">
+                            <label>Code Secret d'Accès App (4 chiffres) :</label>
+                            <input type="text" id="empCode" placeholder="Ex: 1234" required maxlength="10">
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <button type="submit" id="btnSubmitEmp" class="btn-valider" style="background:#7e22ce; flex:2;">Créer la Fiche Employé</button>
+                        <button type="button" id="btnCancelEditEmp" class="btn-valider" style="flex:1; background:#64748b; display:none;" onclick="annulerEditEmploye()">Annuler</button>
+                    </div>
+                </form>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:15px; margin-bottom:20px;">
+                <h3 style="font-size:14px; margin-bottom:12px; color:#1e293b;">Liste du Personnel Enregistré</h3>
+                <div id="employesContainer"></div>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:15px; margin-bottom:20px;">
+                <h3 style="font-size:14px; margin-bottom:12px; color:#1e293b;">🔐 Modification du Code Secret Administrateur</h3>
+                <form id="changeAdminCodeForm">
+                    <div class="form-group">
+                        <label>Nouveau Code Administrateur :</label>
+                        <input type="password" id="newAdminCode" placeholder="Entrez le nouveau code..." required>
+                    </div>
+                    <button type="submit" class="btn-valider" style="background:#0f172a;">Changer le Code Admin</button>
+                </form>
+            </div>
+
+            <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:15px;">
+                <h3 style="font-size:13px; color:#991b1b; margin-bottom:8px;">⚙️ Outils & Réinitialisation du Système</h3>
+                <p style="font-size:11px; color:#7f1d1d; margin-bottom:10px;">Effacer toutes les données de test (ventes, dépenses, patients, stocks) pour remettre le système à zéro.</p>
+                <button type="button" id="resetCloudBtn" style="background:#dc2626; color:white; border:none; padding:10px 15px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;">🗑️ Réinitialiser Tout le Cloud (Remise à Zéro)</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODALE REÇU / CARNET DE SUIVI -->
+<div id="receiptModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 id="modalTitleText" style="font-size:15px; margin-bottom:10px; color:#0f172a;">🧾 Reçu de Paiement</h3>
+        <div id="receiptTextContent" class="receipt-box"></div>
+        <div class="modal-actions">
+            <button type="button" class="btn-modal copy" onclick="copierTexteRecu()">📋 Copier WhatsApp</button>
+            <button type="button" class="btn-modal print" onclick="imprimerModalRecu()">🖨️ Imprimer</button>
+            <button type="button" class="btn-modal close" onclick="fermerModalRecu()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<!-- Script JavaScript principal -->
+<script type="module" src="app.js"></script>
 
 </body>
-            </html>
+                                                                                                                                                                                                                                                        </html>
+                                                                                                                                                                                                                                                        
