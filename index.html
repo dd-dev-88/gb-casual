@@ -1,0 +1,3106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GB Casual & Glory Herbal - Boutique & Gestion Interne</title>
+    <!-- QR Code & Scanner CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    
+    <style>
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f8fafc; color: #0f172a; padding-bottom: 90px; }
+        
+        .container { max-width: 900px; margin: 0 auto; background: #ffffff; min-height: 100vh; box-shadow: 0 0 25px rgba(0,0,0,0.06); position: relative; }
+
+        /* ========================================================= */
+        /* DESIGN VITRINE E-COMMERCE CLIENT & PANIER                 */
+        /* ========================================================= */
+        .public-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 16px; border-bottom: 1px solid #e2e8f0; background: #ffffff; position: sticky; top: 0; z-index: 100;
+        }
+        .public-logo-box { display: flex; align-items: center; gap: 10px; }
+        .public-logo-box img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #166534; box-shadow: 0 2px 6px rgba(22,101,52,0.2); }
+        .public-brand-title { font-size: 15px; font-weight: 800; color: #0f172a; letter-spacing: -0.3px; }
+        .public-brand-sub { font-size: 10px; color: #64748b; font-weight: 600; }
+        
+        .header-actions-client { display: flex; gap: 6px; align-items: center; }
+        .btn-portal-admin { background: #1e3a8a; color: white; border: none; padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+        .btn-cart-toggle { background: #166534; color: white; border: none; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; position: relative; }
+        .cart-badge-count { background: #ef4444; color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+
+        /* HERO BANNER VITRINE */
+        .hero-banner {
+            background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #10b981 100%);
+            color: white; padding: 28px 20px; text-align: left; position: relative; overflow: hidden; margin-bottom: 15px;
+        }
+        .hero-banner::after {
+            content: "🌿"; position: absolute; right: -15px; bottom: -25px; font-size: 120px; opacity: 0.15; transform: rotate(-15deg); pointer-events: none;
+        }
+        .hero-badge { background: rgba(255,255,255,0.2); color: #ecfdf5; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px; backdrop-filter: blur(4px); }
+        .hero-title { font-size: 21px; font-weight: 800; line-height: 1.3; margin-bottom: 8px; max-width: 90%; }
+        .hero-desc { font-size: 11px; opacity: 0.95; margin-bottom: 16px; max-width: 88%; line-height: 1.4; font-style: italic; }
+        .btn-hero-action { background: #ffffff; color: #064e3b; border: none; padding: 10px 18px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+
+        /* BADGES DE RÉASSURANCE */
+        .trust-badges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 0 12px; margin-bottom: 15px; }
+        .trust-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 6px; text-align: center; font-size: 9px; color: #334155; font-weight: 600; }
+        .trust-item span { display: block; font-size: 15px; margin-bottom: 3px; }
+
+        /* BARRE FILTRES CATEGORIES */
+        .category-pills { display: flex; gap: 8px; padding: 0 12px; overflow-x: auto; margin-bottom: 15px; scrollbar-width: none; }
+        .category-pills::-webkit-scrollbar { display: none; }
+        .cat-pill { white-space: nowrap; padding: 7px 16px; border-radius: 20px; background: #f1f5f9; color: #64748b; font-size: 11px; font-weight: 700; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; }
+        .cat-pill.active { background: #166534; color: white; border-color: #166534; box-shadow: 0 2px 6px rgba(22,101,52,0.25); }
+
+        /* GRILLE DE PRODUITS E-COMMERCE */
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 12px 20px 12px; }
+        @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+        
+        .product-card {
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+        .product-img-box {
+            width: 100%; height: 145px; background: #f8fafc; display: flex; align-items: center; justify-content: center;
+            position: relative; border-bottom: 1px solid #f1f5f9; overflow: hidden;
+        }
+        .product-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .product-tag { position: absolute; top: 8px; left: 8px; font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 6px; }
+        .tag-gb { background: #fce7f3; color: #be185d; }
+        .tag-gh { background: #dcfce7; color: #15803d; }
+
+        .product-details { padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-name { font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 4px; line-height: 1.3; }
+        .product-price { font-size: 14px; font-weight: 800; color: #166534; margin-bottom: 8px; }
+        
+        .btn-add-client-cart {
+            width: 100%; background: #166534; color: white; border: none; padding: 8px;
+            border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(22,101,52,0.2);
+        }
+
+        /* TIROIR / MODALE PANIER CLIENT */
+        .client-cart-drawer {
+            position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #166534;
+            border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 16px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.15); z-index: 1000; display: none; max-height: 85vh; overflow-y: auto;
+        }
+        .client-cart-drawer.active { display: block; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        /* STICKY FOOTER WHATSAPP CLIENT */
+        .sticky-bottom-wa {
+            position: fixed; bottom: 0; left: 0; right: 0; background: #166534; color: white;
+            padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.15); z-index: 99;
+        }
+        .sticky-bottom-wa span { font-size: 11px; font-weight: 600; }
+        .btn-wa-sticky { background: #ffffff; color: #166534; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 11px; cursor: pointer; }
+
+        /* BANDEAU MESSAGE AMBIANCE INTERFACE INTERNE */
+        .header-banner-ambiance {
+            background: linear-gradient(90deg, #1e3a8a 0%, #0284c7 100%);
+            color: white; padding: 10px 14px; border-radius: 10px; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 600;
+            box-shadow: 0 2px 8px rgba(30,58,138,0.15);
+        }
+
+        /* ========================================================= */
+        /* INTERFACE INTERNE (DIGICODE & GESTION)                    */
+        /* ========================================================= */
+        .pin-container { max-width: 320px; margin: 30px auto; background: #f8fafc; padding: 20px 15px; border-radius: 16px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .pin-display { display: flex; justify-content: center; gap: 12px; margin: 15px 0; }
+        .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #1e3a8a; background: transparent; transition: background 0.2s, transform 0.2s; }
+        .pin-dot.filled { background: #1e3a8a; transform: scale(1.1); }
+
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 240px; margin: 0 auto; }
+        .key-btn { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px; font-size: 18px; font-weight: bold; color: #0f172a; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.03); transition: transform 0.1s; }
+        .key-btn:active { background: #e2e8f0; transform: scale(0.94); }
+        .key-btn.clear { background: #fef2f2; color: #dc2626; border-color: #fca5a5; font-size: 14px; }
+
+        .rdv-notification-card {
+            background: #fffbeb; border: 2px solid #f59e0b; border-radius: 12px;
+            padding: 10px 12px; margin: 10px; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+        }
+        .rdv-notification-card h3 { font-size: 12px; color: #b45309; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .rdv-item-notify {
+            background: #ffffff; border-left: 4px solid #f59e0b; padding: 6px 10px;
+            border-radius: 6px; margin-bottom: 4px; font-size: 11px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .app-view { display: none; }
+        .app-view.active { display: block; animation: fadeIn 0.3s ease; }
+        .section-pane { display: none; padding: 12px; }
+        .section-pane.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-badge { background: #f1f5f9; border-bottom: 1px solid #e2e8f0; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #334155; font-weight: bold; }
+        .btn-logout { background-color: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(8px); border-top: 1px solid #e2e8f0;
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 8px 0; z-index: 999; box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        }
+        .bottom-nav-item {
+            flex: 1; text-align: center; border: none; background: transparent;
+            color: #64748b; font-size: 10px; font-weight: bold; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 0; position: relative;
+        }
+        .bottom-nav-item .icon { font-size: 18px; }
+        .bottom-nav-item.active { color: #1e3a8a; font-weight: bold; }
+        .bottom-nav-item.active .icon { transform: scale(1.15); transition: transform 0.2s; }
+        
+        /* POINT ROUGE DE NOTIFICATION NAVIGATION */
+        .nav-red-dot {
+            position: absolute; top: 2px; right: 28%; background: #ef4444; color: white;
+            font-size: 9px; padding: 1px 5px; border-radius: 10px; font-weight: bold;
+            display: none; animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        .emp-profile-card {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white; border-radius: 14px; padding: 15px; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(30, 58, 138, 0.25);
+        }
+        .emp-profile-header { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; margin-bottom: 10px; }
+        .emp-avatar { width: 50px; height: 50px; background: white; color: #1e3a8a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; }
+        .emp-details { font-size: 11px; line-height: 1.5; opacity: 0.95; }
+        .emp-recette-box { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 12px; text-align: center; margin-top: 10px; }
+        .emp-recette-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9; }
+        .emp-recette-amount { font-size: 22px; font-weight: bold; margin-top: 2px; color: #fef08a; }
+
+        .sub-tabs { display: flex; gap: 6px; margin-bottom: 12px; background: #f1f5f9; padding: 4px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .sub-tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #64748b; font-size: 11px; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s; }
+        .sub-tab-btn.active { background: #ffffff; color: #15803d; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .sub-tab-btn.prod-active { background: #ffffff; color: #b45309; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        .finance-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        @media (max-width: 600px) { .finance-cards { grid-template-columns: 1fr; } }
+        .f-card { padding: 10px; border-radius: 10px; text-align: center; border: 1px solid #cbd5e1; }
+        .f-card.gb { background: #fdf2f8; border-color: #fbcfe8; color: #be185d; }
+        .f-card.gh { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+        .f-card.total { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+        .f-card.depense { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+        .f-card.benefice { background: #f0fdf4; border-color: #86efac; color: #166534; }
+        .f-card h4 { font-size: 10px; text-transform: uppercase; margin-bottom: 3px; opacity: 0.9; }
+        .f-card .amount { font-size: 15px; font-weight: bold; }
+
+        .channel-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .c-card { padding: 8px 10px; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+
+        .period-filter-bar { display: flex; gap: 6px; margin-bottom: 10px; }
+        .period-btn { flex: 1; padding: 8px; border: 1px solid #cbd5e1; background: #ffffff; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; color: #475569; }
+        .period-btn.active { background: #1e3a8a; color: white; border-color: #1e3a8a; }
+
+        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        @media (max-width: 600px) { .analytics-grid { grid-template-columns: 1fr; } }
+        .analytics-box { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; }
+        .analytics-box h4 { font-size: 11px; margin-bottom: 6px; text-transform: uppercase; display: flex; align-items: center; gap: 5px; }
+        .top-item-row { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed #f1f5f9; }
+
+        .form-group { margin-bottom: 10px; }
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        @media (max-width: 600px) { .form-grid-2 { grid-template-columns: 1fr; } }
+        label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 3px; color: #334155; }
+        input[type="text"], input[type="tel"], input[type="password"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 9px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; transition: border-color 0.2s; }
+        input:focus, select:focus, textarea:focus { border-color: #1e3a8a; box-shadow: 0 0 0 2px rgba(30,58,138,0.1); }
+        textarea { resize: vertical; min-height: 55px; }
+        .btn-valider { width: 100%; background-color: #15803d; color: white; border: none; padding: 10px; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 8px; box-shadow: 0 2px 6px rgba(21,128,61,0.2); }
+        .btn-valider.gb { background-color: #be185d; box-shadow: 0 2px 6px rgba(190,24,93,0.2); }
+        .btn-valider.depense-btn { background-color: #dc2626; }
+        .btn-valider.stock-btn { background-color: #0284c7; }
+        .btn-valider.prod-btn { background-color: #b45309; }
+        .btn-update { background-color: #d97706; color: white; border: none; padding: 10px; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 8px; width: 100%; }
+
+        .toggle-num-btn { background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.4); color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; cursor: pointer; margin-left: 4px; }
+
+        .alibaba-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .alibaba-card {
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: space-between;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .alibaba-card:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+        .alibaba-card-img-wrap {
+            width: 100%; height: 105px; background: #f8fafc;
+            display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 1px solid #f1f5f9;
+        }
+        .alibaba-card-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .alibaba-card-body { padding: 8px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .alibaba-card-title { font-size: 12px; font-weight: bold; color: #0f172a; margin-bottom: 3px; line-height: 1.2; }
+        .alibaba-card-price { font-size: 13px; font-weight: bold; color: #be185d; margin-bottom: 4px; }
+        .alibaba-card-stock { font-size: 10px; color: #64748b; margin-bottom: 6px; }
+        .alibaba-card-actions { display: flex; gap: 4px; align-items: center; }
+        .btn-add-cart-fast { flex: 1; background: #15803d; color: white; border: none; padding: 6px; border-radius: 6px; font-weight: bold; font-size: 10px; cursor: pointer; text-align: center; }
+
+        .patient-cover-card {
+            background: linear-gradient(135deg, #166534 0%, #15803d 50%, #22c55e 100%);
+            border-radius: 12px; padding: 15px; color: white; position: relative; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(21,128,61,0.2);
+        }
+        .cover-badge { background: white; color: #15803d; padding: 4px 10px; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 11px; margin-bottom: 6px; }
+        .cover-subtitle { font-size: 10px; opacity: 0.95; margin-bottom: 10px; font-style: italic; }
+        .cover-title { font-size: 16px; font-weight: bold; text-align: center; margin: 8px 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cover-confidential { text-align: center; font-size: 10px; margin-bottom: 10px; opacity: 0.9; }
+
+        .cover-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 6px; }
+        .cover-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
+        .cover-field { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; padding: 6px 8px; }
+        .cover-field label { color: #f0fdf4; font-size: 9px; text-transform: uppercase; margin: 0; display: flex; justify-content: space-between; align-items: center; }
+        .cover-field input, .cover-field select { background: transparent; border: none; color: white; width: 100%; font-size: 12px; padding: 2px 0; outline: none; }
+
+        .medical-sheet { background: #ffffff; border: 2px solid #15803d; border-radius: 12px; padding: 12px; margin-top: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .medical-header { text-align: center; border-bottom: 2px solid #15803d; padding-bottom: 6px; margin-bottom: 10px; }
+        .medical-header h3 { font-size: 10px; color: #166534; letter-spacing: 0.5px; }
+        .medical-header h2 { font-size: 14px; color: #166534; margin-top: 2px; font-weight: bold; }
+
+        .medical-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 600px) { .medical-layout { grid-template-columns: 1fr; } }
+
+        .med-box { border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 8px; overflow: hidden; background: #fff; }
+        .med-box-title { background: #f8fafc; color: #0f172a; font-size: 10px; font-weight: bold; padding: 6px 8px; border-bottom: 1px solid #cbd5e1; }
+        .med-box-content { padding: 8px; }
+
+        .rdv-shortcut-btn { background: #e2e8f0; border: none; padding: 5px 8px; font-size: 9px; border-radius: 6px; cursor: pointer; margin-right: 3px; margin-top: 3px; font-weight: bold; color: #334155; }
+
+        .patient-card-result { background: #ffffff; border-left: 4px solid #15803d; border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; border-left-width: 4px; }
+        .sale-item { background: #ffffff; border-left: 4px solid #be185d; padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+        .sale-item.gh { border-left-color: #15803d; }
+        .sale-item.emp { border-left-color: #7e22ce; }
+        .depense-item { background: #ffffff; border-left: 4px solid #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+        
+        .prod-item { background: #ffffff; border-left: 4px solid #b45309; padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; gap: 10px; }
+        .prod-img-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; flex-shrink: 0; }
+
+        .stock-item { background: #ffffff; border-left: 4px solid #0284c7; padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+        .stock-item.low { border-left-color: #ef4444; background: #fef2f2; }
+        .stock-img-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; margin-right: 8px; }
+
+        .stock-dashboard-alert { background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+        .stock-dashboard-alert h3 { font-size: 12px; color: #991b1b; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .stock-alert-item { background: #ffffff; border-left: 4px solid #ef4444; padding: 8px 10px; border-radius: 8px; margin-bottom: 4px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+
+        .badge-stock { padding: 3px 8px; border-radius: 10px; font-size: 9px; font-weight: bold; display: inline-block; }
+        .badge-stock.ok { background: #dcfce7; color: #15803d; }
+        .badge-stock.low { background: #fee2e2; color: #991b1b; }
+        .badge-status { padding: 3px 8px; border-radius: 10px; font-size: 9px; font-weight: bold; display: inline-block; }
+        .badge-status.attente { background: #fef3c7; color: #b45309; }
+        .badge-status.encours { background: #e0f2fe; color: #0369a1; }
+        .badge-status.pret { background: #dcfce7; color: #15803d; }
+
+        .btn-action { background: #15803d; color: white; border: none; padding: 6px 10px; font-size: 10px; border-radius: 6px; cursor: pointer; margin-top: 4px; margin-right: 3px; font-weight: bold; }
+        .btn-wa { background: #10b981; color: white; border: none; padding: 6px 10px; font-size: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-edit-patient { background: #d97706; color: white; border: none; padding: 6px 10px; font-size: 10px; border-radius: 6px; cursor: pointer; margin-top: 4px; margin-right: 3px; font-weight: bold; }
+        .btn-reappro { background: #0284c7; color: white; border: none; padding: 4px 8px; font-size: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+        .followup-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-top: 8px; }
+        .followup-item { background: #ffffff; border-left: 3px solid #22c55e; border: 1px solid #cbd5e1; border-left-width: 3px; padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 11px; }
+        .stock-log-item { background: #f8fafc; border-left: 3px solid #0284c7; padding: 6px 10px; border-radius: 6px; font-size: 10px; margin-bottom: 4px; }
+
+        .qr-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; }
+        .qr-box canvas, .qr-box img { width: 65px !important; height: 65px !important; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); display: none;
+            justify-content: center; align-items: center; z-index: 1000; padding: 12px;
+            backdrop-filter: blur(3px);
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: white; border-radius: 14px; width: 100%; max-width: 420px;
+            padding: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); position: relative;
+        }
+        .receipt-box {
+            border: 2px dashed #cbd5e1; padding: 12px; border-radius: 8px;
+            background: #fafafa; font-family: monospace; font-size: 11px;
+            margin-bottom: 12px; white-space: pre-wrap; line-height: 1.4; color: #0f172a; max-height: 250px; overflow-y: auto;
+        }
+        .modal-actions { display: flex; gap: 6px; }
+        .btn-modal { flex: 1; padding: 9px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; text-align: center; }
+        .btn-modal.copy { background: #0284c7; color: white; }
+        .btn-modal.print { background: #15803d; color: white; }
+        .btn-modal.close { background: #64748b; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- BANNIÈRE NOTIFICATION RDV PATIENTS (INTERNE) -->
+    <div id="rdvNotificationBanner" class="rdv-notification-card" style="display:none;">
+        <h3>🔔 Rappel des Rendez-vous Patient du Jour !</h3>
+        <div id="rdvListTodayContainer"></div>
+    </div>
+
+    <!-- 1. VITRINE CLIENT PUBLIQUE & PANIER VIRTUEL -->
+    <div id="publicCatalogScreen" class="app-view active">
+        
+        <!-- HEADER BOUTIQUE -->
+        <header class="public-header">
+            <div class="public-logo-box">
+                <img src="logo.jpg" alt="Logo">
+                <div>
+                    <div class="public-brand-title">GB CASUAL & GLORY HERBAL</div>
+                    <div class="public-brand-sub">Soins Naturels & Cosmétiques</div>
+                </div>
+            </div>
+            <div class="header-actions-client">
+                <button class="btn-cart-toggle" onclick="toggleClientCartDrawer()">
+                    🛒 Panier <span class="cart-badge-count" id="clientCartCount">0</span>
+                </button>
+                <button class="btn-portal-admin" onclick="showLoginModal()">🔐 Personnel</button>
+            </div>
+        </header>
+
+        <!-- BANNIÈRE HERO AVEC VOTRE SLOGAN -->
+        <div class="hero-banner">
+            <span class="hero-badge">🌿 Bien-être & Santé au Naturel</span>
+            <h1 class="hero-title">Prendre soin de soi n'est pas un luxe, mais une nécessité absolue.</h1>
+            <p class="hero-desc">Découvrez nos gammes de tisanes de santé et nos soins cosmétiques d'exception faits avec passion.</p>
+            <button class="btn-hero-action" onclick="document.getElementById('gridPublicContainer').scrollIntoView({behavior:'smooth'})">Découvrir la collection ↓</button>
+        </div>
+
+        <!-- BADGES DE CONFIANCE -->
+        <div class="trust-badges">
+            <div class="trust-item">
+                <span>🚚</span>
+                Livraison rapide partout au Togo
+            </div>
+            <div class="trust-item">
+                <span>🛡️</span>
+                Qualité 100% naturelle certifiée
+            </div>
+            <div class="trust-item">
+                <span>💬</span>
+                Support client 7j/7 sur WhatsApp
+            </div>
+        </div>
+
+        <!-- BARRE DE FILTRES CATEGORIES -->
+        <div class="category-pills">
+            <button class="cat-pill active" onclick="filtrerVitrineCategorie('tous', this)">Tous les produits</button>
+            <button class="cat-pill" onclick="filtrerVitrineCategorie('gh', this)">🌿 Glory Herbal (Tisanes)</button>
+            <button class="cat-pill" onclick="filtrerVitrineCategorie('gb', this)">🛍️ GB Casual (Cosmétiques)</button>
+        </div>
+
+        <!-- RECHERCHE RAPIDE -->
+        <div style="padding: 0 12px; margin-bottom: 15px;">
+            <input type="text" id="searchPublicInput" placeholder="🔍 Rechercher une tisane, un savon, une crème..." oninput="filtrerVitrineSearch()">
+        </div>
+
+        <!-- GRILLE DE PRODUITS E-COMMERCE -->
+        <div id="gridPublicContainer" class="product-grid">
+            <p style="grid-column: 1/-1; text-align: center; padding: 30px; color: #94a3b8; font-size: 12px;">Chargement de la vitrine...</p>
+        </div>
+
+        <!-- TIROIR / MODALE PANIER CLIENT E-COMMERCE -->
+        <div id="clientCartDrawer" class="client-cart-drawer">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">
+                <h3 style="font-size:15px; color:#166534; font-weight:800;">🛒 Votre Panier Client</h3>
+                <button type="button" onclick="toggleClientCartDrawer()" style="background:#f1f5f9; border:none; padding:5px 10px; border-radius:6px; font-weight:bold; cursor:pointer;">✕ Fermer</button>
+            </div>
+            <div id="clientCartItemsContainer" style="max-height:220px; overflow-y:auto; margin-bottom:12px;">
+                <p style="text-align:center; color:#94a3b8; font-size:11px; padding:15px;">Votre panier est vide.</p>
+            </div>
+            <div style="background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:800; color:#0f172a; margin-bottom:8px;">
+                    <span>Total Général :</span>
+                    <span id="clientCartTotalDisplay" style="color:#166534;">0 FCFA</span>
+                </div>
+                <div class="form-group" style="margin-bottom:6px;">
+                    <label style="font-size:10px;">Votre Nom & Prénoms :</label>
+                    <input type="text" id="clientOrderName" placeholder="Ex: Kouassi Jean">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="font-size:10px;">Votre Quartier / Adresse de Livraison :</label>
+                    <input type="text" id="clientOrderAddress" placeholder="Ex: Agoè Lomé">
+                </div>
+            </div>
+            <button type="button" onclick="commanderPanierClientWhatsApp()" style="width:100%; background:#166534; color:white; border:none; padding:11px; border-radius:10px; font-weight:bold; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 12px rgba(22,101,52,0.3);">
+                <span>📲 Envoyer toute la commande sur WhatsApp</span>
+            </button>
+        </div>
+
+        <!-- BARRE FIXE EN BAS (STICKY FOOTER WHATSAPP CLIENT) -->
+        <div class="sticky-bottom-wa">
+            <span>💬 Une question ou conseil personnalisé ?</span>
+            <button class="btn-wa-sticky" onclick="commanderDirectWhatsApp('Demande de conseils personnalisés')">Écrire sur WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- 2. ÉCRAN SÉCURISÉ DIGICODE PERSONNEL -->
+    <div id="loginScreen" class="app-view">
+        <div class="pin-container">
+            <span style="font-size:10px; font-weight:bold; color:#1e3a8a; background:#e0f2fe; padding:3px 8px; border-radius:10px;">🔐 ESPACE SÉCURISÉ</span>
+            <h3 style="margin-top:10px; color:#0f172a; font-size:14px;">Saisissez votre code d'accès</h3>
+            <p style="font-size:11px; color:#64748b; margin-top:2px;">Personnel ou Administrateur</p>
+            
+            <div class="pin-display">
+                <div class="pin-dot" id="dot-1"></div>
+                <div class="pin-dot" id="dot-2"></div>
+                <div class="pin-dot" id="dot-3"></div>
+                <div class="pin-dot" id="dot-4"></div>
+            </div>
+
+            <div class="keypad">
+                <button type="button" class="key-btn" onclick="pressPin('1')">1</button>
+                <button type="button" class="key-btn" onclick="pressPin('2')">2</button>
+                <button type="button" class="key-btn" onclick="pressPin('3')">3</button>
+                <button type="button" class="key-btn" onclick="pressPin('4')">4</button>
+                <button type="button" class="key-btn" onclick="pressPin('5')">5</button>
+                <button type="button" class="key-btn" onclick="pressPin('6')">6</button>
+                <button type="button" class="key-btn" onclick="pressPin('7')">7</button>
+                <button type="button" class="key-btn" onclick="pressPin('8')">8</button>
+                <button type="button" class="key-btn" onclick="pressPin('9')">9</button>
+                <button type="button" class="key-btn clear" onclick="clearPin()">C</button>
+                <button type="button" class="key-btn" onclick="pressPin('0')">0</button>
+                <button type="button" class="key-btn clear" onclick="popPin()">⌫</button>
+            </div>
+
+            <div id="errorMsg" style="color:#dc2626; font-size:11px; margin-top:10px; display:none; font-weight:bold;">Code incorrect. Réessayez.</div>
+
+            <hr style="margin:15px 0 10px 0; border:none; border-top:1px dashed #cbd5e1;">
+            <button type="button" onclick="showPublicCatalog()" style="background:transparent; border:none; color:#0284c7; font-size:11px; cursor:pointer; font-weight:bold; text-decoration:underline;">← Retourner au Catalogue Client</button>
+        </div>
+    </div>
+
+    <!-- 3. ESPACE CONNECTÉ DE GESTION COMPLET -->
+    <div id="appScreen" class="app-view">
+        <div class="user-badge">
+            <span id="userInfoDisplay">Connecté</span>
+            <div style="display:flex; gap:5px;">
+                <button id="btnBilanEmploye" onclick="afficherBilanFinJourneeEmploye()" style="background:#0284c7; color:white; border:none; padding:5px 8px; border-radius:6px; font-size:10px; cursor:pointer; font-weight:bold;">📊 Bilan Jour</button>
+                <button class="btn-logout" onclick="deconnecter()">Se Déconnecter</button>
+            </div>
+        </div>
+
+        <!-- SECTION 0 : PROFIL PERSONNEL EMPLOYÉ -->
+        <div id="paneProfil" class="section-pane">
+            <div class="header-banner-ambiance">
+                <span id="sloganProfil">👋 Bienvenue sur ton espace personnel !</span>
+            </div>
+            <div class="emp-profile-card">
+                <div class="emp-profile-header">
+                    <div class="emp-avatar" id="empAvatarLetter">👤</div>
+                    <div>
+                        <h2 id="empProfileName" style="font-size:16px;">Nom Employé</h2>
+                        <span style="font-size:11px; background:rgba(255,255,255,0.2); padding:2px 6px; border-radius:4px;">👔 Personnel de Service</span>
+                    </div>
+                </div>
+                
+                <div class="emp-details">
+                    <p>📞 <strong>Téléphone :</strong> <span id="empProfileTel">N/A</span></p>
+                    <p>📍 <strong>Lieu de Résidence :</strong> <span id="empProfileLieu">N/A</span></p>
+                    <p>💍 <strong>Situation Matrimoniale :</strong> <span id="empProfileSituation">N/A</span></p>
+                </div>
+
+                <div class="emp-recette-box">
+                    <div class="emp-recette-title">📊 MA RECETTE TOTALE DU JOUR</div>
+                    <div class="emp-recette-amount" id="empProfileRecette">0 FCFA</div>
+                    <small id="empProfileNbVentes" style="font-size:10px; opacity:0.85;">0 vente(s) enregistrée(s) aujourd'hui</small>
+                </div>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+                <h3 style="font-size:13px; margin-bottom:10px; color:#0f172a;">🛒 Résumé rapide de vos ventes du jour</h3>
+                <div id="empRecentSalesContainer"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 1 : VENTES ET CAISSE COMPLÈTE -->
+        <div id="paneVentes" class="section-pane">
+            <div class="header-banner-ambiance">
+                <span>🛒 Chaque vente est un sourire client de plus ! 😊</span>
+            </div>
+            
+            <div id="adminFinanceCards" style="display:none;">
+                <div class="period-filter-bar">
+                    <button id="pBtnJour" class="period-btn active" onclick="filtrerPeriode('jour')">Aujourd'hui</button>
+                    <button id="pBtnSemaine" class="period-btn" onclick="filtrerPeriode('semaine')">7 Derniers Jours</button>
+                    <button id="pBtnMois" class="period-btn" onclick="filtrerPeriode('mois')">Ce Mois</button>
+                </div>
+
+                <div class="finance-cards">
+                    <div class="f-card gb">
+                        <h4>🛍️ Recettes GB</h4>
+                        <div class="amount" id="totalGBCasual">0 F</div>
+                    </div>
+                    <div class="f-card gh">
+                        <h4>🌿 Recettes GH</h4>
+                        <div class="amount" id="totalGloryHerbal">0 F</div>
+                    </div>
+                    <div class="f-card total">
+                        <h4>📊 TOTAL RECETTES</h4>
+                        <div class="amount" id="totalGeneral">0 F</div>
+                    </div>
+                </div>
+
+                <div class="channel-cards">
+                    <div class="c-card">
+                        <span>🏪 Ventes Boutique :</span>
+                        <strong id="totalCanalBoutique" style="color:#0f172a;">0 F</strong>
+                    </div>
+                    <div class="c-card">
+                        <span>📲 Ventes WhatsApp :</span>
+                        <strong id="totalCanalWhatsapp" style="color:#10b981;">0 F</strong>
+                    </div>
+                </div>
+
+                <div class="finance-cards">
+                    <div class="f-card depense">
+                        <h4>💸 TOTAL DÉPENSES</h4>
+                        <div class="amount" id="totalDepensesDisplay">0 F</div>
+                    </div>
+                    <div class="f-card benefice">
+                        <h4>📈 BÉNÉFICE NET</h4>
+                        <div class="amount" id="totalBeneficeNetDisplay">0 F</div>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-box" style="border-left: 4px solid #166534;">
+                        <h4 style="color:#166534;">🔥 Top des Ventes</h4>
+                        <div id="topVentesContainer">
+                            <small style="color:#94a3b8;">Analyse en cours...</small>
+                        </div>
+                    </div>
+                    <div class="analytics-box" style="border-left: 4px solid #d97706;">
+                        <h4 style="color:#d97706;">💤 Articles Stagnants</h4>
+                        <div id="flopVentesContainer">
+                            <small style="color:#94a3b8;">Analyse en cours...</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CATALOGUE VISUEL CAISSE & SCANNER -->
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h3 style="font-size:14px; color:#0f172a;">🛒 Catalogue Produits (Caisse)</h3>
+                    <div style="display:flex; gap:4px;">
+                        <button type="button" onclick="ouvrirModalVenteLibre()" style="background:#d97706; color:white; border:none; padding:5px 8px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:11px;">➕ Article Libre</button>
+                        <button type="button" id="btnToggleScanner" onclick="lancerScannerVente()" style="background:#2563eb; color:white; border:none; padding:5px 8px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:11px;">📷 Scanner QR</button>
+                    </div>
+                </div>
+
+                <div id="scannerBox" style="display:none; background:#0f172a; padding:10px; border-radius:10px; text-align:center; margin-bottom:12px;">
+                    <div id="readerVente" style="width:100%; max-width:280px; margin:0 auto;"></div>
+                    <p style="color:#94a3b8; font-size:10px; margin-top:6px;">Pointez la caméra vers le QR Code d'un produit pour l'ajouter au panier.</p>
+                </div>
+
+                <div style="margin-bottom:10px;">
+                    <input type="text" id="searchAlibaba" placeholder="🔍 Filtrer les articles en stock..." oninput="filtrerCatalogueAlibaba()">
+                </div>
+
+                <div id="alibabaGridContainer" class="alibaba-grid"></div>
+
+                <div style="background:#f8fafc; border:2px dashed #0284c7; border-radius:10px; padding:12px; margin-top:10px;">
+                    <h4 style="font-size:13px; color:#0369a1; margin-bottom:8px;">🛒 Panier de Caisse</h4>
+
+                    <div class="form-grid-2" style="margin-bottom:8px;">
+                        <div class="form-group">
+                            <label>Nom du Client / Contact :</label>
+                            <input type="text" id="cartClientName" placeholder="Client de passage">
+                        </div>
+                        <div class="form-group">
+                            <label>Téléphone Client (WhatsApp) :</label>
+                            <input type="tel" inputmode="numeric" id="cartClientPhone" placeholder="+228...">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2" style="margin-bottom:8px;">
+                        <div class="form-group">
+                            <label>Canal de Vente :</label>
+                            <select id="cartCanalVente">
+                                <option value="boutique">🏪 Vente en Boutique</option>
+                                <option value="whatsapp">📲 Vente WhatsApp / En ligne</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Remise / Réduction (FCFA) :</label>
+                            <input type="number" inputmode="numeric" id="cartRemise" placeholder="0 F" value="0" min="0" oninput="afficherPanier()">
+                        </div>
+                    </div>
+
+                    <table style="width:100%; border-collapse:collapse; margin-top:4px; font-size:11px; background:white; border-radius:8px; overflow:hidden;">
+                        <thead>
+                            <tr style="background:#e0f2fe; color:#0369a1; text-align:left;">
+                                <th style="padding:6px;">Article</th>
+                                <th style="padding:6px; text-align:center;">Prix</th>
+                                <th style="padding:6px; text-align:center;">Qté</th>
+                                <th style="padding:6px; text-align:right;">Total</th>
+                                <th style="padding:6px; text-align:center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartTableBody">
+                            <tr><td colspan="5" style="text-align:center; padding:12px; color:#94a3b8;">Panier vide. Cliquez sur "+ Panier" ci-dessus ou scannez un QR code.</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; background:#ffffff; padding:10px; border-radius:8px; border:1px solid #e2e8f0;">
+                        <div>
+                            <span style="font-size:11px; color:#64748b;">Total Net à Payer :</span>
+                            <strong id="cartTotalDisplay" style="font-size:16px; color:#be185d; margin-left:6px;">0 FCFA</strong>
+                        </div>
+                        <div>
+                            <select id="cartPaymentMode" onchange="toggleMontantRecu()" style="padding:5px; font-size:11px; border-radius:6px;">
+                                <option value="Espèces">💵 Espèces</option>
+                                <option value="TMoney / Flooz">📲 TMoney / Flooz</option>
+                                <option value="Crédit / Acompte">⚠️ Crédit / Acompte</option>
+                                <option value="Carte">💳 Carte Bancaire</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="divMontantRecu" style="margin-top:8px;">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label id="lblAmountReceived">Montant Reçu (Espèces) :</label>
+                                <input type="number" inputmode="numeric" id="cartAmountReceived" placeholder="Ex: 10000" oninput="calculerMonnaie()">
+                            </div>
+                            <div class="form-group" id="divMonnaie" style="display:none;">
+                                <label id="lblChangeText">Monnaie à rendre :</label>
+                                <div id="cartChangeDisplay" style="font-size:16px; font-weight:bold; color:#166534; padding-top:4px;">0 FCFA</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="validerPanierVente()" class="btn-valider gb" style="margin-top:8px;">✅ Valider la Vente & Générer le Reçu</button>
+                </div>
+            </div>
+
+            <!-- HISTORIQUE -->
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h3 id="titleRecettes" style="font-size:13px; color:#1e293b;">Historique des Recettes</h3>
+                    <button type="button" onclick="imprimerBilanGlobal()" style="background:#1e3a8a; color:white; border:none; padding:5px 8px; border-radius:6px; font-size:10px; font-weight:bold; cursor:pointer;">🖨️ Imprimer Bilan</button>
+                </div>
+                
+                <div class="form-grid-2" style="margin-bottom:10px;">
+                    <input type="text" id="searchVente" placeholder="🔍 Rechercher un client..." oninput="afficherVentes()">
+                    <div style="display:flex; gap:4px;">
+                        <select id="filtrePole" onchange="afficherVentes()">
+                            <option value="tous">Tous Pôles</option>
+                            <option value="gb">🛍️ GB Casual</option>
+                            <option value="gh">🌿 Glory Herbal</option>
+                        </select>
+                        <input type="date" id="filtreDateSpecifique" onchange="afficherVentes()">
+                        <button type="button" onclick="reinitialiserFiltreDate()" style="background:#64748b; color:white; border:none; padding:0 6px; border-radius:6px; cursor:pointer;">❌</button>
+                    </div>
+                </div>
+
+                <div id="salesContainer"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 2 : DOSSIERS PATIENTS ET CLINIQUE -->
+        <div id="panePatients" class="section-pane">
+            <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #15803d 0%, #166534 100%);">
+                <span>🩺 La santé par les plantes : écoute, soin et guérison 🍃</span>
+            </div>
+            
+            <div class="sub-tabs">
+                <button id="btnSubNew" class="sub-tab-btn active" onclick="switchSubTab('form')">➕ Nouvelle Fiche Patient</button>
+                <button id="btnSubList" class="sub-tab-btn" onclick="switchSubTab('list')">📋 Liste Dossiers</button>
+            </div>
+
+            <div id="subPaneForm">
+                <form id="patientForm">
+                    <input type="hidden" id="editingPatientId">
+
+                    <div class="patient-cover-card">
+                        <div class="cover-badge">CLINIQUE GLORY HERBAL</div>
+                        <div class="cover-subtitle">Spécialité : Soins par les Plantes & Médecine Naturelle</div>
+                        <h2 class="cover-title" id="formTitle">Fiche de Consultation Médicale</h2>
+                        <div class="cover-confidential">DOSSIER MÉDICAL CONFIDENTIEL</div>
+
+                        <div class="cover-grid">
+                            <div class="cover-field">
+                                <label>Nom & Prénoms :</label>
+                                <input type="text" id="pNom" placeholder="Nom du patient" required>
+                            </div>
+                            <div class="cover-field">
+                                <label>Sexe :</label>
+                                <select id="pSexe">
+                                    <option value="M">Masculin</option>
+                                    <option value="F">Féminin</option>
+                                </select>
+                            </div>
+                            <div class="cover-field">
+                                <label>Âge :</label>
+                                <input type="number" inputmode="numeric" id="pAge" placeholder="Ans" required>
+                            </div>
+                        </div>
+
+                        <div class="cover-grid-2">
+                            <div class="cover-field">
+                                <label>Téléphone :</label>
+                                <input type="tel" inputmode="numeric" id="pTel" placeholder="+228..." required>
+                            </div>
+                            <div class="cover-field">
+                                <label>Région / Ville :</label>
+                                <input type="text" id="pRegion" placeholder="Ex: Lomé">
+                            </div>
+                        </div>
+
+                        <div class="cover-grid-2">
+                            <div class="cover-field">
+                                <label>Référé par :</label>
+                                <input type="text" id="pRefere" placeholder="Recommandé par...">
+                            </div>
+                            <div class="cover-field">
+                                <label>
+                                    Date Enregistrement :
+                                    <button type="button" class="toggle-num-btn" onclick="toggleNumMode('pDate')">🔢 Pavé Num</button>
+                                </label>
+                                <input type="date" id="pDate" required style="background:rgba(255,255,255,0.9); color:#0f172a; border-radius:6px; font-weight:bold;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="medical-sheet">
+                        <div class="medical-header">
+                            <h3>FICHE D'EXAMEN MÉDICAL & TRAITEMENT</h3>
+                            2. EXAMEN CLINIQUE PATIENT
+                        </div>
+
+                        <div class="medical-layout">
+                            <div>
+                                <div class="med-box">
+                                    <div class="med-box-title">1. ÉTAT CIVIL & ADRESSE</div>
+                                    <div class="med-box-content">
+                                        <div class="form-group">
+                                            <label>Adresse complète :</label>
+                                            <input type="text" id="pAdresse" placeholder="Quartier, Maison...">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Ethnie / Origine :</label>
+                                            <input type="text" id="pEthnie" placeholder="Origine...">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="med-box">
+                                    <div class="med-box-title">2. ANTÉCÉDENTS PATIENT</div>
+                                    <div class="med-box-content">
+                                        <div class="form-group">
+                                            <label>Antécédents Médicaux :</label>
+                                            <textarea id="pAntecedentsMed" placeholder="Maladies chroniques, allergies..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Antécédents Familiaux :</label>
+                                            <textarea id="pAntecedentsFam" placeholder="Hérédité..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Profession / Activité :</label>
+                                            <input type="text" id="pProfession" placeholder="Métier...">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Mode de Vie / Habitudes :</label>
+                                            <input type="text" id="pAntSociaux" placeholder="Alimentation, tabac, alcool..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="med-box">
+                                    <div class="med-box-title">3. SYMPTÔMES & DIAGNOSTIC</div>
+                                    <div class="med-box-content">
+                                        <div class="form-group">
+                                            <label>Motif de Consultation :</label>
+                                            <textarea id="pMotif" placeholder="Raison principale venu..." required></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Plaintes Principales :</label>
+                                            <textarea id="pPlaintesPrinc" placeholder="Douleurs, symptômes..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Plaintes Secondaires :</label>
+                                            <textarea id="pPlaintesSec" placeholder="Autres gênes..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Résultats Examen / Analyse :</label>
+                                            <textarea id="pExamen" placeholder="Constatations physiques..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Diagnostic / Pathologies Retenues :</label>
+                                            <textarea id="pProblemes" placeholder="Maladies identifiées..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="med-box">
+                                    <div class="med-box-title">4. SUIVI & REGLEMENT</div>
+                                    <div class="med-box-content">
+                                        <div class="form-group">
+                                            <label>
+                                                Date du Prochain RDV :
+                                                <button type="button" class="toggle-num-btn" style="color:#0f172a; border-color:#cbd5e1;" onclick="toggleNumMode('pProchainRdv')">🔢 Pavé Num</button>
+                                            </label>
+                                            <input type="date" id="pProchainRdv">
+                                            <div>
+                                                <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(7)">+7 Jours</button>
+                                                <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(14)">+14 Jours</button>
+                                                <button type="button" class="rdv-shortcut-btn" onclick="setRdvShortcut(30)">+1 Mois</button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Montant Consultation / Soin (FCFA) :</label>
+                                            <input type="number" inputmode="numeric" id="pMontant" placeholder="Ex: 5000">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:8px; margin-top:12px;">
+                            <button type="submit" id="btnSubmitPatient" class="btn-valider" style="flex:2;">Enregistrer la Fiche Patient</button>
+                            <button type="button" id="btnCancelEdit" class="btn-valider" style="flex:1; background:#64748b; display:none;" onclick="annulerModification()">Annuler</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="subPaneList" style="display:none;">
+                <div style="margin-bottom:12px;">
+                    <input type="text" id="searchPatient" placeholder="🔍 Rechercher un patient..." oninput="filtrerPatients()">
+                </div>
+                <div id="patientResultsContainer"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 2.5 : COMMANDES CLIENTS EN LIGNE (AVEC POINT ROUGE) -->
+        <div id="paneCommandesClient" class="section-pane">
+            <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #10b981 0%, #059669 100%);">
+                <span>📲 Commandes clients en ligne (Panier WhatsApp) 🛍️</span>
+            </div>
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+                <h3 style="font-size:13px; margin-bottom:10px; color:#0f172a;">Liste des Commandes Reçues du Site Web</h3>
+                <div id="clientWebOrdersContainer">
+                    <p style="text-align:center; color:#94a3b8; padding:20px;">Chargement des commandes...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3 : PRODUCTION & LABO -->
+        <div id="paneProduction" class="section-pane">
+            <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #b45309 0%, #d97706 100%);">
+                <span>🧪 L'art de la formulation et de la préparation sur-mesure ✨</span>
+            </div>
+            
+            <div class="sub-tabs">
+                <button id="btnProdSubInterne" class="sub-tab-btn prod-active" onclick="switchProdSubTab('interne')">🌿 Production Tisanes</button>
+                <button id="btnProdSubGrossiste" class="sub-tab-btn" onclick="switchProdSubTab('grossiste')">🤝 Grossistes</button>
+                <button id="btnProdSubMatieres" class="sub-tab-btn" onclick="switchProdSubTab('matieres')">🧪 Matières Premières</button>
+            </div>
+
+            <!-- PRODUCTION INTERNE -->
+            <div id="prodSubPaneInterne">
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
+                    <h3 style="font-size:13px; margin-bottom:10px; color:#b45309;">⚙️ Fiche de Fabrication / Préparation</h3>
+                    <form id="prodInterneForm">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Pôle Produit :</label>
+                                <select id="prodInternePole">
+                                    <option value="gh">🌿 Glory Herbal (Tisanes, Pommades)</option>
+                                    <option value="gb">🛍️ GB Casual (Lotions, Savons)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Mode de Sélection Article :</label>
+                                <select id="prodModeSelection" onchange="toggleProdModeSelection()">
+                                    <option value="stock">📦 Choisir un Produit du Stock</option>
+                                    <option value="libre">✏️ Saisir un Nom Libre (Hors-Stock)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="divSelectProdStock">
+                            <label>Article Concerné en Stock :</label>
+                            <select id="prodInterneSelectStock"></select>
+                        </div>
+
+                        <div class="form-group" id="divInputProdLibre" style="display:none;">
+                            <label>Nom du Produit / Préparation Libre :</label>
+                            <input type="text" id="prodInterneNomLibre" placeholder="Ex: Tisane Purifiante Spéciale, Base Savon Noir...">
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Quantité / Lots Fabriqués :</label>
+                                <input type="number" inputmode="numeric" id="prodInterneQte" placeholder="Ex: 50 sachets" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Prépareur / Responsable :</label>
+                                <input type="text" id="prodInterneAgent" placeholder="Ex: Dédé" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Plantes Médicinales & Ingrédients Utilisés :</label>
+                            <textarea id="prodPlantesUtilisees" placeholder="Ex: Neem, Citronnelle, Gingembre..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>📸 Photo des Plantes / Ingrédients Préparés :</label>
+                            <input type="file" id="prodImagePlantes" accept="image/*">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Procédé & Étapes de Préparation :</label>
+                            <textarea id="prodProcede" placeholder="Ex: Décoction 100°C pendant 20 min..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Posologie & Conseils d'Utilisation :</label>
+                            <input type="text" id="prodPosologie" placeholder="Ex: 1 cuillère à soupe dans 1L d'eau...">
+                        </div>
+
+                        <button type="submit" class="btn-valider prod-btn">✅ Enregistrer la Préparation</button>
+                    </form>
+                </div>
+
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+                    <h3 style="font-size:13px; margin-bottom:10px; color:#1e293b;">Historique des Lots de Fabrication</h3>
+                    <div id="prodInterneContainer"></div>
+                </div>
+            </div>
+
+            <!-- ONGLET GROSSISTES -->
+            <div id="prodSubPaneGrossiste" style="display:none;">
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
+                    <h3 style="font-size:13px; margin-bottom:10px; color:#b45309;">📝 Nouvelle Commande Grossiste</h3>
+                    <form id="prodGrossisteForm">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Mode Sélection Grossiste :</label>
+                                <select id="grossisteModeSelection" onchange="toggleGrossisteModeSelection()">
+                                    <option value="select">👑 Choisir un Grossiste Habituel</option>
+                                    <option value="libre">✏️ Saisir / Modifier un Nom Libre</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="divSelectGrossiste">
+                                <label>Client Grossiste :</label>
+                                <select id="prodGrossisteClientSelect">
+                                    <option value="Pichine Beauté">👑 Pichine Beauté</option>
+                                    <option value="Secret Féminin">🌸 Secret Féminin</option>
+                                    <option value="Autre Grossiste">🤝 Autre Client Grossiste</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="divInputGrossisteLibre" style="display:none;">
+                                <label>Nom du Grossiste :</label>
+                                <input type="text" id="prodGrossisteClientLibre" placeholder="Ex: Ets Saint-Paul, Partenaire...">
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Désignation Commande :</label>
+                                <input type="text" id="prodGrossisteNom" placeholder="Ex: Crème éclaircissante 500g" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Quantité / Volume :</label>
+                                <input type="text" id="prodGrossisteQte" placeholder="Ex: 30 pots" required>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Date Livraison Prévue :</label>
+                                <input type="date" id="prodGrossisteDateLivraison" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Statut de Paiement :</label>
+                                <select id="prodGrossistePaiement">
+                                    <option value="En attente de règlement">⏳ En attente de règlement</option>
+                                    <option value="Acompte versé">⚠️ Acompte versé</option>
+                                    <option value="Totalement payé">✅ Totalement payé</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>📸 Photo du Produit / Modèle Référence :</label>
+                            <input type="file" id="prodGrossisteImage" accept="image/*">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Formule Spécifique / Exigences :</label>
+                            <textarea id="prodGrossisteFormule" placeholder="Ex: Base Beurre de Karité, Neem..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-valider prod-btn">➕ Enregistrer la Commande Grossiste</button>
+                    </form>
+                </div>
+
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+                    <h3 style="font-size:13px; margin-bottom:10px; color:#1e293b;">Commandes Grossistes en Cours</h3>
+                    <div id="prodGrossistesContainer"></div>
+                </div>
+            </div>
+
+            <!-- ONGLET MATIÈRES PREMIÈRES -->
+            <div id="prodSubPaneMatieres" style="display:none;">
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
+                    <h3 style="font-size:13px; margin-bottom:10px; color:#b45309;">🧪 Ajout d'une Matière Première</h3>
+                    <form id="prodMatiereForm">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Nom Ingrédient :</label>
+                                <input type="text" id="matiereNom" placeholder="Ex: Beurre de Karité..." required>
+                            </div>
+                            <div class="form-group">
+                                <label>Stock Disponible :</label>
+                                <input type="text" id="matiereQte" placeholder="Ex: 25 Kg" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Usage / Vertus / Dosage :</label>
+                            <input type="text" id="matiereUsage" placeholder="Ex: Hydratant, éclaircissant...">
+                        </div>
+
+                        <button type="submit" class="btn-valider prod-btn">🧪 Enregistrer l'Ingrédient</button>
+                    </form>
+                </div>
+
+                <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+                    <h3 style="font-size:13px; margin-bottom:10px; color:#1e293b;">Répertoire des Ingrédients</h3>
+                    <div id="matieresContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4 : STOCKS & CATALOGUE -->
+        <div id="paneStock" class="section-pane">
+            <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #0284c7 0%, #0369a1 100%);">
+                <span>📦 Un stock bien suivi, c'est zéro opportunité manquée 📊</span>
+            </div>
+            
+            <div id="stockDashboardBanner" class="stock-dashboard-alert" style="display:none;">
+                <h3>⚠️ Alerte Réapprovisionnement - Stock Faible</h3>
+                <div id="stockDashboardListContainer"></div>
+            </div>
+
+            <div id="adminStockSection" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
+                <h3 style="font-size:13px; margin-bottom:10px; color:#0284c7;">📦 Gestion du Catalogue & Stock</h3>
+                
+                <form id="stockForm">
+                    <input type="hidden" id="editingStockId">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Pôle Produit :</label>
+                            <select id="stockPole">
+                                <option value="gb">🛍️ GB Casual</option>
+                                <option value="gh">🌿 Glory Herbal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nom Produit :</label>
+                            <input type="text" id="stockNom" placeholder="Ex: Savon Alpha Arbutin" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Prix de Vente (FCFA) :</label>
+                            <input type="number" inputmode="numeric" id="stockPrix" placeholder="Ex: 3500" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantité En Stock :</label>
+                            <input type="number" inputmode="numeric" id="stockQte" placeholder="Ex: 20" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Photo Produit (Optionnel) :</label>
+                        <input type="file" id="stockImageInput" accept="image/*">
+                        <small id="txtImageNote" style="display:none; color:#d97706;">Laissez vide pour conserver l'image existante.</small>
+                    </div>
+
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" id="btnSubmitStock" class="btn-valider stock-btn" style="flex:2;">Ajouter au Catalogue</button>
+                        <button type="button" id="btnCancelEditStock" class="btn-valider" style="flex:1; background:#64748b; display:none;" onclick="annulerEditStock()">Annuler</button>
+                    </div>
+                </form>
+
+                <hr style="margin:15px 0; border:none; border-top:1px dashed #cbd5e1;">
+
+                <h4 style="font-size:12px; color:#334155; margin-bottom:6px;">📜 Mouvements de Stock</h4>
+                <div id="stockLogsContainer" style="max-height:120px; overflow-y:auto; background:#f8fafc; padding:8px; border-radius:8px; border:1px solid #e2e8f0;"></div>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+                <h3 style="font-size:13px; margin-bottom:10px; color:#1e293b;">Liste des Produits & QR Codes Générés</h3>
+                <div id="stockContainer"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 5 : DÉPENSES -->
+        <div id="paneDepenses" class="section-pane">
+            <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #dc2626 0%, #991b1b 100%);">
+                <span>💼 Gérer avec sagesse pour faire prospérer l'entreprise 📈</span>
+            </div>
+            
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
+                <h3 style="font-size:13px; margin-bottom:10px; color:#dc2626;">💸 Saisie d'une Dépense</h3>
+                <form id="depenseForm">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Pôle Concerné :</label>
+                            <select id="depensePole">
+                                <option value="gb">🛍️ GB Casual</option>
+                                <option value="gh">🌿 Glory Herbal</option>
+                                <option value="general">🏢 Charge Générale</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Catégorie :</label>
+                            <select id="depenseCategorie">
+                                <option value="Approvisionnement">📦 Achat Stock</option>
+                                <option value="Loyer / Factures">🏢 Loyer, Eau, Elec</option>
+                                <option value="Transport">🚚 Transport & Livraison</option>
+                                <option value="Marketing">📢 Publicité & Téléphone</option>
+                                <option value="Salaire / Avance">👥 Avance / Salaire</option>
+                                <option value="Divers">📌 Autre dépense</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Motif / Description :</label>
+                            <input type="text" id="depenseMotif" placeholder="Ex: Achat flacons" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Montant (FCFA) :</label>
+                            <input type="number" inputmode="numeric" id="depenseMontant" placeholder="Ex: 15000" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-valider depense-btn">Enregistrer la Dépense</button>
+                </form>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+                <h3 style="font-size:13px; margin-bottom:10px; color:#1e293b;">Historique des Dépenses</h3>
+                <div id="depensesListContainer"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 6 : ADMINISTRATION COMPLÈTE -->
+        <div id="paneAdmin" class="section-pane">
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
+                <h3 id="employeFormTitle" style="font-size:13px; margin-bottom:10px; color:#7e22ce;">👔 Inscription Employé(e)</h3>
+                <form id="employeForm">
+                    <input type="hidden" id="editingEmpId">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Nom & Prénoms :</label>
+                            <input type="text" id="empNom" placeholder="Nom complet" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Âge :</label>
+                            <input type="number" inputmode="numeric" id="empAge" placeholder="Ex: 25">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Situation Matrimoniale :</label>
+                            <select id="empSituation">
+                                <option value="Célibataire">Célibataire</option>
+                                <option value="Marié(e)">Marié(e)</option>
+                                <option value="Fiancé(e)">Fiancé(e)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Téléphone :</label>
+                            <input type="tel" inputmode="numeric" id="empTel" placeholder="+228..." required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Lieu de Résidence :</label>
+                            <input type="text" id="empLieu" placeholder="Quartier / Lomé">
+                        </div>
+                        <div class="form-group">
+                            <label>Code Secret App (4 chiffres) :</label>
+                            <input type="password" inputmode="numeric" id="empCode" placeholder="Ex: 1234" required maxlength="10">
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" id="btnSubmitEmp" class="btn-valider" style="background:#7e22ce; flex:2;">Créer Fiche Employé</button>
+                        <button type="button" id="btnCancelEditEmp" class="btn-valider" style="flex:1; background:#64748b; display:none;" onclick="annulerEditEmploye()">Annuler</button>
+                    </div>
+                </form>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
+                <h3 style="font-size:13px; margin-bottom:10px; color:#1e293b;">Personnel Enregistré</h3>
+                <div id="employesContainer"></div>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
+                <h3 style="font-size:13px; margin-bottom:10px; color:#1e293b;">🔐 Modification Code Admin</h3>
+                <form id="changeAdminCodeForm">
+                    <div class="form-group">
+                        <label>Nouveau Code Administrateur :</label>
+                        <input type="password" inputmode="numeric" id="newAdminCode" placeholder="Nouveau code..." required>
+                    </div>
+                    <button type="submit" class="btn-valider" style="background:#0f172a;">Changer Code Admin</button>
+                </form>
+            </div>
+
+            <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:12px;">
+                <h3 style="font-size:12px; color:#991b1b; margin-bottom:6px;">⚙️ Réinitialisation du Système</h3>
+                <p style="font-size:10px; color:#7f1d1d; margin-bottom:8px;">Effacer toutes les données du Cloud pour remettre à zéro.</p>
+                <button type="button" id="resetCloudBtn" style="background:#dc2626; color:white; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:11px;">🗑️ Réinitialiser Cloud</button>
+            </div>
+        </div>
+
+        <!-- BARRE DE NAVIGATION EN BAS EN ESPACE PERSONNEL -->
+        <div id="bottomNav" class="bottom-nav">
+            <button id="navProfil" class="bottom-nav-item active" onclick="switchTab('profil')">
+                <span class="icon">👤</span>
+                <span>Profil</span>
+            </button>
+            <button id="navVentes" class="bottom-nav-item" onclick="switchTab('ventes')">
+                <span class="icon">🛒</span>
+                <span>Caisse</span>
+            </button>
+            <button id="navPatients" class="bottom-nav-item" onclick="switchTab('patients')">
+                <span class="icon">🩺</span>
+                <span>Patients</span>
+            </button>
+            <button id="navCommandesClient" class="bottom-nav-item" onclick="switchTab('commandesClient')">
+                <span class="icon">🔔</span>
+                <span>Commandes</span>
+                <span class="nav-red-dot" id="navOrderRedDot">0</span>
+            </button>
+            <button id="navProduction" class="bottom-nav-item" onclick="switchTab('production')" style="display:none;">
+                <span class="icon">🏭</span>
+                <span>Labo</span>
+            </button>
+            <button id="navStock" class="bottom-nav-item" onclick="switchTab('stock')" style="display:none;">
+                <span class="icon">📦</span>
+                <span>Stock</span>
+            </button>
+            <button id="navDepenses" class="bottom-nav-item" onclick="switchTab('depenses')" style="display:none;">
+                <span class="icon">💸</span>
+                <span>Dépenses</span>
+            </button>
+            <button id="navAdmin" class="bottom-nav-item" onclick="switchTab('admin')" style="display:none;">
+                <span class="icon">⚙️</span>
+                <span>Admin</span>
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODALES (REÇU ET VENTE LIBRE) -->
+<div id="receiptModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 id="modalTitleText" style="font-size:14px; margin-bottom:8px; color:#0f172a;">🧾 Reçu de Paiement</h3>
+        <div id="receiptTextContent" class="receipt-box"></div>
+        <div class="modal-actions">
+            <button type="button" class="btn-modal copy" onclick="copierTexteRecu()">📋 Copier WA</button>
+            <button type="button" class="btn-modal print" onclick="imprimerModalRecu()">🖨️ Imprimer</button>
+            <button type="button" class="btn-modal close" onclick="fermerModalRecu()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<div id="freeSaleModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 style="font-size:14px; margin-bottom:10px; color:#d97706;">➕ Ajouter un Article Hors-Stock</h3>
+        <div class="form-group">
+            <label>Pôle Produit :</label>
+            <select id="freeSalePole">
+                <option value="gb">🛍️ GB Casual</option>
+                <option value="gh">🌿 Glory Herbal</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Nom de l'article / Service libre :</label>
+            <input type="text" id="freeSaleNom" placeholder="Ex: Frais de livraison, sachet emballage...">
+        </div>
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label>Prix Unitaire (FCFA) :</label>
+                <input type="number" inputmode="numeric" id="freeSalePrix" placeholder="Ex: 1000">
+            </div>
+            <div class="form-group">
+                <label>Quantité :</label>
+                <input type="number" inputmode="numeric" id="freeSaleQte" value="1" min="1">
+            </div>
+        </div>
+        <div class="modal-actions" style="margin-top:10px;">
+            <button type="button" class="btn-modal print" style="background:#d97706;" onclick="ajouterVenteLibreAuPanier()">Ajouter au Panier</button>
+            <button type="button" class="btn-modal close" onclick="fermerModalVenteLibre()">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPT JAVASCRIPT INTÉGRÉ FIREBASE COMPLET -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, deleteDoc, orderBy, query, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyA6uhTxtZRCRWfsN7hL1rB3aFosMn2jRc",
+        authDomain: "gb-casual.firebaseapp.com",
+        projectId: "gb-casual",
+        storageBucket: "gb-casual.firebasestorage.app",
+        messagingSenderId: "896499619613",
+        appId: "1:896499619613:web:94d618f034158ef6c133f4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let localPatients = [];
+    let localStock = [];
+    let localVentes = [];
+    let localDepenses = [];
+    let localEmployes = [];
+    let localWebOrders = [];
+    let panierVente = [];
+    let clientCart = [];
+    let currentCategoryFilter = 'tous';
+    let currentPeriod = 'jour';
+    let currentReceiptText = "";
+    let enteredPin = "";
+    let html5QrScannerInstance = null;
+
+    const MON_NUMERO_WHATSAPP = "22890000000";
+
+    document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedUser = localStorage.getItem('gb_casual_user_session');
+        if (savedUser) {
+            try {
+                currentUser = JSON.parse(savedUser);
+                lancerApplication();
+            } catch(e) { showPublicCatalog(); }
+        } else {
+            showPublicCatalog();
+        }
+        chargerCommandesClients(); // Charger les commandes web en arrière-plan
+    });
+
+    /* SYSTEME D'ONGLETS VITRINE STYLE LA SNEAK */
+    window.filtrerVitrineCategorie = (cat, btnEl) => {
+        currentCategoryFilter = cat;
+        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+        if(btnEl) btnEl.classList.add('active');
+        afficherVitrinePublique();
+    };
+
+    window.filtrerVitrineSearch = () => { afficherVitrinePublique(); };
+
+    function afficherVitrinePublique() {
+        const container = document.getElementById('gridPublicContainer');
+        const searchText = document.getElementById('searchPublicInput')?.value.toLowerCase() || '';
+
+        let html = '';
+        localStock.forEach(st => {
+            if (st.qte <= 0) return;
+            if (currentCategoryFilter !== 'tous' && st.pole !== currentCategoryFilter) return;
+            if (searchText && !st.nom.toLowerCase().includes(searchText)) return;
+
+            const imgTag = st.image ? `<img src="${st.image}" alt="${st.nom}">` : `<div style="font-size:42px;">📦</div>`;
+            const isGb = st.pole === 'gb';
+
+            html += `
+                <div class="product-card">
+                    <div class="product-img-box">
+                        ${imgTag}
+                        <span class="product-tag ${isGb ? 'tag-gb' : 'tag-gh'}">${isGb ? '🛍️ GB Casual' : '🌿 Glory Herbal'}</span>
+                    </div>
+                    <div class="product-details">
+                        <div>
+                            <div class="product-name">${st.nom}</div>
+                            <div class="product-price">${st.prix.toLocaleString()} FCFA</div>
+                        </div>
+                        <button type="button" class="btn-add-client-cart" onclick="ajouterAuPanierClient('${st.id}')">
+                            <span>🛒 + Ajouter au panier</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+
+        if (container) container.innerHTML = html || '<p style="grid-column:1/-1; text-align:center; padding:30px; color:#94a3b8; font-size:12px;">Aucun produit trouvé dans cette catégorie.</p>';
+    }
+
+    window.commanderDirectWhatsApp = (nomProduit, prix) => {
+        let msg = `Bonjour GB Casual & Glory Herbal, je suis intéressé(e) par le produit suivant :\n\n👉 *${nomProduit}* ${prix ? '(' + prix.toLocaleString() + ' FCFA)' : ''}\n\nEst-il disponible pour livraison ?`;
+        window.open(`https://wa.me/${MON_NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+
+    /* GESTION DU PANIER CLIENT E-COMMERCE & ENREGISTREMENT FIREBASE */
+    window.toggleClientCartDrawer = () => {
+        const drawer = document.getElementById('clientCartDrawer');
+        drawer.classList.toggle('active');
+        afficherPanierClient();
+    };
+
+    window.ajouterAuPanierClient = (id) => {
+        const item = localStock.find(s => s.id === id);
+        if(!item) return;
+
+        const index = clientCart.findIndex(c => c.id === id);
+        if(index > -1) {
+            if(clientCart[index].qte < item.qte) {
+                clientCart[index].qte += 1;
+            } else {
+                alert("Stock maximum atteint pour cet article.");
+                return;
+            }
+        } else {
+            clientCart.push({ id: item.id, nom: item.nom, prix: item.prix, qte: 1, stockMax: item.qte });
+        }
+
+        document.getElementById('clientCartCount').textContent = clientCart.reduce((sum, c) => sum + c.qte, 0);
+        alert(`✅ "${item.nom}" a été ajouté à votre panier !`);
+    };
+
+    window.modifierQteClientCart = (index, delta) => {
+        clientCart[index].qte += delta;
+        if(clientCart[index].qte <= 0) {
+            clientCart.splice(index, 1);
+        } else if(clientCart[index].qte > clientCart[index].stockMax) {
+            clientCart[index].qte = clientCart[index].stockMax;
+        }
+        document.getElementById('clientCartCount').textContent = clientCart.reduce((sum, c) => sum + c.qte, 0);
+        afficherPanierClient();
+    };
+
+    function afficherPanierClient() {
+        const container = document.getElementById('clientCartItemsContainer');
+        const totalDisplay = document.getElementById('clientCartTotalDisplay');
+        
+        if(clientCart.length === 0) {
+            container.innerHTML = `<p style="text-align:center; color:#94a3b8; font-size:11px; padding:15px;">Votre panier est vide.</p>`;
+            totalDisplay.textContent = "0 FCFA";
+            return;
+        }
+
+        let html = "";
+        let total = 0;
+        clientCart.forEach((c, idx) => {
+            const subtotal = c.prix * c.qte;
+            total += subtotal;
+            html += `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px; border-radius:8px; margin-bottom:6px; border:1px solid #e2e8f0; font-size:11px;">
+                    <div>
+                        <strong>${c.nom}</strong><br>
+                        <span style="color:#166534; font-weight:bold;">${c.prix.toLocaleString()} F x ${c.qte}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <button type="button" onclick="modifierQteClientCart(${idx}, -1)" style="padding:2px 6px; font-weight:bold; background:#e2e8f0; border:none; border-radius:4px; cursor:pointer;">-</button>
+                        <strong style="font-size:12px;">${c.qte}</strong>
+                        <button type="button" onclick="modifierQteClientCart(${idx}, 1)" style="padding:2px 6px; font-weight:bold; background:#e2e8f0; border:none; border-radius:4px; cursor:pointer;">+</button>
+                        <button type="button" onclick="modifierQteClientCart(${idx}, -999)" style="color:#ef4444; background:transparent; border:none; font-size:13px; cursor:pointer; margin-left:4px;">🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        totalDisplay.textContent = total.toLocaleString() + " FCFA";
+    }
+
+    window.commanderPanierClientWhatsApp = async () => {
+        if(clientCart.length === 0) return alert("Votre panier est vide !");
+        const nom = document.getElementById('clientOrderName').value.trim() || 'Client(e)';
+        const adresse = document.getElementById('clientOrderAddress').value.trim() || 'Non spécifiée';
+
+        let total = clientCart.reduce((sum, c) => sum + (c.prix * c.qte), 0);
+
+        try {
+            // Enregistrement automatique dans Firestore pour déclencher la notification rouge
+            await addDoc(collection(db, "commandes_clients"), {
+                nomClient: nom,
+                adresse: adresse,
+                articles: clientCart,
+                montantTotal: total,
+                statut: "En attente",
+                dateString: new Date().toLocaleString('fr-FR'),
+                createdAt: serverTimestamp()
+            });
+        } catch(e) { console.error("Erreur enregistrement commande web"); }
+
+        let msg = `Bonjour GB Casual & Glory Herbal, je souhaite passer commande :\n\n👤 *Client :* ${nom}\n📍 *Adresse :* ${adresse}\n\n---------------------------------\n📦 *ARTICLES COMMANDÉS :*\n---------------------------------\n` +
+            clientCart.map(c => `- ${c.nom} x${c.qte} : ${(c.prix * c.qte).toLocaleString()} FCFA`).join('\n') +
+            `\n---------------------------------\n💰 *TOTAL GÉNÉRAL : ${total.toLocaleString()} FCFA*\n\nMerci de me confirmer la disponibilité pour livraison !`;
+
+        window.open(`https://wa.me/${MON_NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
+        
+        // Vider le panier
+        clientCart = [];
+        document.getElementById('clientCartCount').textContent = '0';
+        toggleClientCartDrawer();
+    };
+
+    /* CHARGEMENT DES COMMANDES CLIENTS & GESTION POINT ROUGE */
+    async function chargerCommandesClients() {
+        try {
+            const snap = await getDocs(query(collection(db, "commandes_clients"), orderBy("createdAt", "desc")));
+            localWebOrders = [];
+            let unreadCount = 0;
+            let html = "";
+
+            snap.forEach(d => {
+                const order = { id: d.id, ...d.data() };
+                localWebOrders.push(order);
+                if(order.statut === "En attente") unreadCount++;
+
+                let articlesListText = "";
+                if(order.articles && Array.isArray(order.articles)) {
+                    order.articles.forEach(art => {
+                        articlesListText += `• ${art.nom} (x${art.qte}) - ${(art.prix * art.qte).toLocaleString()} F<br>`;
+                    });
+                }
+
+                const badgeStatut = order.statut === "Traité" ? `<span style="background:#dcfce7; color:#15803d; padding:3px 8px; border-radius:10px; font-size:9px; font-weight:bold;">🟢 Traité</span>` : `<span style="background:#fef3c7; color:#b45309; padding:3px 8px; border-radius:10px; font-size:9px; font-weight:bold;">🟡 En attente</span>`;
+
+                html += `
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:8px; font-size:11px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong>👤 ${order.nomClient}</strong>
+                            ${badgeStatut}
+                        </div>
+                        <p style="color:#475569; margin-bottom:4px;">📍 Adresse : ${order.adresse}</p>
+                        <div style="background:white; padding:6px; border-radius:6px; border:1px solid #cbd5e1; margin-bottom:6px;">
+                            ${articlesListText}
+                            <div style="text-align:right; font-weight:bold; color:#166534; margin-top:4px;">Total : ${order.montantTotal.toLocaleString()} FCFA</div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <small style="color:#94a3b8;">📅 ${order.dateString || ''}</small>
+                            ${order.statut === 'En attente' ? `<button type="button" class="btn-action" style="background:#15803d; font-size:9px; padding:4px 8px;" onclick="marquerCommandeTraitee('${order.id}')">✅ Marquer comme Traité</button>` : `<button type="button" class="btn-action" style="background:#64748b; font-size:9px; padding:4px 8px;" onclick="marquerCommandeEnAttente('${order.id}')">↩️ Remettre En attente</button>`}
+                        </div>
+                    </div>
+                `;
+            });
+
+            const redDot = document.getElementById('navOrderRedDot');
+            if(unreadCount > 0) {
+                redDot.textContent = unreadCount;
+                redDot.style.display = 'block';
+            } else {
+                redDot.style.display = 'none';
+            }
+
+            const container = document.getElementById('clientWebOrdersContainer');
+            if(container) container.innerHTML = html || '<p style="text-align:center; color:#94a3b8; padding:15px;">Aucune commande en ligne reçue pour le moment.</p>';
+
+        } catch(e) {}
+    }
+
+    window.marquerCommandeTraitee = async (id) => {
+        await setDoc(doc(db, "commandes_clients", id), { statut: "Traité" }, { merge: true });
+        chargerCommandesClients();
+    };
+
+    window.marquerCommandeEnAttente = async (id) => {
+        await setDoc(doc(db, "commandes_clients", id), { statut: "En attente" }, { merge: true });
+        chargerCommandesClients();
+    };
+
+    /* DIGICODE ET CONNEXION */
+    window.toggleNumMode = (inputId) => {
+        const el = document.getElementById(inputId);
+        if (!el) return;
+        if (el.type === 'date') {
+            el.type = 'text'; el.inputMode = 'numeric'; el.placeholder = 'JJ/MM/AAAA';
+            alert("Mode Pavé Numérique activé ! Tapez la date au format 25102026 ou 25/10/2026.");
+        } else {
+            el.type = 'date'; el.removeAttribute('inputMode'); el.placeholder = '';
+        }
+    };
+
+    window.pressPin = (num) => {
+        if (enteredPin.length < 4) {
+            enteredPin += num;
+            updatePinDots();
+            if (enteredPin.length === 4) {
+                const codeTente = enteredPin;
+                setTimeout(() => { validerCodeSecret(codeTente); }, 150);
+            }
+        }
+    };
+
+    window.popPin = () => { if (enteredPin.length > 0) { enteredPin = enteredPin.slice(0, -1); updatePinDots(); } };
+    window.clearPin = () => { enteredPin = ""; updatePinDots(); document.getElementById('errorMsg').style.display = 'none'; };
+
+    function updatePinDots() {
+        for (let i = 1; i <= 4; i++) {
+            const dot = document.getElementById('dot-' + i);
+            if (i <= enteredPin.length) dot.classList.add('filled');
+            else dot.classList.remove('filled');
+        }
+    }
+
+    async function validerCodeSecret(code) {
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.style.display = 'none';
+
+        let adminCode = "1988";
+        try {
+            const docRef = doc(db, "parametres", "securite");
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists() && docSnap.data().adminCode) adminCode = docSnap.data().adminCode;
+        } catch (e) { adminCode = "1988"; }
+
+        if (code === adminCode) {
+            currentUser = { nom: "Administrateur", role: "admin" };
+            localStorage.setItem('gb_casual_user_session', JSON.stringify(currentUser));
+            lancerApplication();
+            return;
+        }
+
+        try {
+            const empSnap = await getDocs(collection(db, "employes"));
+            let userFound = null;
+            empSnap.forEach(d => {
+                const empData = d.data();
+                if (empData.code === code) {
+                    userFound = { 
+                        id: d.id, nom: empData.nom, tel: empData.tel || 'Non renseigné',
+                        lieu: empData.lieu || 'Non renseigné', situation: empData.situation || 'Célibataire', role: "employe" 
+                    };
+                }
+            });
+
+            if (userFound) {
+                currentUser = userFound;
+                localStorage.setItem('gb_casual_user_session', JSON.stringify(currentUser));
+                lancerApplication();
+            } else {
+                errorMsg.style.display = 'block'; clearPin();
+            }
+        } catch (err) { errorMsg.style.display = 'block'; clearPin(); }
+    }
+
+    window.showPublicCatalog = () => {
+        document.querySelectorAll('.app-view').forEach(e => e.classList.remove('active'));
+        document.getElementById('publicCatalogScreen').classList.add('active');
+        chargerStock();
+    };
+
+    window.showLoginModal = () => {
+        clearPin();
+        document.querySelectorAll('.app-view').forEach(e => e.classList.remove('active'));
+        document.getElementById('loginScreen').classList.add('active');
+    };
+
+    window.setRdvShortcut = (days) => {
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + days);
+        document.getElementById('pProchainRdv').value = targetDate.toISOString().split('T')[0];
+    };
+
+    document.getElementById('changeAdminCodeForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (currentUser.role !== 'admin') return;
+        const newCode = document.getElementById('newAdminCode').value.trim();
+        if (newCode.length < 4) return alert("Le code doit contenir au moins 4 caractères.");
+        try {
+            await setDoc(doc(db, "parametres", "securite"), { adminCode: newCode }, { merge: true });
+            alert("✅ Code administrateur mis à jour avec succès !");
+            document.getElementById('newAdminCode').value = '';
+        } catch(err) { alert("Erreur : " + err.message); }
+    });
+
+    function lancerApplication() {
+        document.querySelectorAll('.app-view').forEach(e => e.classList.remove('active'));
+        document.getElementById('appScreen').classList.add('active');
+        document.getElementById('userInfoDisplay').textContent = currentUser.nom + " (" + (currentUser.role === 'admin' ? 'Entrepreneur' : 'Employé') + ")";
+        
+        if(currentUser.role === 'admin') {
+            document.getElementById('navProfil').style.display = "none";
+            document.getElementById('navAdmin').style.display = "flex";
+            document.getElementById('navDepenses').style.display = "flex";
+            document.getElementById('navProduction').style.display = "flex";
+            document.getElementById('navStock').style.display = "flex";
+            document.getElementById('adminFinanceCards').style.display = "block";
+            document.getElementById('titleRecettes').textContent = "Historique Général des Recettes";
+            chargerEmployes();
+            chargerProductionInterne();
+            chargerProductionGrossistes();
+            chargerMatieresPremieres();
+            switchTab('ventes');
+        } else {
+            document.getElementById('navProfil').style.display = "flex";
+            document.getElementById('navAdmin').style.display = "none";
+            document.getElementById('navDepenses').style.display = "none";
+            document.getElementById('navProduction').style.display = "none";
+            document.getElementById('navStock').style.display = "none";
+            document.getElementById('adminFinanceCards').style.display = "none";
+            document.getElementById('titleRecettes').textContent = "Mes Ventes de la Journée";
+            
+            document.getElementById('empProfileName').textContent = currentUser.nom;
+            document.getElementById('empProfileTel').textContent = currentUser.tel || 'N/A';
+            document.getElementById('empProfileLieu').textContent = currentUser.lieu || 'N/A';
+            document.getElementById('empProfileSituation').textContent = currentUser.situation || 'Célibataire';
+            document.getElementById('empAvatarLetter').textContent = currentUser.nom ? currentUser.nom.charAt(0).toUpperCase() : '👤';
+            document.getElementById('sloganProfil').textContent = `👋 Heureux de te revoir ${currentUser.nom} ! Faisons de grandes choses aujourd'hui ! 🚀`;
+
+            switchTab('profil');
+        }
+        
+        chargerVentes();
+        if(currentUser.role === 'admin') chargerDepenses();
+        chargerPatients();
+        chargerStock();
+        chargerCommandesClients();
+        if(currentUser.role === 'admin') chargerMouvementsStock();
+    }
+
+    window.deconnecter = () => {
+        localStorage.removeItem('gb_casual_user_session');
+        currentUser = null;
+        if(html5QrScannerInstance) {
+            html5QrScannerInstance.stop().catch(() => {});
+            html5QrScannerInstance = null;
+        }
+        showPublicCatalog();
+    };
+
+    window.switchTab = (tab) => {
+        if(html5QrScannerInstance && tab !== 'ventes') {
+            html5QrScannerInstance.stop().then(() => {
+                document.getElementById('scannerBox').style.display = 'none';
+                document.getElementById('btnToggleScanner').textContent = "📷 Scanner QR";
+                html5QrScannerInstance = null;
+            }).catch(() => {});
+        }
+
+        document.querySelectorAll('.section-pane').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.bottom-nav-item').forEach(el => el.classList.remove('active'));
+        
+        if (tab === 'profil' && currentUser.role === 'employe') {
+            document.getElementById('paneProfil').classList.add('active');
+            document.getElementById('navProfil').classList.add('active');
+            actualiserProfilEmploye();
+        } else if (tab === 'ventes') {
+            document.getElementById('paneVentes').classList.add('active');
+            document.getElementById('navVentes').classList.add('active');
+            chargerVentes();
+        } else if (tab === 'patients') {
+            document.getElementById('panePatients').classList.add('active');
+            document.getElementById('navPatients').classList.add('active');
+            chargerPatients();
+        } else if (tab === 'commandesClient') {
+            document.getElementById('paneCommandesClient').classList.add('active');
+            document.getElementById('navCommandesClient').classList.add('active');
+            chargerCommandesClients();
+        } else if (tab === 'production' && currentUser.role === 'admin') {
+            document.getElementById('paneProduction').classList.add('active');
+            document.getElementById('navProduction').classList.add('active');
+            chargerProductionInterne();
+        } else if (tab === 'stock' && currentUser.role === 'admin') {
+            document.getElementById('paneStock').classList.add('active');
+            document.getElementById('navStock').classList.add('active');
+            chargerStock();
+            if(currentUser.role === 'admin') chargerMouvementsStock();
+        } else if (tab === 'depenses' && currentUser.role === 'admin') {
+            document.getElementById('paneDepenses').classList.add('active');
+            document.getElementById('navDepenses').classList.add('active');
+            chargerDepenses();
+        } else if (tab === 'admin' && currentUser.role === 'admin') {
+            document.getElementById('paneAdmin').classList.add('active');
+            document.getElementById('navAdmin').classList.add('active');
+        }
+    };
+
+    function actualiserProfilEmploye() {
+        if (!currentUser || currentUser.role !== 'employe') return;
+        
+        const today = new Date().toISOString().split('T')[0];
+        let totalJour = 0; let countVentes = 0; let htmlSalesList = "";
+
+        localVentes.forEach(v => {
+            if (v.dateString === today && v.employe === currentUser.nom) {
+                const m = Number(v.montantTotal) || 0;
+                totalJour += m; countVentes++;
+                const pole = v.pole || "gb";
+                htmlSalesList += `
+                    <div class="sale-item ${pole}">
+                        <div>
+                            <strong>${v.nomClient}</strong><br>
+                            <small>${v.article || 'Article'}</small>
+                        </div>
+                        <div style="text-align:right;">
+                            <strong>${m.toLocaleString()} F</strong><br>
+                            <small style="color:#64748b;">${v.modePaiement}</small>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        document.getElementById('empProfileRecette').textContent = totalJour.toLocaleString() + " FCFA";
+        document.getElementById('empProfileNbVentes').textContent = countVentes + " vente(s) réalisée(s) aujourd'hui";
+        document.getElementById('empRecentSalesContainer').innerHTML = htmlSalesList || "<p style='text-align:center; font-size:11px; color:#94a3b8; padding:10px;'>Vous n'avez pas encore effectué de vente aujourd'hui.</p>";
+    }
+
+    window.switchSubTab = (sub) => {
+        document.getElementById('subPaneForm').style.display = sub === 'form' ? 'block' : 'none';
+        document.getElementById('subPaneList').style.display = sub === 'list' ? 'block' : 'none';
+        document.getElementById('btnSubNew').classList.toggle('active', sub === 'form');
+        document.getElementById('btnSubList').classList.toggle('active', sub === 'list');
+        if(sub === 'list') chargerPatients();
+    };
+
+    window.switchProdSubTab = (sub) => {
+        document.getElementById('prodSubPaneInterne').style.display = sub === 'interne' ? 'block' : 'none';
+        document.getElementById('prodSubPaneGrossiste').style.display = sub === 'grossiste' ? 'block' : 'none';
+        document.getElementById('prodSubPaneMatieres').style.display = sub === 'matieres' ? 'block' : 'none';
+
+        document.getElementById('btnProdSubInterne').classList.toggle('prod-active', sub === 'interne');
+        document.getElementById('btnProdSubGrossiste').classList.toggle('prod-active', sub === 'grossiste');
+        document.getElementById('btnProdSubMatieres').classList.toggle('prod-active', sub === 'matieres');
+
+        if(sub === 'interne') chargerProductionInterne();
+        if(sub === 'grossiste') chargerProductionGrossistes();
+        if(sub === 'matieres') chargerMatieresPremieres();
+    };
+
+    window.toggleProdModeSelection = () => {
+        const mode = document.getElementById('prodModeSelection').value;
+        document.getElementById('divSelectProdStock').style.display = mode === 'libre' ? 'none' : 'block';
+        document.getElementById('divInputProdLibre').style.display = mode === 'libre' ? 'block' : 'none';
+    };
+
+    window.toggleGrossisteModeSelection = () => {
+        const mode = document.getElementById('grossisteModeSelection').value;
+        document.getElementById('divSelectGrossiste').style.display = mode === 'libre' ? 'none' : 'block';
+        document.getElementById('divInputGrossisteLibre').style.display = mode === 'libre' ? 'block' : 'none';
+    };
+
+    window.filtrerPeriode = (p) => {
+        currentPeriod = p;
+        document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+        if(p === 'jour') document.getElementById('pBtnJour').classList.add('active');
+        if(p === 'semaine') document.getElementById('pBtnSemaine').classList.add('active');
+        if(p === 'mois') document.getElementById('pBtnMois').classList.add('active');
+        calculerRapportFinancier();
+    };
+
+    window.reinitialiserFiltreDate = () => {
+        document.getElementById('filtreDateSpecifique').value = '';
+        chargerVentes();
+    };
+
+    window.ouvrirModalVenteLibre = () => { document.getElementById('freeSaleModal').classList.add('active'); };
+    window.fermerModalVenteLibre = () => { document.getElementById('freeSaleModal').classList.remove('active'); };
+
+    window.ajouterVenteLibreAuPanier = () => {
+        const nom = document.getElementById('freeSaleNom').value.trim();
+        const prix = Number(document.getElementById('freeSalePrix').value);
+        const qte = Number(document.getElementById('freeSaleQte').value) || 1;
+        const pole = document.getElementById('freeSalePole').value;
+
+        if (!nom || !prix || prix <= 0) return alert("Saisissez un nom et un prix valide.");
+
+        panierVente.push({ id: 'libre_' + Date.now(), nom: "📌 " + nom + " (Hors-Stock)", prix: prix, qte: qte, pole: pole, isLibre: true });
+        document.getElementById('freeSaleNom').value = '';
+        document.getElementById('freeSalePrix').value = '';
+        document.getElementById('freeSaleQte').value = '1';
+        fermerModalVenteLibre();
+        afficherPanier();
+    };
+
+    window.afficherBilanFinJourneeEmploye = () => {
+        const today = new Date().toISOString().split('T')[0];
+        let totalJour = 0, especes = 0, tmoney = 0, credit = 0;
+
+        localVentes.forEach(v => {
+            if (v.dateString === today && v.employe === currentUser.nom) {
+                const m = Number(v.montantTotal) || 0;
+                totalJour += m;
+                if (v.modePaiement === 'Espèces') especes += m;
+                else if (v.modePaiement === 'TMoney / Flooz') tmoney += m;
+                else if (v.modePaiement === 'Crédit / Acompte') credit += m;
+            }
+        });
+
+        currentReceiptText = `=================================\n  BILAN DE CAISSE DE LA JOURNÉE\n=================================\nAgent : ${currentUser.nom}\nDate : ${new Date().toLocaleDateString('fr-FR')}\n\n---------------------------------\n💵 Espèces en Caisse : ${especes.toLocaleString()} FCFA\n📲 TMoney / Flooz : ${tmoney.toLocaleString()} FCFA\n⚠️ Ventes Crédit / Acomptes : ${credit.toLocaleString()} FCFA\n---------------------------------\n📊 TOTAL RECETTES : ${totalJour.toLocaleString()} FCFA\n=================================\nBonne fin de journée ! 🛒`;
+        
+        document.getElementById('receiptTextContent').textContent = currentReceiptText;
+        document.getElementById('receiptModal').classList.add('active');
+    };
+
+    function chargerCatalogueAlibaba() {
+        const container = document.getElementById('alibabaGridContainer');
+        const selectProdInterne = document.getElementById('prodInterneSelectStock');
+        const filter = document.getElementById('searchAlibaba')?.value.toLowerCase() || '';
+
+        let gridHtml = '';
+        let optionsProdHtml = '<option value="">-- Sélectionner un article du stock --</option>';
+
+        localStock.forEach(st => {
+            optionsProdHtml += `<option value="${st.id}">${st.nom} (${st.pole === 'gb' ? 'GB' : 'GH'}) - Stock: ${st.qte}</option>`;
+            if (filter && !st.nom.toLowerCase().includes(filter)) return;
+
+            const imgTag = st.image ? `<img src="${st.image}" alt="${st.nom}">` : `<div style="font-size:32px;">📦</div>`;
+            const badgeStock = st.qte <= 3 ? `<span style="color:#dc2626; font-weight:bold;">⚠️ Stock: ${st.qte}</span>` : `<span style="color:#15803d;">🟢 Stock: ${st.qte}</span>`;
+
+            gridHtml += `
+                <div class="alibaba-card">
+                    <div class="alibaba-card-img-wrap">${imgTag}</div>
+                    <div class="alibaba-card-body">
+                        <div>
+                            <div class="alibaba-card-title">${st.nom}</div>
+                            <div class="alibaba-card-price">${st.prix.toLocaleString()} FCFA</div>
+                            <div class="alibaba-card-stock">${st.pole === 'gb' ? '🛍️ GB' : '🌿 GH'} | ${badgeStock}</div>
+                        </div>
+                        <div class="alibaba-card-actions">
+                            <input type="number" inputmode="numeric" id="qtyInput-${st.id}" value="1" min="1" max="${st.qte}" style="width:40px; padding:3px; font-size:10px; text-align:center;">
+                            <button type="button" class="btn-add-cart-fast" onclick="ajouterArticleAuPanier('${st.id}')">+ Panier</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        if (container) container.innerHTML = gridHtml || '<p style="grid-column:1/-1; text-align:center; padding:15px; color:#64748b; font-size:11px;">Aucun produit disponible.</p>';
+        if (selectProdInterne) selectProdInterne.innerHTML = optionsProdHtml;
+    }
+
+    window.filtrerCatalogueAlibaba = () => { chargerCatalogueAlibaba(); };
+
+    window.ajouterArticleAuPanier = function(id) {
+        const item = localStock.find(s => s.id === id || s.nom.toLowerCase() === id.toLowerCase());
+        if (!item) return alert("❌ Article non trouvé dans le stock.");
+
+        const qtyInput = document.getElementById('qtyInput-' + item.id);
+        const qty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
+
+        if (item.qte < qty) return alert(`Stock insuffisant (${item.qte} max)`);
+
+        const indexExiste = panierVente.findIndex(p => p.id === item.id);
+        if (indexExiste > -1) {
+            if (item.qte < (panierVente[indexExiste].qte + qty)) return alert("Stock insuffisant.");
+            panierVente[indexExiste].qte += qty;
+        } else {
+            panierVente.push({ id: item.id, nom: item.nom, prix: Number(item.prix), qte: qty, pole: item.pole, isLibre: false });
+        }
+        afficherPanier();
+    };
+
+    window.afficherPanier = function() {
+        const tbody = document.getElementById('cartTableBody');
+        tbody.innerHTML = '';
+        let totalBrut = 0;
+        const remise = Number(document.getElementById('cartRemise').value) || 0;
+
+        if (panierVente.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:12px; color:#94a3b8;">Panier vide. Cliquez sur "+ Panier" ou scannez un QR code.</td></tr>`;
+            document.getElementById('cartTotalDisplay').innerText = '0 FCFA';
+            calculerMonnaie();
+            return;
+        }
+
+        panierVente.forEach((p, index) => {
+            const lineTotal = p.prix * p.qte;
+            totalBrut += lineTotal;
+            tbody.innerHTML += `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:6px; font-weight:bold;">${p.nom}</td><td style="padding:6px; text-align:center;">${p.prix.toLocaleString()} F</td><td style="padding:6px; text-align:center;"><button type="button" onclick="modifierQtePanier(${index}, -1)">-</button> <span style="margin:0 4px; font-weight:bold;">${p.qte}</span> <button type="button" onclick="modifierQtePanier(${index}, 1)">+</button></td><td style="padding:6px; text-align:right; font-weight:bold;">${lineTotal.toLocaleString()} F</td><td style="padding:6px; text-align:center;"><button type="button" onclick="supprimerDuPanier(${index})" style="background:#ef4444; color:white; border:none; padding:3px 6px; border-radius:4px;">🗑️</button></td></tr>`;
+        });
+
+        const totalNet = Math.max(0, totalBrut - remise);
+        document.getElementById('cartTotalDisplay').innerText = `${totalNet.toLocaleString()} FCFA ${remise > 0 ? '(Remise: -' + remise.toLocaleString() + ' F)' : ''}`;
+        calculerMonnaie();
+    };
+
+    window.modifierQtePanier = function(index, delta) {
+        const item = panierVente[index];
+        const itemStock = localStock.find(s => s.id === item.id);
+        const nouvelleQte = item.qte + delta;
+
+        if (nouvelleQte <= 0) { supprimerDuPanier(index); return; }
+        if (!item.isLibre && itemStock && itemStock.qte < nouvelleQte) { alert(`Stock dépassé (${itemStock.qte} max)`); return; }
+        
+        item.qte = nouvelleQte;
+        afficherPanier();
+    };
+
+    window.supprimerDuPanier = function(index) { panierVente.splice(index, 1); afficherPanier(); };
+
+    window.toggleMontantRecu = function() {
+        const mode = document.getElementById('cartPaymentMode').value;
+        const divMontantRecu = document.getElementById('divMontantRecu');
+        const lblAmountReceived = document.getElementById('lblAmountReceived');
+        const lblChangeText = document.getElementById('lblChangeText');
+
+        if (mode === 'Espèces') {
+            divMontantRecu.style.display = 'block';
+            lblAmountReceived.innerText = "Montant Reçu (Espèces) :";
+            lblChangeText.innerText = "Monnaie à rendre :";
+        } else if (mode === 'Crédit / Acompte') {
+            divMontantRecu.style.display = 'block';
+            lblAmountReceived.innerText = "Acompte Versé Aujourd'hui (FCFA) :";
+            lblChangeText.innerText = "Reste à payer (Crédit) :";
+        } else {
+            divMontantRecu.style.display = 'none';
+        }
+        calculerMonnaie();
+    };
+
+    window.calculerMonnaie = function() {
+        const mode = document.getElementById('cartPaymentMode').value;
+        const divMonnaie = document.getElementById('divMonnaie');
+        
+        if ((mode !== 'Espèces' && mode !== 'Crédit / Acompte') || panierVente.length === 0) { 
+            divMonnaie.style.display = 'none'; 
+            return; 
+        }
+
+        const totalBrut = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
+        const remise = Number(document.getElementById('cartRemise').value) || 0;
+        const totalNet = Math.max(0, totalBrut - remise);
+        const recu = Number(document.getElementById('cartAmountReceived').value) || 0;
+
+        divMonnaie.style.display = 'block';
+
+        if (mode === 'Espèces') {
+            const monnaie = recu - totalNet;
+            document.getElementById('cartChangeDisplay').innerText = monnaie >= 0 ? `${monnaie.toLocaleString()} FCFA` : `Incomplet (${monnaie.toLocaleString()} FCFA)`;
+            document.getElementById('cartChangeDisplay').style.color = monnaie >= 0 ? "#166534" : "#dc2626";
+        } else if (mode === 'Crédit / Acompte') {
+            const reste = totalNet - recu;
+            document.getElementById('cartChangeDisplay').innerText = `${Math.max(0, reste).toLocaleString()} FCFA`;
+            document.getElementById('cartChangeDisplay').style.color = "#dc2626";
+        }
+    };
+
+    window.validerPanierVente = async function() {
+        if (panierVente.length === 0) return alert("⚠️ Le panier est vide !");
+        
+        const totalBrut = panierVente.reduce((sum, p) => sum + (p.prix * p.qte), 0);
+        const remise = Number(document.getElementById('cartRemise').value) || 0;
+        const totalNet = Math.max(0, totalBrut - remise);
+        
+        if (totalNet <= 0) return alert("⛔ SÉCURITÉ : Impossible de valider une vente à 0 FCFA !");
+
+        const clientName = document.getElementById('cartClientName').value.trim() || 'Client de passage';
+        const clientPhone = document.getElementById('cartClientPhone').value.trim() || 'N/A';
+        const canalVente = document.getElementById('cartCanalVente').value;
+        const modePaiement = document.getElementById('cartPaymentMode').value;
+        const montantRecu = Number(document.getElementById('cartAmountReceived').value) || 0;
+
+        let resteAPayer = 0;
+        if (modePaiement === 'Crédit / Acompte') {
+            resteAPayer = Math.max(0, totalNet - montantRecu);
+            if (!clientName || clientName === 'Client de passage') {
+                return alert("⚠️ Veuillez saisir le nom complet du client pour une vente à crédit !");
+            }
+        }
+
+        if (confirm(`Confirmer la vente pour un Net de ${totalNet.toLocaleString()} FCFA ?`)) {
+            try {
+                const isGb = panierVente.some(p => p.pole === 'gb');
+                const poleVente = isGb ? 'gb' : 'gh';
+                const mainArticleName = panierVente.map(p => `${p.qte}x ${p.nom}`).join(', ');
+
+                await addDoc(collection(db, "ventes"), {
+                    pole: poleVente,
+                    article: mainArticleName,
+                    articlesDetails: panierVente,
+                    canalVente: canalVente,
+                    modePaiement: modePaiement,
+                    nomClient: clientName,
+                    telClient: clientPhone,
+                    montantBrut: totalBrut,
+                    remise: remise,
+                    montantTotal: totalNet,
+                    acompte: modePaiement === 'Crédit / Acompte' ? montantRecu : totalNet,
+                    resteAPayer: resteAPayer,
+                    statutCredit: resteAPayer > 0 ? "Non Réglé" : "Réglé",
+                    employe: currentUser ? currentUser.nom : 'Caissier',
+                    dateString: new Date().toISOString().split('T')[0],
+                    dateCreation: serverTimestamp()
+                });
+
+                for (let item of panierVente) {
+                    if (!item.isLibre) {
+                        const itemStock = localStock.find(s => s.id === item.id);
+                        if (itemStock) {
+                            await setDoc(doc(db, "stock", item.id), { qte: Math.max(0, itemStock.qte - item.qte) }, { merge: true });
+                        }
+                    }
+                }
+
+                alert("✅ Vente enregistrée avec succès !");
+                
+                currentReceiptText = `=================================\n       GB CASUAL & GLORY HERBAL\n   Reçu de Paiement / Facture\n=================================\n\nClient(e) : ${clientName}\nTéléphone : ${clientPhone}\nCanal : ${canalVente}\nMode : ${modePaiement}\nDate : ${new Date().toLocaleDateString('fr-FR')}\n\n---------------------------------\nARTICLES :\n---------------------------------\n` +
+                    panierVente.map(p => `- ${p.nom} x${p.qte} : ${(p.prix * p.qte).toLocaleString()} F`).join('\n') +
+                    (remise > 0 ? `\n\nRemise accordée : -${remise.toLocaleString()} FCFA` : '') +
+                    `\n---------------------------------\nTOTAL NET : ${totalNet.toLocaleString()} FCFA\n` +
+                    (modePaiement === 'Crédit / Acompte' ? `Acompte Versé : ${montantRecu.toLocaleString()} F\nReste à Payer : ${resteAPayer.toLocaleString()} FCFA\n` : '') +
+                    `\n=================================\nMerci pour votre confiance ! 🛍️🌿`;
+
+                document.getElementById('receiptTextContent').textContent = currentReceiptText;
+                document.getElementById('receiptModal').classList.add('active');
+
+                panierVente = [];
+                document.getElementById('cartRemise').value = '0';
+                document.getElementById('cartAmountReceived').value = '';
+                document.getElementById('cartClientName').value = '';
+                document.getElementById('cartClientPhone').value = '';
+                afficherPanier();
+                chargerStock();
+                chargerVentes();
+            } catch (err) { alert("Erreur : " + err.message); }
+        }
+    };
+
+    window.annulerVenteAdmin = async (idVente) => {
+        if (currentUser.role !== 'admin') return;
+        const vente = localVentes.find(v => v.id === idVente);
+        if (!vente) return;
+
+        if (confirm(`Annuler cette vente de ${vente.nomClient} (${vente.montantTotal.toLocaleString()} FCFA) ? Les articles seront remis en stock.`)) {
+            try {
+                if (vente.articlesDetails && Array.isArray(vente.articlesDetails)) {
+                    for (let item of vente.articlesDetails) {
+                        if (!item.isLibre) {
+                            const st = localStock.find(s => s.id === item.id);
+                            if (st) await setDoc(doc(db, "stock", item.id), { qte: st.qte + item.qte }, { merge: true });
+                        }
+                    }
+                }
+                await deleteDoc(doc(db, "ventes", idVente));
+                await addDoc(collection(db, "mouvements_stock"), {
+                    texte: `❌ Annulation vente de ${vente.nomClient} (${vente.montantTotal} F)`,
+                    date: new Date().toLocaleString('fr-FR'),
+                    createdAt: serverTimestamp()
+                });
+                alert("✅ Vente annulée et stock restitué !");
+                chargerVentes();
+                chargerStock();
+            } catch (err) { alert("Erreur : " + err.message); }
+        }
+    };
+
+    window.lancerScannerVente = () => {
+        const scannerBox = document.getElementById('scannerBox');
+        const btnScanner = document.getElementById('btnToggleScanner');
+
+        if (html5QrScannerInstance) {
+            html5QrScannerInstance.stop().then(() => {
+                scannerBox.style.display = 'none';
+                btnScanner.textContent = "📷 Scanner QR";
+                html5QrScannerInstance = null;
+            }).catch(() => {
+                scannerBox.style.display = 'none';
+                btnScanner.textContent = "📷 Scanner QR";
+                html5QrScannerInstance = null;
+            });
+            return;
+        }
+
+        scannerBox.style.display = 'block';
+        btnScanner.textContent = "❌ Fermer Scanner";
+
+        html5QrScannerInstance = new Html5Qrcode("readerVente");
+        html5QrScannerInstance.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 200, height: 200 } },
+            (decodedText) => {
+                ajouterArticleAuPanier(decodedText);
+                if (navigator.vibrate) navigator.vibrate(100);
+            },
+            () => {}
+        ).catch(() => {
+            alert("Erreur d'accès à l'appareil photo : Veuillez autoriser la caméra.");
+            scannerBox.style.display = 'none';
+            btnScanner.textContent = "📷 Scanner QR";
+            html5QrScannerInstance = null;
+        });
+    };
+
+    /* PRODUCTION INTERNE */
+    document.getElementById('prodInterneForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (currentUser.role !== 'admin') return;
+
+        const modeSel = document.getElementById('prodModeSelection').value;
+        const pole = document.getElementById('prodInternePole').value;
+        const qte = Number(document.getElementById('prodInterneQte').value);
+        const agent = document.getElementById('prodInterneAgent').value.trim();
+        const plantes = document.getElementById('prodPlantesUtilisees').value.trim();
+        const procede = document.getElementById('prodProcede').value.trim();
+        const posologie = document.getElementById('prodPosologie').value.trim();
+        const imgInput = document.getElementById('prodImagePlantes');
+
+        let articleNom = "";
+        let stockId = null;
+
+        if (modeSel === 'stock') {
+            stockId = document.getElementById('prodInterneSelectStock').value;
+            const st = localStock.find(s => s.id === stockId);
+            if (!st) return alert("Veuillez choisir un article du stock.");
+            articleNom = st.nom;
+        } else {
+            articleNom = document.getElementById('prodInterneNomLibre').value.trim();
+            if (!articleNom) return alert("Veuillez saisir le nom de la préparation libre.");
+        }
+
+        let imageBase64 = "";
+        if (imgInput.files && imgInput.files[0]) {
+            imageBase64 = await convertirImageEnBase64(imgInput.files[0]);
+        }
+
+        try {
+            await addDoc(collection(db, "production_interne"), {
+                pole, articleId: stockId, articleNom: articleNom, isLibre: modeSel === 'libre',
+                quantite: qte, agent: agent, plantes: plantes, procede: procede, posologie: posologie,
+                imagePlantes: imageBase64, dateString: new Date().toISOString().split('T')[0], createdAt: serverTimestamp()
+            });
+
+            if (stockId) {
+                const st = localStock.find(s => s.id === stockId);
+                if (st) {
+                    await setDoc(doc(db, "stock", stockId), { qte: st.qte + qte }, { merge: true });
+                    await addDoc(collection(db, "mouvements_stock"), {
+                        texte: `🏭 Fabrication de +${qte} unités de ${st.nom}`,
+                        date: new Date().toLocaleString('fr-FR'),
+                        createdAt: serverTimestamp()
+                    });
+                }
+            }
+
+            alert(`✅ Préparation enregistrée avec succès !`);
+            e.target.reset();
+            toggleProdModeSelection();
+            chargerProductionInterne();
+            chargerStock();
+        } catch (err) { alert("Erreur : " + err.message); }
+    });
+
+    async function chargerProductionInterne() {
+        if (currentUser.role !== 'admin') return;
+        try {
+            const snap = await getDocs(query(collection(db, "production_interne"), orderBy("createdAt", "desc")));
+            localProdInterne = [];
+            let html = "";
+            snap.forEach(d => {
+                const p = { id: d.id, ...d.data() };
+                localProdInterne.push(p);
+
+                const imgTag = p.imagePlantes ? `<img src="${p.imagePlantes}" class="prod-img-thumb" alt="plantes">` : `<div style="width:50px; height:50px; background:#e2e8f0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;">🌿</div>`;
+
+                html += `
+                    <div class="prod-item">
+                        ${imgTag}
+                        <div style="flex:1;">
+                            <strong>${p.articleNom}</strong> (${p.pole === 'gb' ? '🛍️ GB' : '🌿 GH'}) ${p.isLibre ? '<span style="font-size:9px; background:#fef3c7; color:#b45309; padding:2px 4px; border-radius:4px;">Hors-Stock</span>' : ''}<br>
+                            <small>Lots : <strong>+${p.quantite}</strong> | Par : ${p.agent}</small><br>
+                            <small style="color:#15803d;">🌿 Plantes : ${p.plantes || 'N/A'}</small>
+                        </div>
+                        <div style="text-align:right;">
+                            <span class="badge-status pret">🟢 Fabriqué</span><br>
+                            <small style="color:#64748b;">${p.dateString}</small>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('prodInterneContainer').innerHTML = html || "<p style='text-align:center;'>Aucune fabrication enregistrée.</p>";
+        } catch (e) {}
+    }
+
+    /* PRODUCTION GROSSISTES COMPLÈTE */
+    document.getElementById('prodGrossisteForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (currentUser.role !== 'admin') return;
+
+        const modeSel = document.getElementById('grossisteModeSelection').value;
+        let clientNom = modeSel === 'select' ? document.getElementById('prodGrossisteClientSelect').value : document.getElementById('prodGrossisteClientLibre').value.trim();
+        if (!clientNom) return alert("Veuillez saisir le nom du grossiste.");
+
+        const nomCommande = document.getElementById('prodGrossisteNom').value.trim();
+        const qte = document.getElementById('prodGrossisteQte').value.trim();
+        const dateLivraison = document.getElementById('prodGrossisteDateLivraison').value;
+        const statutPaiement = document.getElementById('prodGrossistePaiement').value;
+        const formule = document.getElementById('prodGrossisteFormule').value.trim();
+        const imgInput = document.getElementById('prodGrossisteImage');
+
+        let imageBase64 = "";
+        if (imgInput.files && imgInput.files[0]) {
+            imageBase64 = await convertirImageEnBase64(imgInput.files[0]);
+        }
+
+        try {
+            await addDoc(collection(db, "production_grossistes"), {
+                client: clientNom, nomCommande: nomCommande, quantite: qte,
+                dateLivraison: dateLivraison, statutPaiement: statutPaiement, formule: formule,
+                imageProduit: imageBase64, statut: "En attente", dateCreation: serverTimestamp()
+            });
+            alert("✅ Commande grossiste enregistrée !");
+            e.target.reset();
+            toggleGrossisteModeSelection();
+            chargerProductionGrossistes();
+        } catch (err) { alert("Erreur : " + err.message); }
+    });
+
+    async function chargerProductionGrossistes() {
+        if (currentUser.role !== 'admin') return;
+        try {
+            const snap = await getDocs(query(collection(db, "production_grossistes"), orderBy("dateCreation", "desc")));
+            localProdGrossistes = [];
+            let html = "";
+            snap.forEach(d => {
+                const g = { id: d.id, ...d.data() };
+                localProdGrossistes.push(g);
+                let badgeClass = g.statut === 'En cours' ? 'badge-status encours' : (g.statut === 'Prêt / Livré' ? 'badge-status pret' : 'badge-status attente');
+                const imgTag = g.imageProduit ? `<img src="${g.imageProduit}" class="prod-img-thumb" alt="produit">` : `<div style="width:50px; height:50px; background:#e2e8f0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;">🤝</div>`;
+
+                html += `
+                    <div class="prod-item">
+                        ${imgTag}
+                        <div style="flex:1;">
+                            <strong style="color:#b45309;">${g.client}</strong> - ${g.nomCommande}<br>
+                            <small>Quantité : <strong>${g.quantite}</strong> | Livraison : 📅 ${g.dateLivraison}</small><br>
+                            <small style="color:#0284c7;">💰 Règlement : ${g.statutPaiement || 'En attente'}</small>
+                        </div>
+                        <div style="text-align:right;">
+                            <span class="${badgeClass}">${g.statut}</span><br>
+                            <select onchange="changerStatutGrossiste('${g.id}', this.value)" style="font-size:9px; margin-top:2px; padding:2px;">
+                                <option value="En attente" ${g.statut === 'En attente' ? 'selected' : ''}>🟡 En attente</option>
+                                <option value="En cours" ${g.statut === 'En cours' ? 'selected' : ''}>🔵 En cours</option>
+                                <option value="Prêt / Livré" ${g.statut === 'Prêt / Livré' ? 'selected' : ''}>🟢 Prêt / Livré</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('prodGrossistesContainer').innerHTML = html || "<p style='text-align:center;'>Aucune commande grossiste.</p>";
+        } catch (e) {}
+    }
+
+    window.changerStatutGrossiste = async (id, nouveauStatut) => {
+        if (currentUser.role !== 'admin') return;
+        await setDoc(doc(db, "production_grossistes", id), { statut: nouveauStatut }, { merge: true });
+        chargerProductionGrossistes();
+    };
+
+    document.getElementById('prodMatiereForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (currentUser.role !== 'admin') return;
+
+        await addDoc(collection(db, "matieres_premieres"), {
+            nom: document.getElementById('matiereNom').value.trim(),
+            quantite: document.getElementById('matiereQte').value.trim(),
+            usage: document.getElementById('matiereUsage').value.trim(),
+            createdAt: serverTimestamp()
+        });
+        alert("Ingrédient enregistré !");
+        e.target.reset();
+        chargerMatieresPremieres();
+    });
+
+    async function chargerMatieresPremieres() {
+        if (currentUser.role !== 'admin') return;
+        try {
+            const snap = await getDocs(collection(db, "matieres_premieres"));
+            localMatieres = [];
+            let html = "";
+            snap.forEach(d => {
+                const m = { id: d.id, ...d.data() };
+                localMatieres.push(m);
+                html += `<div class="sale-item emp"><div><strong style="color:#0369a1;">🧪 ${m.nom}</strong><br><small>Stock : <strong>${m.quantite}</strong></small></div><div><button class="btn-action" style="background:#ef4444;" onclick="supprimerMatiere('${m.id}')">Suppr</button></div></div>`;
+            });
+            document.getElementById('matieresContainer').innerHTML = html || "<p style='text-align:center;'>Aucun Ingrédient.</p>";
+        } catch (e) {}
+    }
+
+    window.supprimerMatiere = async (id) => {
+        if (currentUser.role !== 'admin') return;
+        if (confirm("Supprimer ?")) {
+            await deleteDoc(doc(db, "matieres_premieres", id));
+            chargerMatieresPremieres();
+        }
+    };
+
+    document.getElementById('stockForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(currentUser.role !== 'admin') return;
+
+        const editId = document.getElementById('editingStockId').value;
+        const nomP = document.getElementById('stockNom').value.trim();
+        const poleP = document.getElementById('stockPole').value;
+        const prixP = Number(document.getElementById('stockPrix').value);
+        const qteP = Number(document.getElementById('stockQte').value);
+        const imageInput = document.getElementById('stockImageInput');
+
+        let imageBase64 = "";
+        if (imageInput.files && imageInput.files[0]) {
+            imageBase64 = await convertirImageEnBase64(imageInput.files[0]);
+        }
+
+        try {
+            if (editId) {
+                const existingItem = localStock.find(i => i.id === editId);
+                await setDoc(doc(db, "stock", editId), {
+                    pole: poleP, nom: nomP, prix: prixP, qte: qteP,
+                    image: imageBase64 || (existingItem ? existingItem.image || "" : "")
+                }, { merge: true });
+                alert("Article mis à jour !");
+            } else {
+                await addDoc(collection(db, "stock"), { pole: poleP, nom: nomP, prix: prixP, qte: qteP, image: imageBase64 });
+                alert("Produit ajouté avec génération automatique du QR Code !");
+            }
+            annulerEditStock();
+            chargerStock();
+        } catch (err) { alert("Erreur : " + err.message); }
+    });
+
+    window.editerStock = (id) => {
+        const item = localStock.find(i => i.id === id);
+        if (!item) return;
+        document.getElementById('editingStockId').value = item.id;
+        document.getElementById('stockPole').value = item.pole || 'gb';
+        document.getElementById('stockNom').value = item.nom || '';
+        document.getElementById('stockPrix').value = item.prix || '';
+        document.getElementById('stockQte').value = item.qte || 0;
+        document.getElementById('btnSubmitStock').textContent = "Enregistrer modification";
+        document.getElementById('btnSubmitStock').className = "btn-update";
+        document.getElementById('btnCancelEditStock').style.display = "block";
+        document.getElementById('txtImageNote').style.display = "block";
+        window.scrollTo({ top: document.getElementById('adminStockSection').offsetTop, behavior: 'smooth' });
+    };
+
+    window.annulerEditStock = () => {
+        document.getElementById('editingStockId').value = '';
+        document.getElementById('stockForm').reset();
+        document.getElementById('btnSubmitStock').textContent = "Ajouter au Catalogue";
+        document.getElementById('btnSubmitStock').className = "btn-valider stock-btn";
+        document.getElementById('btnCancelEditStock').style.display = "none";
+        document.getElementById('txtImageNote').style.display = "none";
+    };
+
+    window.supprimerStock = async (id) => {
+        if(currentUser.role !== 'admin') return;
+        if (confirm("Supprimer cet article ?")) {
+            await deleteDoc(doc(db, "stock", id));
+            chargerStock();
+        }
+    };
+
+    function convertirImageEnBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function chargerStock() {
+        try {
+            const snap = await getDocs(collection(db, "stock"));
+            localStock = [];
+            let html = "";
+            let alertItems = [];
+
+            snap.forEach(d => {
+                const st = { id: d.id, ...d.data() };
+                localStock.push(st);
+                const isLow = st.qte <= 3;
+                if (isLow) alertItems.push(st);
+
+                const badgeClass = isLow ? 'badge-stock low' : 'badge-stock ok';
+                const badgeText = isLow ? '⚠️ Stock Critique (' + st.qte + ')' : '🟢 En Stock (' + st.qte + ')';
+                const itemClass = isLow ? 'stock-item low' : 'stock-item';
+                const imgTag = st.image ? `<img src="${st.image}" class="stock-img-thumb" alt="produit">` : `<div style="width:40px; height:40px; background:#e2e8f0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:16px; margin-right:8px;">📦</div>`;
+
+                const adminActions = currentUser?.role === 'admin' ? `
+                    <div style="margin-top:4px;">
+                        <button type="button" class="btn-action" style="background:#f59e0b;" onclick="editerStock('${st.id}')">Modifier</button>
+                        <button type="button" class="btn-action" style="background:#ef4444;" onclick="supprimerStock('${st.id}')">Suppr</button>
+                    </div>
+                ` : '';
+
+                html += `
+                    <div class="${itemClass}">
+                        <div style="display:flex; align-items:center;">
+                            ${imgTag}
+                            <div>
+                                <strong>${st.nom}</strong> (${st.pole === 'gb' ? '🛍️ GB' : '🌿 GH'})<br>
+                                <small style="color:#64748b;">Prix : ${st.prix.toLocaleString()} F</small>
+                                ${adminActions}
+                            </div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+                            <span class="${badgeClass}">${badgeText}</span>
+                            <div class="qr-box" id="qrcode-${st.id}" title="QR Code Produit"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const banner = document.getElementById('stockDashboardBanner');
+            const listContainer = document.getElementById('stockDashboardListContainer');
+
+            if (alertItems.length > 0 && currentUser?.role === 'admin') {
+                let dashHtml = "";
+                alertItems.forEach(item => {
+                    dashHtml += `<div class="stock-alert-item"><div><strong>${item.nom}</strong><br><small style="color:#991b1b;">Restant : ${item.qte}</small></div><button type="button" class="btn-reappro" onclick="reapprovisionnerRapide('${item.id}', '${item.nom}', ${item.qte})">➕ Réappro (+5)</button></div>`;
+                });
+                listContainer.innerHTML = dashHtml;
+                banner.style.display = 'block';
+            } else { if(banner) banner.style.display = 'none'; }
+
+            if(currentUser?.role === 'admin') {
+                document.getElementById('stockContainer').innerHTML = html || "<p style='text-align:center;'>Aucun produit en stock.</p>";
+                localStock.forEach(st => {
+                    const qrElem = document.getElementById('qrcode-' + st.id);
+                    if (qrElem && typeof QRCode !== 'undefined') {
+                        qrElem.innerHTML = '';
+                        new QRCode(qrElem, { text: st.id, width: 65, height: 65, colorDark: "#0f172a", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+                    }
+                });
+            }
+
+            chargerCatalogueAlibaba();
+            afficherVitrinePublique();
+            if(currentUser?.role === 'admin') analyserTopsEtFlops();
+        } catch (err) {}
+    }
+
+    window.reapprovisionnerRapide = async (id, nom, qteActuelle) => {
+        if(currentUser.role !== 'admin') return;
+        await setDoc(doc(db, "stock", id), { qte: qteActuelle + 5 }, { merge: true });
+        alert("Stock réapprovisionné de +5 !");
+        chargerStock();
+    };
+
+    function analyserTopsEtFlops() {
+        let ventesParArticle = {};
+
+        localVentes.forEach(v => {
+            if (v.articlesDetails && Array.isArray(v.articlesDetails)) {
+                v.articlesDetails.forEach(art => {
+                    if (!art.isLibre) {
+                        if (!ventesParArticle[art.nom]) ventesParArticle[art.nom] = 0;
+                        ventesParArticle[art.nom] += Number(art.qte) || 0;
+                    }
+                });
+            }
+        });
+
+        let articlesClasses = Object.keys(ventesParArticle).map(nom => ({ nom: nom, totalVendu: ventesParArticle[nom] })).sort((a, b) => b.totalVendu - a.totalVendu);
+
+        let topHtml = "";
+        for (let i = 0; i < Math.min(3, articlesClasses.length); i++) {
+            topHtml += `<div class="top-item-row"><span>🥇 ${articlesClasses[i].nom}</span><strong>${articlesClasses[i].totalVendu} vendus</strong></div>`;
+        }
+        document.getElementById('topVentesContainer').innerHTML = topHtml || '<small style="color:#64748b;">Pas assez de données de vente.</small>';
+
+        let flopHtml = "";
+        let articlesStagnants = localStock.filter(st => (ventesParArticle[st.nom] || 0) === 0);
+        if (articlesStagnants.length > 0) {
+            for (let i = 0; i < Math.min(3, articlesStagnants.length); i++) {
+                flopHtml += `<div class="top-item-row"><span>💤 ${articlesStagnants[i].nom}</span><strong style="color:#d97706;">Stock: ${articlesStagnants[i].qte}</strong></div>`;
+            }
+        } else { flopHtml = '<small style="color:#15803d; font-weight:bold;">Tous les produits bougent bien ! 🚀</small>'; }
+        document.getElementById('flopVentesContainer').innerHTML = flopHtml;
+    }
+
+    async function chargerMouvementsStock() {
+        try {
+            const snap = await getDocs(query(collection(db, "mouvements_stock"), orderBy("createdAt", "desc")));
+            let html = "";
+            snap.forEach(d => {
+                const m = d.data();
+                html += '<div class="stock-log-item"><strong>' + m.date + '</strong> - ' + m.texte + '</div>';
+            });
+            document.getElementById('stockLogsContainer').innerHTML = html || "<p style='font-size:10px;'>Aucun mouvement.</p>";
+        } catch(e){}
+    }
+
+    document.getElementById('depenseForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(currentUser.role !== 'admin') return;
+
+        await addDoc(collection(db, "depenses"), {
+            pole: document.getElementById('depensePole').value,
+            categorie: document.getElementById('depenseCategorie').value,
+            motif: document.getElementById('depenseMotif').value.trim(),
+            montant: Number(document.getElementById('depenseMontant').value),
+            agent: currentUser.nom,
+            dateString: new Date().toISOString().split('T')[0],
+            dateCreation: serverTimestamp()
+        });
+        alert("Dépense enregistrée !");
+        e.target.reset();
+        chargerDepenses();
+        chargerVentes();
+    });
+
+    async function chargerDepenses() {
+        if(currentUser.role !== 'admin') return;
+        try {
+            const snap = await getDocs(query(collection(db, "depenses"), orderBy("dateCreation", "desc")));
+            localDepenses = [];
+            let html = "";
+            snap.forEach(d => {
+                const dep = { id: d.id, ...d.data() };
+                localDepenses.push(dep);
+                html += `<div class="depense-item"><div><strong>${dep.motif}</strong> (${dep.pole})<br><small>Catégorie : ${dep.categorie} | Par : ${dep.agent}</small></div><div style="text-align:right;"><strong style="color:#dc2626;">-${dep.montant.toLocaleString()} F</strong><br><button class="btn-action" style="background:#ef4444;" onclick="supprimerDepense('${dep.id}')">Suppr</button></div></div>`;
+            });
+            document.getElementById('depensesListContainer').innerHTML = html || "<p style='text-align:center;'>Aucune dépense.</p>";
+            calculerRapportFinancier();
+        } catch (err) {}
+    }
+
+    window.supprimerDepense = async (id) => {
+        if(currentUser.role !== 'admin') return;
+        if (confirm("Supprimer ?")) {
+            await deleteDoc(doc(db, "depenses", id));
+            chargerDepenses();
+            chargerVentes();
+        }
+    };
+
+    async function chargerVentes() {
+        try {
+            const snap = await getDocs(query(collection(db, "ventes"), orderBy("dateCreation", "desc")));
+            localVentes = [];
+            snap.forEach(d => localVentes.push({ id: d.id, ...d.data() }));
+            if(currentUser?.role === 'admin') {
+                calculerRapportFinancier();
+                analyserTopsEtFlops();
+            }
+            if(currentUser?.role === 'employe') actualiserProfilEmploye();
+            afficherVentes();
+        } catch (err) {}
+    }
+
+    function calculerRapportFinancier() {
+        if(currentUser?.role !== 'admin') return;
+        let totalGb = 0, totalGh = 0, totalBoutique = 0, totalWhatsapp = 0, totalDepenses = 0;
+        const now = new Date();
+
+        localVentes.forEach(v => {
+            const montant = Number(v.montantTotal) || 0;
+            const pole = v.pole || "gb";
+            const canal = v.canalVente || "boutique";
+            const vDate = v.dateString ? new Date(v.dateString) : new Date();
+
+            let include = false;
+            if (currentPeriod === 'jour') include = v.dateString === now.toISOString().split('T')[0];
+            else if (currentPeriod === 'semaine') include = Math.ceil(Math.abs(now - vDate) / (1000 * 60 * 60 * 24)) <= 7;
+            else if (currentPeriod === 'mois') include = vDate.getMonth() === now.getMonth() && vDate.getFullYear() === now.getFullYear();
+
+            if (include) {
+                if (pole === "gb") totalGb += montant; else totalGh += montant;
+                if (canal === "whatsapp") totalWhatsapp += montant; else totalBoutique += montant;
+            }
+        });
+
+        localDepenses.forEach(d => {
+            const montant = Number(d.montant) || 0;
+            const dDate = d.dateString ? new Date(d.dateString) : new Date();
+            let include = false;
+            if (currentPeriod === 'jour') include = d.dateString === now.toISOString().split('T')[0];
+            else if (currentPeriod === 'semaine') include = Math.ceil(Math.abs(now - dDate) / (1000 * 60 * 60 * 24)) <= 7;
+            else if (currentPeriod === 'mois') include = dDate.getMonth() === now.getMonth() && dDate.getFullYear() === now.getFullYear();
+            if (include) totalDepenses += montant;
+        });
+
+        const totalRecettes = totalGb + totalGh;
+        const beneficeNet = totalRecettes - totalDepenses;
+
+        document.getElementById('totalGBCasual').textContent = totalGb.toLocaleString() + " F";
+        document.getElementById('totalGloryHerbal').textContent = totalGh.toLocaleString() + " F";
+        document.getElementById('totalGeneral').textContent = totalRecettes.toLocaleString() + " F";
+        document.getElementById('totalCanalBoutique').textContent = totalBoutique.toLocaleString() + " F";
+        document.getElementById('totalCanalWhatsapp').textContent = totalWhatsapp.toLocaleString() + " F";
+        document.getElementById('totalDepensesDisplay').textContent = totalDepenses.toLocaleString() + " F";
+        
+        const benefDisplay = document.getElementById('totalBeneficeNetDisplay');
+        benefDisplay.textContent = beneficeNet.toLocaleString() + " F";
+        benefDisplay.style.color = beneficeNet >= 0 ? "#166534" : "#dc2626";
+    }
+
+    window.imprimerBilanGlobal = () => {
+        const gb = document.getElementById('totalGBCasual').textContent;
+        const gh = document.getElementById('totalGloryHerbal').textContent;
+        const total = document.getElementById('totalGeneral').textContent;
+        const dep = document.getElementById('totalDepensesDisplay').textContent;
+        const net = document.getElementById('totalBeneficeNetDisplay').textContent;
+
+        const texteBilan = `=================================\n  RAPPORT FINANCIER & BILAN\n  GB CASUAL & GLORY HERBAL\n=================================\nPériode : ${currentPeriod.toUpperCase()}\nDate : ${new Date().toLocaleDateString('fr-FR')}\n\n- Recettes GB Casual : ${gb}\n- Recettes Glory Herbal : ${gh}\n---------------------------------\nTOTAL RECETTES : ${total}\nTOTAL DÉPENSES : ${dep}\n---------------------------------\nBÉNÉFICE NET : ${net}\n=================================\nImprimé par Administrateur`;
+        
+        const win = window.open('', '', 'width=600,height=600');
+        win.document.write('<pre style="font-family:monospace; padding:20px;">' + texteBilan + '</pre>');
+        win.document.close(); win.print();
+    };
+
+    function afficherVentes() {
+        const queryText = document.getElementById('searchVente').value.toLowerCase();
+        const filtrePole = document.getElementById('filtrePole').value;
+        const filtreDate = document.getElementById('filtreDateSpecifique').value.trim();
+        const dateAujourdhui = new Date().toISOString().split('T')[0];
+
+        let html = "";
+        localVentes.forEach(v => {
+            const pole = v.pole || "gb";
+            const canal = v.canalVente === 'whatsapp' ? '📲 WA' : '🏪 Boutique';
+            const montant = Number(v.montantTotal) || 0;
+
+            if (currentUser?.role === 'employe') {
+                if (v.dateString !== dateAujourdhui || v.employe !== currentUser.nom) return;
+            } else if (currentUser?.role === 'admin') {
+                if (filtrePole !== "tous" && filtrePole !== pole) return;
+                if (filtreDate && v.dateString !== filtreDate) return;
+                if (queryText && !v.nomClient.toLowerCase().includes(queryText)) return;
+            }
+
+            const btnAnnulerAdmin = currentUser?.role === 'admin' ? `<button class="btn-action" style="background:#ef4444; font-size:9px; padding:3px 6px;" onclick="annulerVenteAdmin('${v.id}')">❌ Annuler</button>` : '';
+
+            html += `<div class="sale-item ${pole}"><div><strong>${v.nomClient}</strong> (${v.telClient || 'N/A'})<br><small>${v.article || 'Commande'}</small><br><small>${pole === 'gb' ? '🛍️ GB' : '🌿 GH'} | ${canal} | Par : ${v.employe || 'Admin'}</small></div><div style="text-align:right;"><div style="font-weight:bold;">${montant.toLocaleString()} F</div><div style="display:flex; gap:3px; justify-content:flex-end; margin-top:3px;"><button class="btn-wa" style="padding:3px 6px; font-size:9px;" onclick="ouvrirModalRecu('${v.id}')">📄 Reçu</button>${btnAnnulerAdmin}</div></div></div>`;
+        });
+
+        document.getElementById('salesContainer').innerHTML = html || "<p style='text-align:center;'>Aucune recette.</p>";
+    }
+
+    window.ouvrirModalRecu = (id) => {
+        const v = localVentes.find(i => i.id === id);
+        if (!v) return;
+        currentReceiptText = `=================================\n       GB CASUAL & GLORY HERBAL\n   Reçu de Paiement / Facture\n=================================\n\nClient(e) : ${v.nomClient}\nTéléphone : ${v.telClient || 'N/A'}\nArticle(s) : ${v.article || 'Prestation'}\nMontant Net : ${v.montantTotal.toLocaleString()} FCFA\nCanal : ${v.canalVente || 'Boutique'}\nMode : ${v.modePaiement || 'Espèces'}\nAgent : ${v.employe || 'Admin'}\nDate : ${v.dateString}\n\n=================================\nMerci pour votre confiance ! 🛍️🌿`;
+        document.getElementById('receiptTextContent').textContent = currentReceiptText;
+        document.getElementById('receiptModal').classList.add('active');
+    };
+
+    window.ouvrirModalSuiviPatient = (id) => {
+        const p = localPatients.find(i => i.id === id);
+        if (!p) return;
+        let texteSuivi = `=================================\n       CLINIQUE GLORY HERBAL\n    Fiche de Suivi Patient\n=================================\n\nPatient(e) : ${p.nom}\nTéléphone : ${p.tel}\nDiagnostic : ${p.problemes || 'N/A'}\nProchain RDV : ${p.prochainRdv || 'N/A'}\n\n---------------------------------\nHISTORIQUE :\n---------------------------------\n`;
+        if (p.historiqueSuivi?.length > 0) {
+            p.historiqueSuivi.forEach((s, idx) => { texteSuivi += `\n[Visite ${idx+1} - ${s.date}]\n- Notes : ${s.notes}\n- Traitement : ${s.traitement || 'N/A'}\n`; });
+        } else { texteSuivi += `\nAucune visite de suivi.\n`; }
+        currentReceiptText = texteSuivi + `\n=================================\nGlory Herbal - Santé par les plantes🌿`;
+        document.getElementById('receiptTextContent').textContent = currentReceiptText;
+        document.getElementById('receiptModal').classList.add('active');
+    };
+
+    window.fermerModalRecu = () => { document.getElementById('receiptModal').classList.remove('active'); };
+    window.copierTexteRecu = () => { navigator.clipboard.writeText(currentReceiptText).then(() => alert("Copié pour WhatsApp !")); };
+    window.imprimerModalRecu = () => {
+        const win = window.open('', '', 'width=600,height=600');
+        win.document.write('<pre style="font-family:monospace; padding:20px;">' + currentReceiptText + '</pre>');
+        win.document.close(); win.print();
+    };
+
+    document.getElementById('patientForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const editId = document.getElementById('editingPatientId').value;
+        const dataPatient = {
+            nom: document.getElementById('pNom').value,
+            sexe: document.getElementById('pSexe').value,
+            age: document.getElementById('pAge').value,
+            tel: document.getElementById('pTel').value,
+            region: document.getElementById('pRegion').value,
+            refere: document.getElementById('pRefere').value,
+            date: document.getElementById('pDate').value,
+            adresse: document.getElementById('pAdresse').value,
+            ethnie: document.getElementById('pEthnie').value,
+            antecedentsMed: document.getElementById('pAntecedentsMed').value,
+            antecedentsFam: document.getElementById('pAntecedentsFam').value,
+            profession: document.getElementById('pProfession').value,
+            antSociaux: document.getElementById('pAntSociaux').value,
+            motif: document.getElementById('pMotif').value,
+            plaintesPrinc: document.getElementById('pPlaintesPrinc').value,
+            plaintesSec: document.getElementById('pPlaintesSec').value,
+            examen: document.getElementById('pExamen').value,
+            problemes: document.getElementById('pProblemes').value,
+            prochainRdv: document.getElementById('pProchainRdv').value.trim(),
+            montant: Number(document.getElementById('pMontant').value) || 0
+        };
+
+        try {
+            if (editId) {
+                await setDoc(doc(db, "fiches_patients", editId), dataPatient, { merge: true });
+                alert("Fiche mise à jour !");
+            } else {
+                dataPatient.agent = currentUser.nom;
+                dataPatient.createdAt = serverTimestamp();
+                dataPatient.historiqueSuivi = [];
+                await addDoc(collection(db, "fiches_patients"), dataPatient);
+                if(dataPatient.montant > 0) {
+                    await addDoc(collection(db, "ventes"), {
+                        pole: "gh",
+                        article: "Première Consultation",
+                        canalVente: "boutique",
+                        nomClient: dataPatient.nom + " (Glory Herbal)",
+                        telClient: dataPatient.tel,
+                        montantTotal: dataPatient.montant,
+                        employe: currentUser.nom,
+                        dateString: dataPatient.date,
+                        dateCreation: serverTimestamp()
+                    });
+                }
+                alert("Fiche créée !");
+            }
+            annulerModification();
+            chargerPatients();
+            switchSubTab('list');
+        } catch (err) { alert("Erreur : " + err.message); }
+    });
+
+    async function chargerPatients() {
+        try {
+            const snap = await getDocs(query(collection(db, "fiches_patients"), orderBy("createdAt", "desc")));
+            localPatients = [];
+            snap.forEach(d => localPatients.push({ id: d.id, ...d.data() }));
+            afficherPatients(localPatients);
+            verifierNotificationsRdv(localPatients);
+        } catch (err) {}
+    }
+
+    function verifierNotificationsRdv(liste) {
+        const today = new Date().toISOString().split('T')[0];
+        const rdvAujourdhui = liste.filter(p => p.prochainRdv && p.prochainRdv.includes(today));
+        const banner = document.getElementById('rdvNotificationBanner');
+        const container = document.getElementById('rdvListTodayContainer');
+
+        if (rdvAujourdhui.length > 0) {
+            let htmlNotify = "";
+            rdvAujourdhui.forEach(p => {
+                htmlNotify += `<div class="rdv-item-notify"><div><strong>👤 ${p.nom}</strong> (${p.tel})<br><small>RDV : ${p.prochainRdv}</small></div></div>`;
+            });
+            container.innerHTML = htmlNotify;
+            banner.style.display = 'block';
+        } else { banner.style.display = 'none'; }
+    }
+
+    function afficherPatients(liste) {
+        let html = "";
+        if (liste.length === 0) {
+            document.getElementById('patientResultsContainer').innerHTML = "<p style='text-align:center;'>Aucun dossier.</p>";
+            return;
+        }
+
+        liste.forEach(p => {
+            let suiviListHtml = "";
+            if (p.historiqueSuivi?.length > 0) {
+                p.historiqueSuivi.forEach(s => {
+                    suiviListHtml += `<div class="followup-item"><strong>📅 ${s.date}</strong> - ${s.notes}<br><small>Traitement : ${s.traitement || 'N/A'} | Payé : ${s.montant || 0} F</small></div>`;
+                });
+            } else { suiviListHtml = "<p style='font-size:10px; font-style:italic;'>Aucune visite de suivi.</p>"; }
+
+            const displayRdv = p.prochainRdv ? `📅 RDV : <strong style="color:#15803d;">${p.prochainRdv}</strong>` : `📅 <span style="color:#94a3b8;">Aucun RDV</span>`;
+
+            html += `<div class="patient-card-result"><div><strong>${p.nom}</strong> (${p.sexe}, ${p.age} ans)<br><small>📞 ${p.tel} | 📍 ${p.region || 'N/A'}</small></div><div style="font-size:11px; margin-top:4px;"><strong>Motif :</strong> ${p.motif}<br>${displayRdv}</div><div style="margin-top:6px;"><button class="btn-action" onclick="toggleDetails('${p.id}')">📋 Fiche</button><button class="btn-edit-patient" onclick="editerPatient('${p.id}')">✏️ Modifier</button><button class="btn-wa" onclick="ouvrirModalSuiviPatient('${p.id}')">📲 Carnet (WA)</button></div><div class="followup-section"><h4 style="font-size:11px; color:#15803d;">Carnet de Suivi :</h4><div id="suiviList-${p.id}">${suiviListHtml}</div><div style="margin-top:6px; border-top:1px solid #cbd5e1; padding-top:6px;"><input type="text" id="suiviNote-${p.id}" placeholder="Observations..." style="font-size:10px; padding:4px; margin-bottom:3px;"><input type="text" id="suiviTraitement-${p.id}" placeholder="Traitement..." style="font-size:10px; padding:4px; margin-bottom:3px;"><div style="display:flex; gap:4px;"><input type="number" inputmode="numeric" id="suiviMontant-${p.id}" placeholder="Montant" style="font-size:10px; padding:4px; flex:1;"><button type="button" class="btn-action" style="margin:0;" onclick="ajouterVisiteSuivi('${p.id}')">+ Valider</button></div></div></div><div id="details-${p.id}" style="display:none; margin-top:8px; font-size:10px; background:#f8fafc; padding:8px; border-radius:6px;"><p><strong>Adresse :</strong> ${p.adresse || 'N/A'}</p><p><strong>Antécédents :</strong> ${p.antecedentsMed || 'Aucun'}</p></div></div>`;
+        });
+        document.getElementById('patientResultsContainer').innerHTML = html;
+    }
+
+    window.ajouterVisiteSuivi = async (patientId) => {
+        const note = document.getElementById('suiviNote-' + patientId).value.trim();
+        const traitement = document.getElementById('suiviTraitement-' + patientId).value.trim();
+        const montant = Number(document.getElementById('suiviMontant-' + patientId).value) || 0;
+        if(!note) return alert("Saisissez une observation.");
+
+        try {
+            await setDoc(doc(db, "fiches_patients", patientId), {
+                historiqueSuivi: arrayUnion({ date: new Date().toLocaleDateString('fr-FR'), notes: note, traitement: traitement, montant: montant })
+            }, { merge: true });
+
+            if(montant > 0) {
+                const p = localPatients.find(i => i.id === patientId);
+                await addDoc(collection(db, "ventes"), {
+                    pole: "gh",
+                    article: "Consultation de contrôle",
+                    canalVente: "boutique",
+                    nomClient: (p ? p.nom : "Patient") + " (Suivi)",
+                    telClient: p ? p.tel : '',
+                    montantTotal: montant,
+                    employe: currentUser.nom,
+                    dateString: new Date().toISOString().split('T')[0],
+                    dateCreation: serverTimestamp()
+                });
+            }
+            alert("Suivi enregistré !");
+            chargerPatients();
+        } catch (err) { alert("Erreur."); }
+    };
+
+    window.toggleDetails = (id) => {
+        const el = document.getElementById('details-' + id);
+        if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    };
+
+    window.editerPatient = (id) => {
+        const p = localPatients.find(item => item.id === id);
+        if (!p) return;
+        document.getElementById('editingPatientId').value = p.id;
+        document.getElementById('pNom').value = p.nom || '';
+        document.getElementById('pSexe').value = p.sexe || 'M';
+        document.getElementById('pAge').value = p.age || '';
+        document.getElementById('pTel').value = p.tel || '';
+        document.getElementById('pRegion').value = p.region || '';
+        document.getElementById('pRefere').value = p.refere || '';
+        document.getElementById('pDate').value = p.date || new Date().toISOString().split('T')[0];
+        document.getElementById('pAdresse').value = p.adresse || '';
+        document.getElementById('pEthnie').value = p.ethnie || '';
+        document.getElementById('pAntecedentsMed').value = p.antecedentsMed || '';
+        document.getElementById('pAntecedentsFam').value = p.antecedentsFam || '';
+        document.getElementById('pProfession').value = p.profession || '';
+        document.getElementById('pAntSociaux').value = p.antSociaux || '';
+        document.getElementById('pMotif').value = p.motif || '';
+        document.getElementById('pPlaintesPrinc').value = p.plaintesPrinc || '';
+        document.getElementById('pPlaintesSec').value = p.plaintesSec || '';
+        document.getElementById('pExamen').value = p.examen || '';
+        document.getElementById('pProblemes').value = p.problemes || '';
+        document.getElementById('pProchainRdv').value = p.prochainRdv || '';
+        document.getElementById('pMontant').value = p.montant || '';
+
+        document.getElementById('formTitle').textContent = "✏️ Modification de " + p.nom;
+        document.getElementById('btnSubmitPatient').textContent = "Enregistrer modifications";
+        document.getElementById('btnSubmitPatient').className = "btn-update";
+        document.getElementById('btnCancelEdit').style.display = "block";
+        switchSubTab('form');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.annulerModification = () => {
+        document.getElementById('editingPatientId').value = '';
+        document.getElementById('patientForm').reset();
+        document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('pProchainRdv').value = '';
+        document.getElementById('formTitle').textContent = "Fiche de Consultation Médicale";
+        document.getElementById('btnSubmitPatient').textContent = "Enregistrer Fiche Patient";
+        document.getElementById('btnSubmitPatient').className = "btn-valider";
+        document.getElementById('btnCancelEdit').style.display = "none";
+    };
+
+    window.filtrerPatients = () => {
+        const q = document.getElementById('searchPatient').value.toLowerCase();
+        afficherPatients(localPatients.filter(p => p.nom.toLowerCase().includes(q) || p.tel.includes(q)));
+    };
+
+    document.getElementById('employeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(currentUser.role !== 'admin') return;
+
+        const editId = document.getElementById('editingEmpId').value;
+        const empData = {
+            nom: document.getElementById('empNom').value.trim(),
+            age: document.getElementById('empAge').value.trim(),
+            situation: document.getElementById('empSituation').value,
+            tel: document.getElementById('empTel').value.trim(),
+            lieu: document.getElementById('empLieu').value.trim(),
+            code: document.getElementById('empCode').value.trim()
+        };
+
+        try {
+            if (editId) {
+                await setDoc(doc(db, "employes", editId), empData, { merge: true });
+                alert("Employé mis à jour !");
+            } else {
+                empData.createdAt = serverTimestamp();
+                await addDoc(collection(db, "employes"), empData);
+                alert("Employé enregistré !");
+            }
+            annulerEditEmploye();
+            chargerEmployes();
+        } catch (err) { alert("Erreur."); }
+    });
+
+    async function chargerEmployes() {
+        if(currentUser.role !== 'admin') return;
+        try {
+            const snap = await getDocs(collection(db, "employes"));
+            localEmployes = [];
+            let html = "";
+            snap.forEach(d => {
+                const emp = { id: d.id, ...d.data() };
+                localEmployes.push(emp);
+                html += `<div class="sale-item emp"><div><strong style="color:#7e22ce;">${emp.nom}</strong> (${emp.situation || 'Célibataire'})<br><small>📞 <strong>${emp.tel || 'N/A'}</strong> | 📍 ${emp.lieu || 'N/A'}</small><br><small>🔑 Code : <strong>${emp.code}</strong></small></div><div style="text-align:right;"><button class="btn-edit-patient" style="font-size:9px; padding:3px 6px;" onclick="editerEmploye('${emp.id}')">✏️ Edit</button><br><button class="btn-action" style="background:#ef4444; font-size:9px; padding:3px 6px;" onclick="supprimerEmploye('${emp.id}')">Suppr</button></div></div>`;
+            });
+            document.getElementById('employesContainer').innerHTML = html || "<p style='text-align:center;'>Aucun employé.</p>";
+        } catch (err) {}
+    }
+
+    window.editerEmploye = (id) => {
+        const emp = localEmployes.find(e => e.id === id);
+        if (!emp) return;
+        document.getElementById('editingEmpId').value = emp.id;
+        document.getElementById('empNom').value = emp.nom || '';
+        document.getElementById('empAge').value = emp.age || '';
+        document.getElementById('empSituation').value = emp.situation || 'Célibataire';
+        document.getElementById('empTel').value = emp.tel || '';
+        document.getElementById('empLieu').value = emp.lieu || '';
+        document.getElementById('empCode').value = emp.code || '';
+        document.getElementById('employeFormTitle').textContent = "✏️ Modification de " + emp.nom;
+        document.getElementById('btnSubmitEmp').textContent = "Mettre à jour";
+        document.getElementById('btnSubmitEmp').className = "btn-update";
+        document.getElementById('btnCancelEditEmp').style.display = "block";
+        window.scrollTo({ top: document.getElementById('paneAdmin').offsetTop, behavior: 'smooth' });
+    };
+
+    window.annulerEditEmploye = () => {
+        document.getElementById('editingEmpId').value = '';
+        document.getElementById('employeForm').reset();
+        document.getElementById('employeFormTitle').textContent = "👔 Inscription Employé(e)";
+        document.getElementById('btnSubmitEmp').textContent = "Créer Fiche Employé";
+        document.getElementById('btnSubmitEmp').className = "btn-valider";
+        document.getElementById('btnSubmitEmp').style.backgroundColor = "#7e22ce";
+        document.getElementById('btnCancelEditEmp').style.display = "none";
+    };
+
+    window.supprimerEmploye = async (id) => {
+        if(currentUser.role !== 'admin') return;
+        if (confirm("Supprimer ?")) {
+            await deleteDoc(doc(db, "employes", id));
+            chargerEmployes();
+        }
+    };
+
+    document.getElementById('resetCloudBtn')?.addEventListener('click', async () => {
+        if(currentUser.role !== 'admin') return;
+        if (confirm("⚠️ Vider toutes les données du Cloud ? Action irréversible.")) {
+            try {
+                const cols = ["ventes", "depenses", "fiches_patients", "stock", "employes", "mouvements_stock", "production_interne", "production_grossistes", "matieres_premieres", "commandes_clients"];
+                for (const colName of cols) {
+                    const snap = await getDocs(collection(db, name));
+                    for (const d of snap.docs) { await deleteDoc(doc(db, colName, d.id)); }
+                }
+                alert("✅ Cloud réinitialisé avec succès !");
+                location.reload();
+            } catch (err) { alert("Erreur : " + err.message); }
+        }
+    });
+</script>
+
+</body>
+</html>
