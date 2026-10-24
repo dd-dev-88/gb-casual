@@ -14,9 +14,7 @@
         
         .container { max-width: 900px; margin: 0 auto; background: #ffffff; min-height: 100vh; box-shadow: 0 0 25px rgba(0,0,0,0.06); position: relative; }
 
-        /* ========================================================= */
-        /* DESIGN VITRINE E-COMMERCE CLIENT & PANIER                 */
-        /* ========================================================= */
+        /* DESIGN VITRINE E-COMMERCE CLIENT & PANIER */
         .public-header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 12px 16px; border-bottom: 1px solid #e2e8f0; background: #ffffff; position: sticky; top: 0; z-index: 100;
@@ -109,9 +107,7 @@
             box-shadow: 0 2px 8px rgba(30,58,138,0.15);
         }
 
-        /* ========================================================= */
-        /* INTERFACE INTERNE (DIGICODE & GESTION)                    */
-        /* ========================================================= */
+        /* INTERFACE INTERNE (DIGICODE & GESTION) */
         .pin-container { max-width: 320px; margin: 30px auto; background: #f8fafc; padding: 20px 15px; border-radius: 16px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
         .pin-display { display: flex; justify-content: center; gap: 12px; margin: 15px 0; }
         .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #1e3a8a; background: transparent; transition: background 0.2s, transform 0.2s; }
@@ -368,7 +364,7 @@
             </div>
         </header>
 
-        <!-- BANNIÈRE HERO AVEC VOTRE SLOGAN -->
+        <!-- BANNIÈRE HERO -->
         <div class="hero-banner">
             <span class="hero-badge">🌿 Bien-être & Santé au Naturel</span>
             <h1 class="hero-title">Prendre soin de soi n'est pas un luxe, mais une nécessité absolue.</h1>
@@ -437,7 +433,7 @@
             </button>
         </div>
 
-        <!-- BARRE FIXE EN BAS (STICKY FOOTER WHATSAPP CLIENT) -->
+        <!-- STICKY FOOTER WHATSAPP CLIENT -->
         <div class="sticky-bottom-wa">
             <span>💬 Une question ou conseil personnalisé ?</span>
             <button class="btn-wa-sticky" onclick="commanderDirectWhatsApp('Demande de conseils personnalisés')">Écrire sur WhatsApp</button>
@@ -490,7 +486,7 @@
             </div>
         </div>
 
-        <!-- SECTION 0 : PROFIL PERSONNEL EMPLOYÉ -->
+        <!-- SECTION PROFIL PERSONNEL EMPLOYÉ -->
         <div id="paneProfil" class="section-pane">
             <div class="header-banner-ambiance">
                 <span id="sloganProfil">👋 Bienvenue sur ton espace personnel !</span>
@@ -523,7 +519,7 @@
             </div>
         </div>
 
-        <!-- SECTION 1 : VENTES ET CAISSE COMPLÈTE -->
+        <!-- SECTION VENTES ET CAISSE COMPLÈTE -->
         <div id="paneVentes" class="section-pane">
             <div class="header-banner-ambiance">
                 <span>🛒 Chaque vente est un sourire client de plus ! 😊</span>
@@ -709,7 +705,7 @@
             </div>
         </div>
 
-        <!-- SECTION 2 : DOSSIERS PATIENTS ET CLINIQUE -->
+        <!-- SECTION DOSSIERS PATIENTS ET CLINIQUE -->
         <div id="panePatients" class="section-pane">
             <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #15803d 0%, #166534 100%);">
                 <span>🩺 La santé par les plantes : écoute, soin et guérison 🍃</span>
@@ -886,7 +882,7 @@
             </div>
         </div>
 
-        <!-- SECTION 2.5 : COMMANDES CLIENTS EN LIGNE (AVEC POINT ROUGE) -->
+        <!-- SECTION COMMANDES CLIENTS EN LIGNE -->
         <div id="paneCommandesClient" class="section-pane">
             <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #10b981 0%, #059669 100%);">
                 <span>📲 Commandes clients en ligne (Panier WhatsApp) 🛍️</span>
@@ -899,7 +895,7 @@
             </div>
         </div>
 
-        <!-- SECTION 3 : PRODUCTION & LABO -->
+        <!-- SECTION PRODUCTION & LABO -->
         <div id="paneProduction" class="section-pane">
             <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #b45309 0%, #d97706 100%);">
                 <span>🧪 L'art de la formulation et de la préparation sur-mesure ✨</span>
@@ -1089,7 +1085,7 @@
             </div>
         </div>
 
-        <!-- SECTION 4 : STOCKS & CATALOGUE -->
+        <!-- SECTION STOCKS & CATALOGUE -->
         <div id="paneStock" class="section-pane">
             <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #0284c7 0%, #0369a1 100%);">
                 <span>📦 Un stock bien suivi, c'est zéro opportunité manquée 📊</span>
@@ -1154,7 +1150,7 @@
             </div>
         </div>
 
-        <!-- SECTION 5 : DÉPENSES -->
+        <!-- SECTION DÉPENSES -->
         <div id="paneDepenses" class="section-pane">
             <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #dc2626 0%, #991b1b 100%);">
                 <span>💼 Gérer avec sagesse pour faire prospérer l'entreprise 📈</span>
@@ -1206,7 +1202,7 @@
             </div>
         </div>
 
-        <!-- SECTION 6 : ADMINISTRATION COMPLÈTE -->
+        <!-- SECTION ADMINISTRATION COMPLÈTE -->
         <div id="paneAdmin" class="section-pane">
             <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
                 <h3 id="employeFormTitle" style="font-size:13px; margin-bottom:10px; color:#7e22ce;">👔 Inscription Employé(e)</h3>
@@ -1399,17 +1395,24 @@
 
     document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
 
+    // ================================================================
+    // SÉCURITÉ ACCRUE : FERMETURE AUTOMATIQUE DE SESSION AU RAFRAÎCHISSEMENT
+    // ================================================================
     window.addEventListener('DOMContentLoaded', () => {
-        const savedUser = localStorage.getItem('gb_casual_user_session');
-        if (savedUser) {
-            try {
-                currentUser = JSON.parse(savedUser);
-                lancerApplication();
-            } catch(e) { showPublicCatalog(); }
-        } else {
-            showPublicCatalog();
-        }
-        chargerCommandesClients(); // Charger les commandes web en arrière-plan
+        // 1. Purge complète du stockage local
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // 2. Annulation de l'utilisateur actif
+        currentUser = null;
+
+        // 3. Masquer l'espace d'administration et forcer le retour à la vitrine publique
+        document.querySelectorAll('.app-view').forEach(e => e.classList.remove('active'));
+        document.getElementById('publicCatalogScreen').classList.add('active');
+
+        // 4. Charger la vitrine
+        chargerStock();
+        chargerCommandesClients();
     });
 
     /* SYSTEME D'ONGLETS VITRINE STYLE LA SNEAK */
@@ -1542,7 +1545,6 @@
         let total = clientCart.reduce((sum, c) => sum + (c.prix * c.qte), 0);
 
         try {
-            // Enregistrement automatique dans Firestore pour déclencher la notification rouge
             await addDoc(collection(db, "commandes_clients"), {
                 nomClient: nom,
                 adresse: adresse,
@@ -1560,13 +1562,12 @@
 
         window.open(`https://wa.me/${MON_NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
         
-        // Vider le panier
         clientCart = [];
         document.getElementById('clientCartCount').textContent = '0';
         toggleClientCartDrawer();
     };
 
-    /* CHARGEMENT DES COMMANDES CLIENTS & GESTION POINT ROUGE */
+    /* CHARGEMENT DES COMMANDES CLIENTS */
     async function chargerCommandesClients() {
         try {
             const snap = await getDocs(query(collection(db, "commandes_clients"), orderBy("createdAt", "desc")));
@@ -1678,7 +1679,6 @@
 
         if (code === adminCode) {
             currentUser = { nom: "Administrateur", role: "admin" };
-            localStorage.setItem('gb_casual_user_session', JSON.stringify(currentUser));
             lancerApplication();
             return;
         }
@@ -1698,7 +1698,6 @@
 
             if (userFound) {
                 currentUser = userFound;
-                localStorage.setItem('gb_casual_user_session', JSON.stringify(currentUser));
                 lancerApplication();
             } else {
                 errorMsg.style.display = 'block'; clearPin();
@@ -1782,8 +1781,9 @@
     }
 
     window.deconnecter = () => {
-        localStorage.removeItem('gb_casual_user_session');
         currentUser = null;
+        localStorage.clear();
+        sessionStorage.clear();
         if(html5QrScannerInstance) {
             html5QrScannerInstance.stop().catch(() => {});
             html5QrScannerInstance = null;
@@ -3092,7 +3092,7 @@
             try {
                 const cols = ["ventes", "depenses", "fiches_patients", "stock", "employes", "mouvements_stock", "production_interne", "production_grossistes", "matieres_premieres", "commandes_clients"];
                 for (const colName of cols) {
-                    const snap = await getDocs(collection(db, name));
+                    const snap = await getDocs(collection(db, colName));
                     for (const d of snap.docs) { await deleteDoc(doc(db, colName, d.id)); }
                 }
                 alert("✅ Cloud réinitialisé avec succès !");
