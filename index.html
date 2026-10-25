@@ -7,12 +7,22 @@
     <!-- QR Code & Scanner CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f8fafc; color: #0f172a; padding-bottom: 90px; }
         
         .container { max-width: 900px; margin: 0 auto; background: #ffffff; min-height: 100vh; box-shadow: 0 0 25px rgba(0,0,0,0.06); position: relative; }
+
+        /* BARRE D'INFORMATION HAUTE (CONTACTS, LIVRAISON, HORAIRES) */
+        .top-info-bar {
+            background: #064e3b; color: #ffffff; font-size: 11px; padding: 6px 12px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;
+        }
+        .top-info-bar a { color: #ffffff; text-decoration: none; }
+        .top-info-bar a:hover { text-decoration: underline; }
 
         /* DESIGN VITRINE E-COMMERCE CLIENT & PANIER */
         .public-header {
@@ -25,6 +35,7 @@
         .public-brand-sub { font-size: 10px; color: #64748b; font-weight: 600; }
         
         .header-actions-client { display: flex; gap: 6px; align-items: center; }
+        .btn-tiktok-head { background: #000000; color: white; border: none; padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 4px; }
         .btn-share-catalog { background: #25D366; color: white; border: none; padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: background 0.2s; }
         .btn-portal-admin { background: #1e3a8a; color: white; border: none; padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
         .btn-cart-toggle { background: #166534; color: white; border: none; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; position: relative; }
@@ -54,7 +65,7 @@
         .cat-pill { white-space: nowrap; padding: 7px 16px; border-radius: 20px; background: #f1f5f9; color: #64748b; font-size: 11px; font-weight: 700; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; }
         .cat-pill.active { background: #166534; color: white; border-color: #166534; box-shadow: 0 2px 6px rgba(22,101,52,0.25); }
 
-        /* GRILLE DE PRODUITS E-COMMERCE */
+        /* GRILLE DE PRODUITS E-COMMERCE (AVEC OBJECT-FIT CONTAIN NON ROGNÉ) */
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 12px 20px 12px; }
         @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
         
@@ -64,10 +75,11 @@
         }
         .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
         .product-img-box {
-            width: 100%; height: 145px; background: #f8fafc; display: flex; align-items: center; justify-content: center;
-            position: relative; border-bottom: 1px solid #f1f5f9; overflow: hidden;
+            width: 100%; height: 165px; background: #f8fafc; display: flex; align-items: center; justify-content: center;
+            position: relative; border-bottom: 1px solid #f1f5f9; overflow: hidden; padding: 6px;
         }
-        .product-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        /* CORRECTION MAJEURE : OBJECT-FIT CONTAIN POUR TOUTES LES PHOTOS (MANNEQUINS & PRODUITS INTEGRALS) */
+        .product-img-box img, .product-img { width: 100%; height: 100%; object-fit: contain !important; background-color: #f8fafc; }
         .product-tag { position: absolute; top: 8px; left: 8px; font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 6px; }
         .tag-gb { background: #fce7f3; color: #be185d; }
         .tag-gh { background: #dcfce7; color: #15803d; }
@@ -107,7 +119,7 @@
             flex-shrink: 0; cursor: pointer; background: #f8fafc; transition: border-color 0.2s;
         }
         .thumb-item.active { border-color: #166534; box-shadow: 0 0 5px rgba(22,101,52,0.3); }
-        .thumb-item img { width: 100%; height: 100%; object-fit: cover; }
+        .thumb-item img { width: 100%; height: 100%; object-fit: contain; }
 
         /* TIROIR / MODALE PANIER CLIENT */
         .client-cart-drawer {
@@ -120,11 +132,18 @@
         /* STICKY FOOTER WHATSAPP CLIENT */
         .sticky-bottom-wa {
             position: fixed; bottom: 0; left: 0; right: 0; background: #166534; color: white;
-            padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 16px; display: flex; justify-space-between; align-items: center;
             box-shadow: 0 -4px 15px rgba(0,0,0,0.15); z-index: 99;
         }
         .sticky-bottom-wa span { font-size: 11px; font-weight: 600; }
         .btn-wa-sticky { background: #ffffff; color: #166534; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 11px; cursor: pointer; }
+
+        /* FOOTER INFORMATIONS ET LOCALISATION BOUTIQUE */
+        .public-footer {
+            background: #0f172a; color: #94a3b8; padding: 25px 16px; font-size: 11px; line-height: 1.6; border-top: 1px solid #1e293b;
+        }
+        .public-footer h4 { color: #ffffff; font-size: 13px; font-weight: bold; margin-bottom: 8px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 15px; }
 
         /* BANDEAU MESSAGE AMBIANCE INTERFACE INTERNE */
         .header-banner-ambiance {
@@ -235,7 +254,7 @@
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         @media (max-width: 600px) { .form-grid-2 { grid-template-columns: 1fr; } }
         label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 3px; color: #334155; }
-        input[type="text"], input[type="tel"], input[type="password"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 9px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; transition: border-color 0.2s; }
+        input[type="text"], input[type="tel"], input[type="email"], input[type="url"], input[type="password"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 9px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; transition: border-color 0.2s; }
         input:focus, select:focus, textarea:focus { border-color: #1e3a8a; box-shadow: 0 0 0 2px rgba(30,58,138,0.1); }
         textarea { resize: vertical; min-height: 55px; }
         .btn-valider { width: 100%; background-color: #15803d; color: white; border: none; padding: 10px; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 8px; box-shadow: 0 2px 6px rgba(21,128,61,0.2); }
@@ -261,9 +280,9 @@
         .alibaba-card:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
         .alibaba-card-img-wrap {
             width: 100%; height: 105px; background: #f8fafc;
-            display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 1px solid #f1f5f9;
+            display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 1px solid #f1f5f9; padding: 4px;
         }
-        .alibaba-card-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .alibaba-card-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
         .alibaba-card-body { padding: 8px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .alibaba-card-title { font-size: 12px; font-weight: bold; color: #0f172a; margin-bottom: 3px; line-height: 1.2; }
         .alibaba-card-price { font-size: 13px; font-weight: bold; color: #be185d; margin-bottom: 4px; }
@@ -307,11 +326,11 @@
         .depense-item { background: #ffffff; border-left: 4px solid #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
         
         .prod-item { background: #ffffff; border-left: 4px solid #b45309; padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; gap: 10px; }
-        .prod-img-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; flex-shrink: 0; }
+        .prod-img-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: contain; background: #f8fafc; border: 1px solid #cbd5e1; flex-shrink: 0; }
 
         .stock-item { background: #ffffff; border-left: 4px solid #0284c7; padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
         .stock-item.low { border-left-color: #ef4444; background: #fef2f2; }
-        .stock-img-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; border: 1px solid #cbd5e1; margin-right: 8px; }
+        .stock-img-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: contain; background: #f8fafc; border: 1px solid #cbd5e1; margin-right: 8px; }
 
         .stock-dashboard-alert { background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
         .stock-dashboard-alert h3 { font-size: 12px; color: #991b1b; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
@@ -364,6 +383,18 @@
 
 <div class="container">
 
+    <!-- BARRE HAUTE D'INFORMATION BOUTIQUE (HORAIRES, EMAIL, PHONE, LIVRAISON) -->
+    <div class="top-info-bar">
+        <div>
+            <span id="pubTopHoraires"><i class="fa-solid fa-clock"></i> Lun-Sam: 08h30 - 20h30</span> &nbsp;|&nbsp;
+            <span id="pubTopLivraison"><i class="fa-solid fa-globe"></i> Livraison partout dans le monde</span>
+        </div>
+        <div>
+            <a href="mailto:jbcasual@gmail.com" id="pubTopEmailLink"><i class="fa-solid fa-envelope"></i> <span id="pubTopEmail">jbcasual@gmail.com</span></a> &nbsp;|&nbsp;
+            <a href="tel:+2290143682593" id="pubTopPhoneLink"><i class="fa-solid fa-phone"></i> <span id="pubTopPhone">+229 01 43 68 25 93</span></a>
+        </div>
+    </div>
+
     <!-- BANNIÈRE NOTIFICATION RDV PATIENTS (INTERNE) -->
     <div id="rdvNotificationBanner" class="rdv-notification-card" style="display:none;">
         <h3>🔔 Rappel des Rendez-vous Patient du Jour !</h3>
@@ -376,13 +407,16 @@
         <!-- HEADER BOUTIQUE -->
         <header class="public-header">
             <div class="public-logo-box">
-                <img src="logo.jpg" alt="Logo">
+                <img src="logo.jpg" alt="Logo GB Casual">
                 <div>
                     <div class="public-brand-title">GB CASUAL & GLORY HERBAL</div>
-                    <div class="public-brand-sub">Soins Naturels & Cosmétiques</div>
+                    <div class="public-brand-sub" id="pubHeaderAdresse">Porto-Novo, Carrefour Guévier Sabakō, Bénin</div>
                 </div>
             </div>
             <div class="header-actions-client">
+                <a href="https://www.tiktok.com" target="_blank" id="pubHeaderTiktokBtn" class="btn-tiktok-head">
+                    <i class="fa-brands fa-tiktok"></i> TikTok
+                </a>
                 <button class="btn-share-catalog" onclick="shareCatalog()">
                     📲 Partager
                 </button>
@@ -395,25 +429,25 @@
 
         <!-- BANNIÈRE HERO -->
         <div class="hero-banner">
-            <span class="hero-badge">🌿 Bien-être & Santé au Naturel</span>
+            <span class="hero-badge">🌿 Bien-être, Mode & Soins Naturels</span>
             <h1 class="hero-title">Prendre soin de soi n'est pas un luxe, mais une nécessité absolue.</h1>
-            <p class="hero-desc">Découvrez nos gammes de tisanes de santé et nos soins cosmétiques d'exception faits avec passion.</p>
+            <p class="hero-desc">Découvrez nos gammes de tisanes de santé, nos cosmétiques et nos vêtements/gaines d'exception faites avec passion.</p>
             <button class="btn-hero-action" onclick="document.getElementById('gridPublicContainer').scrollIntoView({behavior:'smooth'})">Découvrir la collection ↓</button>
         </div>
 
-        <!-- BADGES DE CONFIANCE -->
+        <!-- BADGES DE RÉASSURANCE -->
         <div class="trust-badges">
             <div class="trust-item">
-                <span>🚚</span>
-                Livraison rapide partout au Togo
+                <span>🌍</span>
+                <span id="pubTrustLivraison">Livraison partout dans le monde (Afrique, Europe, Amérique...)</span>
             </div>
             <div class="trust-item">
-                <span>🛡️</span>
-                Qualité 100% naturelle certifiée
+                <span>📍</span>
+                <span id="pubTrustAdresse">Porto-Novo, Carrefour Guévier Sabakō (Bénin)</span>
             </div>
             <div class="trust-item">
-                <span>💬</span>
-                Support client 7j/7 sur WhatsApp
+                <span>🕒</span>
+                <span id="pubTrustHoraires">Ouvert Lun-Sam: 8h30-20h30 (Commandes 24h/7j)</span>
             </div>
         </div>
 
@@ -421,12 +455,12 @@
         <div class="category-pills">
             <button class="cat-pill active" onclick="filtrerVitrineCategorie('tous', this)">Tous les produits</button>
             <button class="cat-pill" onclick="filtrerVitrineCategorie('gh', this)">🌿 Glory Herbal (Tisanes)</button>
-            <button class="cat-pill" onclick="filtrerVitrineCategorie('gb', this)">🛍️ GB Casual (Cosmétiques)</button>
+            <button class="cat-pill" onclick="filtrerVitrineCategorie('gb', this)">🛍️ GB Casual (Cosmétiques & Mode)</button>
         </div>
 
         <!-- RECHERCHE RAPIDE -->
         <div style="padding: 0 12px; margin-bottom: 15px;">
-            <input type="text" id="searchPublicInput" placeholder="🔍 Rechercher une tisane, un savon, une crème..." oninput="filtrerVitrineSearch()">
+            <input type="text" id="searchPublicInput" placeholder="🔍 Rechercher une tisane, un savon, une crème, une gaine..." oninput="filtrerVitrineSearch()">
         </div>
 
         <!-- GRILLE DE PRODUITS E-COMMERCE -->
@@ -434,7 +468,7 @@
             <p style="grid-column: 1/-1; text-align: center; padding: 30px; color: #94a3b8; font-size: 12px;">Chargement de la vitrine...</p>
         </div>
 
-        <!-- MODALE DE DÉTAIL PRODUIT & GALERIE MULTI-PHOTOS (POUR LE CLIENT) -->
+        <!-- MODALE DE DÉTAIL PRODUIT & GALERIE MULTI-PHOTOS (POUR LE CLIENT - SANS ROGNAGE) -->
         <div id="productDetailModal" class="product-modal-overlay">
             <div class="product-modal-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">
@@ -442,9 +476,9 @@
                     <button type="button" onclick="fermerModalDetailProduit()" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">✕ Fermer</button>
                 </div>
                 
-                <!-- Grande photo active -->
-                <div style="width:100%; height:240px; background:#f8fafc; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:8px; border:1px solid #e2e8f0;">
-                    <img id="modalProductImg" src="" alt="Photo produit" style="width:100%; height:100%; object-fit:cover; display:none;">
+                <!-- Grande photo active avec object-fit contain -->
+                <div style="width:100%; height:260px; background:#f8fafc; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:8px; border:1px solid #e2e8f0; padding:6px;">
+                    <img id="modalProductImg" src="" alt="Photo produit" class="product-img" style="display:none;">
                     <div id="modalProductNoImg" style="font-size:64px; display:none;">📦</div>
                 </div>
 
@@ -488,11 +522,11 @@
                 </div>
                 <div class="form-group" style="margin-bottom:6px;">
                     <label style="font-size:10px;">Votre Nom & Prénoms :</label>
-                    <input type="text" id="clientOrderName" placeholder="Ex: Kouassi Jean">
+                    <input type="text" id="clientOrderName" placeholder="Ex: Dédé">
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
-                    <label style="font-size:10px;">Votre Quartier / Adresse de Livraison :</label>
-                    <input type="text" id="clientOrderAddress" placeholder="Ex: Agoè Lomé">
+                    <label style="font-size:10px;">Votre Adresse / Ville de Livraison :</label>
+                    <input type="text" id="clientOrderAddress" placeholder="Ex: Porto-Novo / Cotonou / International">
                 </div>
             </div>
             <button type="button" onclick="commanderPanierClientWhatsApp()" style="width:100%; background:#166534; color:white; border:none; padding:11px; border-radius:10px; font-weight:bold; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 12px rgba(22,101,52,0.3);">
@@ -500,9 +534,36 @@
             </button>
         </div>
 
+        <!-- FOOTER ET COORDONNÉES OFFICIELLES BOUTIQUE -->
+        <footer class="public-footer">
+            <div class="footer-grid">
+                <div>
+                    <h4>GB Casual & Glory Herbal</h4>
+                    <p id="pubFooterAdresse">Porto-Novo, Carrefour Guévier Sabakō, Bénin</p>
+                    <p style="margin-top:4px;">Service client réactif et conseils personnalisés 7j/7.</p>
+                </div>
+                <div>
+                    <h4>Contact Direct</h4>
+                    <p><i class="fa-solid fa-envelope"></i> E-mail : <a href="mailto:jbcasual@gmail.com" id="pubFooterEmailLink" style="color:#38bdf8;"><span id="pubFooterEmail">jbcasual@gmail.com</span></a></p>
+                    <p><i class="fa-solid fa-phone"></i> Tél / WhatsApp : <a href="tel:+2290143682593" id="pubFooterPhoneLink" style="color:#38bdf8;"><span id="pubFooterPhone">+229 01 43 68 25 93</span></a></p>
+                    <p><i class="fa-solid fa-clock"></i> Horaires : <span id="pubFooterHoraires">Lundi à Samedi: 8h30 - 20h30</span></p>
+                </div>
+                <div>
+                    <h4>Réseaux & Démonstrations</h4>
+                    <p style="margin-bottom:8px;">Retrouvez nos présentations vidéos et démonstrations en direct :</p>
+                    <a href="https://www.tiktok.com" target="_blank" id="pubFooterTiktokBtn" style="display:inline-flex; align-items:center; gap:6px; background:#1e293b; color:white; padding:6px 12px; border-radius:6px; text-decoration:none;">
+                        <i class="fa-brands fa-tiktok text-emerald-400"></i> Suivez-nous sur TikTok
+                    </a>
+                </div>
+            </div>
+            <div style="text-align:center; border-top:1px solid #1e293b; pt-3; font-size:10px; opacity:0.7;">
+                &copy; 2026 GB Casual & Glory Herbal. Tous droits réservés.
+            </div>
+        </footer>
+
         <!-- STICKY FOOTER WHATSAPP CLIENT -->
         <div class="sticky-bottom-wa">
-            <span>💬 Une question ou conseil personnalisé ?</span>
+            <span>💬 Une question ou un conseil personnalisé ?</span>
             <button class="btn-wa-sticky" onclick="commanderDirectWhatsApp('Demande de conseils personnalisés')">Écrire sur WhatsApp</button>
         </div>
     </div>
@@ -683,7 +744,7 @@
                         </div>
                         <div class="form-group">
                             <label>Téléphone Client (WhatsApp) :</label>
-                            <input type="tel" inputmode="numeric" id="cartClientPhone" placeholder="+228...">
+                            <input type="tel" inputmode="numeric" id="cartClientPhone" placeholder="+229...">
                         </div>
                     </div>
 
@@ -724,7 +785,7 @@
                         <div>
                             <select id="cartPaymentMode" onchange="toggleMontantRecu()" style="padding:5px; font-size:11px; border-radius:6px;">
                                 <option value="Espèces">💵 Espèces</option>
-                                <option value="TMoney / Flooz">📲 TMoney / Flooz</option>
+                                <option value="TMoney / Flooz / Moov">📲 Mobile Money (Flooz/Moov/Celtiis)</option>
                                 <option value="Crédit / Acompte">⚠️ Crédit / Acompte</option>
                                 <option value="Carte">💳 Carte Bancaire</option>
                             </select>
@@ -814,11 +875,11 @@
                         <div class="cover-grid-2">
                             <div class="cover-field">
                                 <label>Téléphone :</label>
-                                <input type="tel" inputmode="numeric" id="pTel" placeholder="+228..." required>
+                                <input type="tel" inputmode="numeric" id="pTel" placeholder="+229..." required>
                             </div>
                             <div class="cover-field">
                                 <label>Région / Ville :</label>
-                                <input type="text" id="pRegion" placeholder="Ex: Lomé">
+                                <input type="text" id="pRegion" placeholder="Ex: Porto-Novo">
                             </div>
                         </div>
 
@@ -876,7 +937,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Mode de Vie / Habitudes :</label>
-                                            <input type="text" id="pAntSociaux" placeholder="Alimentation, tabac, alcool...">
+                                            <input type="text" id="pAntSociaux" placeholder="Alimentation, tabac, alcool..."></input>
                                         </div>
                                     </div>
                                 </div>
@@ -984,7 +1045,7 @@
                                 <label>Pôle Produit :</label>
                                 <select id="prodInternePole">
                                     <option value="gh">🌿 Glory Herbal (Tisanes, Pommades)</option>
-                                    <option value="gb">🛍️ GB Casual (Lotions, Savons)</option>
+                                    <option value="gb">🛍️ GB Casual (Lotions, Savons, Gaze)</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -1019,7 +1080,7 @@
 
                         <div class="form-group">
                             <label>Plantes Médicinales & Ingrédients Utilisés :</label>
-                            <textarea id="prodPlantesUtilisees" placeholder="Ex: Neem, Citronnelle, Gingembre..."></textarea>
+                            <textarea id="prodPlantesUtilisees" placeholder="Ex: Neem, Citronnelle, Gingembre, Beurre de karité..."></textarea>
                         </div>
 
                         <div class="form-group">
@@ -1152,7 +1213,7 @@
             </div>
         </div>
 
-        <!-- SECTION STOCKS & CATALOGUE (MIS À JOUR AVEC 3 PHOTOS MULTIPLES) -->
+        <!-- SECTION STOCKS & CATALOGUE (MIS À JOUR AVEC MULTI-PHOTOS) -->
         <div id="paneStock" class="section-pane">
             <div class="header-banner-ambiance" style="background: linear-gradient(90deg, #0284c7 0%, #0369a1 100%);">
                 <span>📦 Un stock bien suivi, c'est zéro opportunité manquée 📊</span>
@@ -1185,7 +1246,7 @@
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label>Prix de Vente (FCFA) :</label>
-                            <input type="number" inputmode="numeric" id="stockPrix" placeholder="Ex: 3500" required>
+                            <input type="number" inputmode="numeric" id="stockPrix" placeholder="Ex: 15000" required>
                         </div>
                         <div class="form-group">
                             <label>Quantité En Stock :</label>
@@ -1200,13 +1261,13 @@
 
                     <!-- MULTI-PHOTOS (PHOTO 1, PHOTO 2, PHOTO 3) -->
                     <div style="background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:10px;">
-                        <label style="color:#0284c7; font-weight:bold; margin-bottom:6px;">📸 Galerie de Photos Multiples (Produit seul & Modèle)</label>
+                        <label style="color:#0284c7; font-weight:bold; margin-bottom:6px;">📸 Galerie de Photos Multiples (Produit seul & Modèle porté)</label>
                         <div class="form-group">
-                            <label style="font-size:10px;">Photo 1 (Principale / Miniature Vitrine) :</label>
+                            <label style="font-size:10px;">Photo 1 (Principale / Vitrine) :</label>
                             <input type="file" id="stockImage1" accept="image/*">
                         </div>
                         <div class="form-group">
-                            <label style="font-size:10px;">Photo 2 (Modèle / Vue sous un autre angle) :</label>
+                            <label style="font-size:10px;">Photo 2 (Modèle porté / Autre angle) :</label>
                             <input type="file" id="stockImage2" accept="image/*">
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
@@ -1286,8 +1347,47 @@
             </div>
         </div>
 
-        <!-- SECTION ADMINISTRATION COMPLÈTE -->
+        <!-- SECTION ADMINISTRATION COMPLÈTE & CONFIGURATION DYNAMIQUE DE LA BOUTIQUE -->
         <div id="paneAdmin" class="section-pane">
+            
+            <!-- FORMULAIRE DE MODIFICATION DES INFOS BOUTIQUE PAR L'ADMIN -->
+            <div style="background:#ffffff; border:2px solid #166534; border-radius:10px; padding:12px; margin-bottom:15px;">
+                <h3 style="font-size:13px; margin-bottom:10px; color:#166534;"><i class="fa-solid fa-sliders"></i> Modifier les Informations Publiques de la Boutique</h3>
+                <form id="adminShopInfoForm">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Email de la Boutique :</label>
+                            <input type="email" id="cfgEmail" value="jbcasual@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Téléphone / WhatsApp :</label>
+                            <input type="text" id="cfgPhone" value="+229 01 43 68 25 93" required>
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Adresse Physique :</label>
+                            <input type="text" id="cfgAdresse" value="Porto-Novo, Carrefour Guévier Sabakō, Bénin" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Horaires d'ouverture :</label>
+                            <input type="text" id="cfgHoraires" value="Lun-Sam: 08h30 - 20h30" required>
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Zone de Livraison :</label>
+                            <input type="text" id="cfgLivraison" value="Livraison partout dans le monde (Afrique, Europe, Amérique...)" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Lien du compte TikTok :</label>
+                            <input type="url" id="cfgTiktok" value="https://www.tiktok.com">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-valider" style="background:#166534;">Enregistrer les infos boutique</button>
+                </form>
+            </div>
+
             <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:15px;">
                 <h3 id="employeFormTitle" style="font-size:13px; margin-bottom:10px; color:#7e22ce;">👔 Inscription Employé(e)</h3>
                 <form id="employeForm">
@@ -1314,14 +1414,14 @@
                         </div>
                         <div class="form-group">
                             <label>Téléphone :</label>
-                            <input type="tel" inputmode="numeric" id="empTel" placeholder="+228..." required>
+                            <input type="tel" inputmode="numeric" id="empTel" placeholder="+229..." required>
                         </div>
                     </div>
 
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label>Lieu de Résidence :</label>
-                            <input type="text" id="empLieu" placeholder="Quartier / Lomé">
+                            <input type="text" id="empLieu" placeholder="Quartier / Porto-Novo">
                         </div>
                         <div class="form-group">
                             <label>Code Secret App (4 chiffres) :</label>
@@ -1443,7 +1543,7 @@
     </div>
 </div>
 
-<!-- SCRIPT JAVASCRIPT INTÉGRÉ FIREBASE AVEC GALERIE MULTI-PHOTOS -->
+<!-- SCRIPT JAVASCRIPT INTÉGRÉ FIREBASE AVEC GESTION DYNAMIQUE BOUTIQUE -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, deleteDoc, orderBy, query, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -1479,7 +1579,17 @@
     let modalQuantityValue = 1;
     let currentModalImages = [];
 
-    const MON_NUMERO_WHATSAPP = "22890000000";
+    // INFORMATIONS PAR DÉFAUT DE LA BOUTIQUE
+    let shopInfo = {
+        email: "jbcasual@gmail.com",
+        phone: "+229 01 43 68 25 93",
+        adresse: "Porto-Novo, Carrefour Guévier Sabakō, Bénin",
+        horaires: "Lun-Sam: 08h30 - 20h30",
+        livraison: "Livraison partout dans le monde (Afrique, Europe, Amérique...)",
+        tiktok: "https://www.tiktok.com"
+    };
+
+    const MON_NUMERO_WHATSAPP = "2290143682593";
 
     document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
 
@@ -1489,18 +1599,83 @@
         currentUser = null;
         document.querySelectorAll('.app-view').forEach(e => e.classList.remove('active'));
         document.getElementById('publicCatalogScreen').classList.add('active');
+        chargerShopConfigCloud();
         chargerStock();
         chargerCommandesClients();
     });
 
+    // CHARGEMENT DE LA CONFIGURATION BOUTIQUE DEPUIS FIREBASE
+    async function chargerShopConfigCloud() {
+        try {
+            const docSnap = await getDoc(doc(db, "parametres", "boutique_info"));
+            if(docSnap.exists()) {
+                shopInfo = { ...shopInfo, ...docSnap.data() };
+            }
+        } catch(e) {}
+        appliquerShopInfoUI();
+    }
+
+    function appliquerShopInfoUI() {
+        // Barre haute
+        document.getElementById('pubTopEmail').textContent = shopInfo.email;
+        document.getElementById('pubTopEmailLink').href = "mailto:" + shopInfo.email;
+        document.getElementById('pubTopPhone').textContent = shopInfo.phone;
+        document.getElementById('pubTopPhoneLink').href = "tel:" + shopInfo.phone.replace(/\s+/g, '');
+        document.getElementById('pubTopHoraires').innerHTML = `<i class="fa-solid fa-clock"></i> ${shopInfo.horaires}`;
+        document.getElementById('pubTopLivraison').innerHTML = `<i class="fa-solid fa-globe"></i> ${shopInfo.livraison}`;
+
+        // Header & Badges
+        document.getElementById('pubHeaderAdresse').textContent = shopInfo.adresse;
+        document.getElementById('pubHeaderTiktokBtn').href = shopInfo.tiktok;
+        document.getElementById('pubTrustLivraison').textContent = shopInfo.livraison;
+        document.getElementById('pubTrustAdresse').textContent = shopInfo.adresse;
+        document.getElementById('pubTrustHoraires').textContent = shopInfo.horaires;
+
+        // Footer
+        document.getElementById('pubFooterAdresse').textContent = shopInfo.adresse;
+        document.getElementById('pubFooterEmail').textContent = shopInfo.email;
+        document.getElementById('pubFooterEmailLink').href = "mailto:" + shopInfo.email;
+        document.getElementById('pubFooterPhone').textContent = shopInfo.phone;
+        document.getElementById('pubFooterPhoneLink').href = "tel:" + shopInfo.phone.replace(/\s+/g, '');
+        document.getElementById('pubFooterHoraires').textContent = shopInfo.horaires;
+        document.getElementById('pubFooterTiktokBtn').href = shopInfo.tiktok;
+
+        // Formulaire Admin
+        document.getElementById('cfgEmail').value = shopInfo.email;
+        document.getElementById('cfgPhone').value = shopInfo.phone;
+        document.getElementById('cfgAdresse').value = shopInfo.adresse;
+        document.getElementById('cfgHoraires').value = shopInfo.horaires;
+        document.getElementById('cfgLivraison').value = shopInfo.livraison;
+        document.getElementById('cfgTiktok').value = shopInfo.tiktok;
+    }
+
+    // SAUVEGARDE DES INFOS BOUTIQUE PAR L'ADMIN
+    document.getElementById('adminShopInfoForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(currentUser?.role !== 'admin') return;
+
+        shopInfo.email = document.getElementById('cfgEmail').value.trim();
+        shopInfo.phone = document.getElementById('cfgPhone').value.trim();
+        shopInfo.adresse = document.getElementById('cfgAdresse').value.trim();
+        shopInfo.horaires = document.getElementById('cfgHoraires').value.trim();
+        shopInfo.livraison = document.getElementById('cfgLivraison').value.trim();
+        shopInfo.tiktok = document.getElementById('cfgTiktok').value.trim() || "https://www.tiktok.com";
+
+        try {
+            await setDoc(doc(db, "parametres", "boutique_info"), shopInfo, { merge: true });
+            appliquerShopInfoUI();
+            alert("✅ Informations publiques de la boutique enregistrées avec succès !");
+        } catch(err) { alert("Erreur : " + err.message); }
+    });
+
     window.shareCatalog = () => {
-        const catalogUrl = "https://dd-dev-88.github.io/gb-casual/";
-        const shareText = "Découvrez le catalogue officiel de GB Casual & Glory Herbal ! 🌿🛍️ Cliquez ici pour voir nos articles et commander : " + catalogUrl;
+        const catalogUrl = window.location.href;
+        const shareText = `Découvrez la boutique officielle de GB Casual & Glory Herbal à Porto-Novo ! 🌿🛍️ Articles complets, soins et mode. Cliquez ici : ` + catalogUrl;
 
         if (navigator.share) {
             navigator.share({
                 title: 'GB Casual & Glory Herbal',
-                text: 'Découvrez notre catalogue en ligne ! 🌿🛍️',
+                text: 'Découvrez nos articles et produits au complet ! 🌿🛍️',
                 url: catalogUrl
             }).catch((err) => {
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
@@ -1529,16 +1704,15 @@
             if (currentCategoryFilter !== 'tous' && st.pole !== currentCategoryFilter) return;
             if (searchText && !st.nom.toLowerCase().includes(searchText)) return;
 
-            // Utilise la première image du tableau 'images' ou l'ancienne image unique
             const mainImg = (st.images && st.images.length > 0) ? st.images[0] : (st.image || "");
-            const imgTag = mainImg ? `<img src="${mainImg}" alt="${st.nom}">` : `<div style="font-size:42px;">📦</div>`;
+            const imgTag = mainImg ? `<img src="${mainImg}" alt="${st.nom}" class="product-img">` : `<div style="font-size:42px;">📦</div>`;
             const isGb = st.pole === 'gb';
 
             html += `
                 <div class="product-card" onclick="ouvrirModalDetailProduit('${st.id}')">
                     <div class="product-img-box">
                         ${imgTag}
-                        <span class="product-tag ${isGb ? 'tag-gb' : 'tag-gh'}">${isGb ? '🛍️ GB Casual' : '🌿 Glory Herbal'}</span>
+                        <span class="product-tag ${isGb ? 'tag-gb' : 'tag-gb'}">${isGb ? '🛍️ GB Casual' : '🌿 Glory Herbal'}</span>
                     </div>
                     <div class="product-details">
                         <div>
@@ -1546,7 +1720,7 @@
                             <div class="product-price">${st.prix.toLocaleString()} FCFA</div>
                         </div>
                         <button type="button" class="btn-view-product">
-                            <span>🔍 Voir les détails</span>
+                            <span>🔍 Voir l'article complet</span>
                         </button>
                     </div>
                 </div>
@@ -1565,7 +1739,7 @@
 
         document.getElementById('modalProductName').textContent = item.nom;
         document.getElementById('modalProductPrice').textContent = item.prix.toLocaleString() + " FCFA";
-        document.getElementById('modalProductDesc').textContent = item.description || "Aucune description spécifique pour ce produit. Qualité 100% naturelle garantie par GB Casual & Glory Herbal.";
+        document.getElementById('modalProductDesc').textContent = item.description || "Aucune description spécifique pour ce produit. Qualité 100% garantie par GB Casual & Glory Herbal.";
         document.getElementById('modalProductQty').textContent = modalQuantityValue;
 
         const tagEl = document.getElementById('modalProductTag');
@@ -1577,7 +1751,6 @@
             tagEl.textContent = "🌿 Glory Herbal";
         }
 
-        // Rassemble toutes les images disponibles (tableau images ou fallback image unique)
         currentModalImages = [];
         if (item.images && Array.isArray(item.images)) {
             currentModalImages = item.images.filter(img => img && img.trim() !== "");
@@ -1595,7 +1768,6 @@
             imgEl.style.display = "block";
             noImgEl.style.display = "none";
 
-            // Si plusieurs photos, on affiche la barre de miniatures
             if (currentModalImages.length > 1) {
                 let thumbsHtml = "";
                 currentModalImages.forEach((imgUrl, idx) => {
@@ -1623,7 +1795,6 @@
         if (!currentModalImages[index]) return;
         document.getElementById('modalProductImg').src = currentModalImages[index];
         
-        // Gère la classe active sur les miniatures
         document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
         if (thumbEl) thumbEl.classList.add('active');
     };
@@ -1670,7 +1841,7 @@
     };
 
     window.commanderDirectWhatsApp = (nomProduit, prix) => {
-        let msg = `Bonjour GB Casual & Glory Herbal, je suis intéressé(e) par le produit suivant :\n\n👉 *${nomProduit}* ${prix ? '(' + prix.toLocaleString() + ' FCFA)' : ''}\n\nEst-il disponible pour livraison ?`;
+        let msg = `Bonjour GB Casual & Glory Herbal, je vous contacte depuis la boutique pour :\n\n👉 *${nomProduit}* ${prix ? '(' + prix.toLocaleString() + ' FCFA)' : ''}\n\nEst-il disponible pour livraison ?`;
         window.open(`https://wa.me/${MON_NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
     };
 
@@ -1728,7 +1899,7 @@
     window.commanderPanierClientWhatsApp = async () => {
         if(clientCart.length === 0) return alert("Votre panier est vide !");
         const nom = document.getElementById('clientOrderName').value.trim() || 'Client(e)';
-        const adresse = document.getElementById('clientOrderAddress').value.trim() || 'Non spécifiée';
+        const adresse = document.getElementById('clientOrderAddress').value.trim() || 'Porto-Novo';
 
         let total = clientCart.reduce((sum, c) => sum + (c.prix * c.qte), 0);
 
@@ -1746,7 +1917,7 @@
 
         let msg = `Bonjour GB Casual & Glory Herbal, je souhaite passer commande :\n\n👤 *Client :* ${nom}\n📍 *Adresse :* ${adresse}\n\n---------------------------------\n📦 *ARTICLES COMMANDÉS :*\n---------------------------------\n` +
             clientCart.map(c => `- ${c.nom} x${c.qte} : ${(c.prix * c.qte).toLocaleString()} FCFA`).join('\n') +
-            `\n---------------------------------\n💰 *TOTAL GÉNÉRAL : ${total.toLocaleString()} FCFA*\n\nMerci de me confirmer la disponibilité pour livraison !`;
+            `\n---------------------------------\n💰 *TOTAL GÉNÉRAL : ${total.toLocaleString()} FCFA*\n\nMerci de me confirmer la prise en charge pour livraison !`;
 
         window.open(`https://wa.me/${MON_NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
         
@@ -2130,12 +2301,12 @@
                 const m = Number(v.montantTotal) || 0;
                 totalJour += m;
                 if (v.modePaiement === 'Espèces') especes += m;
-                else if (v.modePaiement === 'TMoney / Flooz') tmoney += m;
+                else if (v.modePaiement.includes('TMoney') || v.modePaiement.includes('Mobile')) tmoney += m;
                 else if (v.modePaiement === 'Crédit / Acompte') credit += m;
             }
         });
 
-        currentReceiptText = `=================================\n  BILAN DE CAISSE DE LA JOURNÉE\n=================================\nAgent : ${currentUser.nom}\nDate : ${new Date().toLocaleDateString('fr-FR')}\n\n---------------------------------\n💵 Espèces en Caisse : ${especes.toLocaleString()} FCFA\n📲 TMoney / Flooz : ${tmoney.toLocaleString()} FCFA\n⚠️ Ventes Crédit / Acomptes : ${credit.toLocaleString()} FCFA\n---------------------------------\n📊 TOTAL RECETTES : ${totalJour.toLocaleString()} FCFA\n=================================\nBonne fin de journée ! 🛒`;
+        currentReceiptText = `=================================\n  BILAN DE CAISSE DE LA JOURNÉE\n=================================\nAgent : ${currentUser.nom}\nDate : ${new Date().toLocaleDateString('fr-FR')}\n\n---------------------------------\n💵 Espèces en Caisse : ${especes.toLocaleString()} FCFA\n📲 TMoney / Mobile Money : ${tmoney.toLocaleString()} FCFA\n⚠️ Ventes Crédit / Acomptes : ${credit.toLocaleString()} FCFA\n---------------------------------\n📊 TOTAL RECETTES : ${totalJour.toLocaleString()} FCFA\n=================================\nBonne fin de journée ! 🛒`;
         
         document.getElementById('receiptTextContent').textContent = currentReceiptText;
         document.getElementById('receiptModal').classList.add('active');
@@ -2154,7 +2325,7 @@
             if (filter && !st.nom.toLowerCase().includes(filter)) return;
 
             const mainImg = (st.images && st.images.length > 0) ? st.images[0] : (st.image || "");
-            const imgTag = mainImg ? `<img src="${mainImg}" alt="${st.nom}">` : `<div style="font-size:32px;">📦</div>`;
+            const imgTag = mainImg ? `<img src="${mainImg}" alt="${st.nom}" class="product-img">` : `<div style="font-size:32px;">📦</div>`;
             const badgeStock = st.qte <= 3 ? `<span style="color:#dc2626; font-weight:bold;">⚠️ Stock: ${st.qte}</span>` : `<span style="color:#15803d;">🟢 Stock: ${st.qte}</span>`;
 
             gridHtml += `
@@ -2644,7 +2815,6 @@
         let existingItem = localStock.find(i => i.id === editId);
         let newImagesArray = [];
 
-        // Récupère les anciennes images si on édite et qu'aucun nouveau fichier n'est fourni
         if (existingItem && existingItem.images) {
             newImagesArray = [...existingItem.images];
         } else if (existingItem && existingItem.image) {
@@ -2655,7 +2825,6 @@
         if (file2) newImagesArray[1] = await convertirImageEnBase64(file2);
         if (file3) newImagesArray[2] = await convertirImageEnBase64(file3);
 
-        // Nettoie les valeurs vides
         newImagesArray = newImagesArray.filter(img => img && img.trim() !== "");
 
         try {
@@ -2666,7 +2835,7 @@
                 qte: qteP,
                 description: descP,
                 images: newImagesArray,
-                image: newImagesArray.length > 0 ? newImagesArray[0] : "" // Rétrocompatibilité
+                image: newImagesArray.length > 0 ? newImagesArray[0] : ""
             };
 
             if (editId) {
