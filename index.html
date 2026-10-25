@@ -60,7 +60,7 @@
         
         .product-card {
             background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;
         }
         .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
         .product-img-box {
@@ -76,11 +76,27 @@
         .product-name { font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 4px; line-height: 1.3; }
         .product-price { font-size: 14px; font-weight: 800; color: #166534; margin-bottom: 8px; }
         
-        .btn-add-client-cart {
-            width: 100%; background: #166534; color: white; border: none; padding: 8px;
+        .btn-view-product {
+            width: 100%; background: #f1f5f9; color: #166534; border: 1px solid #cbd5e1; padding: 7px;
             border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(22,101,52,0.2);
+            display: flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.2s;
         }
+        .btn-view-product:hover { background: #e2e8f0; }
+
+        /* MODALE DÉTAIL PRODUIT (POUR CLIENTS) */
+        .product-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); display: none;
+            justify-content: center; align-items: flex-end; z-index: 2000;
+            backdrop-filter: blur(4px); animation: fadeIn 0.2s ease;
+        }
+        .product-modal-overlay.active { display: flex; }
+        .product-modal-card {
+            background: white; border-top-left-radius: 20px; border-top-right-radius: 20px;
+            width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; padding: 20px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; position: relative;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         /* TIROIR / MODALE PANIER CLIENT */
         .client-cart-drawer {
@@ -89,7 +105,6 @@
             box-shadow: 0 -10px 30px rgba(0,0,0,0.15); z-index: 1000; display: none; max-height: 85vh; overflow-y: auto;
         }
         .client-cart-drawer.active { display: block; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         /* STICKY FOOTER WHATSAPP CLIENT */
         .sticky-bottom-wa {
@@ -157,7 +172,6 @@
         .bottom-nav-item.active { color: #1e3a8a; font-weight: bold; }
         .bottom-nav-item.active .icon { transform: scale(1.15); transition: transform 0.2s; }
         
-        /* POINT ROUGE DE NOTIFICATION NAVIGATION */
         .nav-red-dot {
             position: absolute; top: 2px; right: 28%; background: #ef4444; color: white;
             font-size: 9px; padding: 1px 5px; border-radius: 10px; font-weight: bold;
@@ -407,6 +421,40 @@
         <!-- GRILLE DE PRODUITS E-COMMERCE -->
         <div id="gridPublicContainer" class="product-grid">
             <p style="grid-column: 1/-1; text-align: center; padding: 30px; color: #94a3b8; font-size: 12px;">Chargement de la vitrine...</p>
+        </div>
+
+        <!-- MODALE DE DÉTAIL PRODUIT (POUR LE CLIENT) -->
+        <div id="productDetailModal" class="product-modal-overlay">
+            <div class="product-modal-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">
+                    <h3 id="modalProductName" style="font-size:16px; color:#0f172a; font-weight:800;">Nom du Produit</h3>
+                    <button type="button" onclick="fermerModalDetailProduit()" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">✕ Fermer</button>
+                </div>
+                
+                <div style="width:100%; height:240px; background:#f8fafc; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:12px; border:1px solid #e2e8f0;">
+                    <img id="modalProductImg" src="" alt="Photo produit" style="width:100%; height:100%; object-fit:cover; display:none;">
+                    <div id="modalProductNoImg" style="font-size:64px; display:none;">📦</div>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <div id="modalProductPrice" style="font-size:18px; font-weight:800; color:#166534; margin-bottom:6px;">0 FCFA</div>
+                    <div id="modalProductTag" class="product-tag tag-gh" style="position:static; display:inline-block; margin-bottom:8px;">Pôle</div>
+                    <p id="modalProductDesc" style="font-size:12px; color:#475569; line-height:1.5;">Description et conseils d'utilisation du produit...</p>
+                </div>
+
+                <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:15px; display:flex; align-items:center; justify-content:space-between;">
+                    <span style="font-size:12px; font-weight:bold; color:#0f172a;">Quantité :</span>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <button type="button" onclick="modifierQteModalDetail(-1)" style="width:30px; height:30px; background:#e2e8f0; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">-</button>
+                        <span id="modalProductQty" style="font-size:14px; font-weight:bold; width:20px; text-align:center;">1</span>
+                        <button type="button" onclick="modifierQteModalDetail(1)" style="width:30px; height:30px; background:#e2e8f0; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">+</button>
+                    </div>
+                </div>
+
+                <button type="button" id="modalBtnAddToCart" onclick="ajouterAuPanierDepuisModal()" style="width:100%; background:#166534; color:white; border:none; padding:12px; border-radius:10px; font-weight:bold; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 12px rgba(22,101,52,0.3);">
+                    🛒 Ajouter au Panier
+                </button>
+            </div>
         </div>
 
         <!-- TIROIR / MODALE PANIER CLIENT E-COMMERCE -->
@@ -813,7 +861,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Mode de Vie / Habitudes :</label>
-                                            <input type="text" id="pAntSociaux" placeholder="Alimentation, tabac, alcool..."></textarea>
+                                            <input type="text" id="pAntSociaux" placeholder="Alimentation, tabac, alcool...">
                                         </div>
                                     </div>
                                 </div>
@@ -1131,7 +1179,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Photo Produit (Optionnel) :</label>
+                        <label>Description détaillée / Bienfaits / Posologie :</label>
+                        <textarea id="stockDesc" placeholder="Ex: Soin nourrissant à base de plantes, appliquer matin et soir..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Photo Produit :</label>
                         <input type="file" id="stockImageInput" accept="image/*">
                         <small id="txtImageNote" style="display:none; color:#d97706;">Laissez vide pour conserver l'image existante.</small>
                     </div>
@@ -1395,31 +1448,23 @@
     let enteredPin = "";
     let html5QrScannerInstance = null;
 
+    let selectedProductForModal = null;
+    let modalQuantityValue = 1;
+
     const MON_NUMERO_WHATSAPP = "22890000000";
 
     document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
 
-    // ================================================================
-    // SÉCURITÉ ACCRUE : FERMETURE AUTOMATIQUE DE SESSION AU RAFRAÎCHISSEMENT
-    // ================================================================
     window.addEventListener('DOMContentLoaded', () => {
-        // 1. Purge complète du stockage local
         localStorage.clear();
         sessionStorage.clear();
-        
-        // 2. Annulation de l'utilisateur actif
         currentUser = null;
-
-        // 3. Masquer l'espace d'administration et forcer le retour à la vitrine publique
         document.querySelectorAll('.app-view').forEach(e => e.classList.remove('active'));
         document.getElementById('publicCatalogScreen').classList.add('active');
-
-        // 4. Charger la vitrine
         chargerStock();
         chargerCommandesClients();
     });
 
-    /* 📲 FONCTION DE PARTAGE DU CATALOGUE CLIENT (Corrigée pour WhatsApp universel) */
     window.shareCatalog = () => {
         const catalogUrl = "https://dd-dev-88.github.io/gb-casual/";
         const shareText = "Découvrez le catalogue officiel de GB Casual & Glory Herbal ! 🌿🛍️ Cliquez ici pour voir nos articles et commander : " + catalogUrl;
@@ -1437,7 +1482,6 @@
         }
     };
 
-    /* SYSTEME D'ONGLETS VITRINE STYLE LA SNEAK */
     window.filtrerVitrineCategorie = (cat, btnEl) => {
         currentCategoryFilter = cat;
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
@@ -1461,7 +1505,7 @@
             const isGb = st.pole === 'gb';
 
             html += `
-                <div class="product-card">
+                <div class="product-card" onclick="ouvrirModalDetailProduit('${st.id}')">
                     <div class="product-img-box">
                         ${imgTag}
                         <span class="product-tag ${isGb ? 'tag-gb' : 'tag-gh'}">${isGb ? '🛍️ GB Casual' : '🌿 Glory Herbal'}</span>
@@ -1471,8 +1515,8 @@
                             <div class="product-name">${st.nom}</div>
                             <div class="product-price">${st.prix.toLocaleString()} FCFA</div>
                         </div>
-                        <button type="button" class="btn-add-client-cart" onclick="ajouterAuPanierClient('${st.id}')">
-                            <span>🛒 + Ajouter au panier</span>
+                        <button type="button" class="btn-view-product">
+                            <span>🔍 Voir les détails</span>
                         </button>
                     </div>
                 </div>
@@ -1482,36 +1526,89 @@
         if (container) container.innerHTML = html || '<p style="grid-column:1/-1; text-align:center; padding:30px; color:#94a3b8; font-size:12px;">Aucun produit trouvé dans cette catégorie.</p>';
     }
 
-    window.commanderDirectWhatsApp = (nomProduit, prix) => {
-        let msg = `Bonjour GB Casual & Glory Herbal, je suis intéressé(e) par le produit suivant :\n\n👉 *${nomProduit}* ${prix ? '(' + prix.toLocaleString() + ' FCFA)' : ''}\n\nEst-il disponible pour livraison ?`;
-        window.open(`https://wa.me/${MON_NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
-    };
-
-    /* GESTION DU PANIER CLIENT E-COMMERCE & ENREGISTREMENT FIREBASE */
-    window.toggleClientCartDrawer = () => {
-        const drawer = document.getElementById('clientCartDrawer');
-        drawer.classList.toggle('active');
-        afficherPanierClient();
-    };
-
-    window.ajouterAuPanierClient = (id) => {
+    /* GESTION DE LA MODALE DÉTAIL PRODUIT CLIENT */
+    window.ouvrirModalDetailProduit = (id) => {
         const item = localStock.find(s => s.id === id);
         if(!item) return;
+        selectedProductForModal = item;
+        modalQuantityValue = 1;
 
-        const index = clientCart.findIndex(c => c.id === id);
+        document.getElementById('modalProductName').textContent = item.nom;
+        document.getElementById('modalProductPrice').textContent = item.prix.toLocaleString() + " FCFA";
+        document.getElementById('modalProductDesc').textContent = item.description || "Aucune description spécifique pour ce produit. Qualité 100% naturelle garantie par GB Casual & Glory Herbal.";
+        document.getElementById('modalProductQty').textContent = modalQuantityValue;
+
+        const tagEl = document.getElementById('modalProductTag');
+        if(item.pole === 'gb') {
+            tagEl.className = "product-tag tag-gb";
+            tagEl.textContent = "🛍️ GB Casual";
+        } else {
+            tagEl.className = "product-tag tag-gh";
+            tagEl.textContent = "🌿 Glory Herbal";
+        }
+
+        const imgEl = document.getElementById('modalProductImg');
+        const noImgEl = document.getElementById('modalProductNoImg');
+        if(item.image) {
+            imgEl.src = item.image;
+            imgEl.style.display = "block";
+            noImgEl.style.display = "none";
+        } else {
+            imgEl.style.display = "none";
+            noImgEl.style.display = "block";
+        }
+
+        document.getElementById('productDetailModal').classList.add('active');
+    };
+
+    window.fermerModalDetailProduit = () => {
+        document.getElementById('productDetailModal').classList.remove('active');
+        selectedProductForModal = null;
+    };
+
+    window.modifierQteModalDetail = (delta) => {
+        if(!selectedProductForModal) return;
+        let newQte = modalQuantityValue + delta;
+        if(newQte < 1) newQte = 1;
+        if(newQte > selectedProductForModal.qte) {
+            alert("Stock maximum atteint (" + selectedProductForModal.qte + ")");
+            return;
+        }
+        modalQuantityValue = newQte;
+        document.getElementById('modalProductQty').textContent = modalQuantityValue;
+    };
+
+    window.ajouterAuPanierDepuisModal = () => {
+        if(!selectedProductForModal) return;
+        const item = selectedProductForModal;
+
+        const index = clientCart.findIndex(c => c.id === item.id);
         if(index > -1) {
-            if(clientCart[index].qte < item.qte) {
-                clientCart[index].qte += 1;
+            let totalQte = clientCart[index].qte + modalQuantityValue;
+            if(totalQte <= item.qte) {
+                clientCart[index].qte = totalQte;
             } else {
                 alert("Stock maximum atteint pour cet article.");
                 return;
             }
         } else {
-            clientCart.push({ id: item.id, nom: item.nom, prix: item.prix, qte: 1, stockMax: item.qte });
+            clientCart.push({ id: item.id, nom: item.nom, prix: item.prix, qte: modalQuantityValue, stockMax: item.qte });
         }
 
         document.getElementById('clientCartCount').textContent = clientCart.reduce((sum, c) => sum + c.qte, 0);
-        alert(`✅ "${item.nom}" a été ajouté à votre panier !`);
+        alert(`✅ ${modalQuantityValue}x "${item.nom}" ajouté(s) à votre panier !`);
+        fermerModalDetailProduit();
+    };
+
+    window.commanderDirectWhatsApp = (nomProduit, prix) => {
+        let msg = `Bonjour GB Casual & Glory Herbal, je suis intéressé(e) par le produit suivant :\n\n👉 *${nomProduit}* ${prix ? '(' + prix.toLocaleString() + ' FCFA)' : ''}\n\nEst-il disponible pour livraison ?`;
+        window.open(`https://wa.me/${MON_NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+
+    window.toggleClientCartDrawer = () => {
+        const drawer = document.getElementById('clientCartDrawer');
+        drawer.classList.toggle('active');
+        afficherPanierClient();
     };
 
     window.modifierQteClientCart = (index, delta) => {
@@ -1576,7 +1673,7 @@
                 dateString: new Date().toLocaleString('fr-FR'),
                 createdAt: serverTimestamp()
             });
-        } catch(e) { console.error("Erreur enregistrement commande web"); }
+        } catch(e) {}
 
         let msg = `Bonjour GB Casual & Glory Herbal, je souhaite passer commande :\n\n👤 *Client :* ${nom}\n📍 *Adresse :* ${adresse}\n\n---------------------------------\n📦 *ARTICLES COMMANDÉS :*\n---------------------------------\n` +
             clientCart.map(c => `- ${c.nom} x${c.qte} : ${(c.prix * c.qte).toLocaleString()} FCFA`).join('\n') +
@@ -1589,7 +1686,6 @@
         toggleClientCartDrawer();
     };
 
-    /* CHARGEMENT DES COMMANDES CLIENTS */
     async function chargerCommandesClients() {
         try {
             const snap = await getDocs(query(collection(db, "commandes_clients"), orderBy("createdAt", "desc")));
@@ -1654,13 +1750,12 @@
         chargerCommandesClients();
     };
 
-    /* DIGICODE ET CONNEXION */
     window.toggleNumMode = (inputId) => {
         const el = document.getElementById(inputId);
         if (!el) return;
         if (el.type === 'date') {
             el.type = 'text'; el.inputMode = 'numeric'; el.placeholder = 'JJ/MM/AAAA';
-            alert("Mode Pavé Numérique activé ! Tapez la date au format 25102026 ou 25/10/2026.");
+            alert("Mode Pavé Numérique activé !");
         } else {
             el.type = 'date'; el.removeAttribute('inputMode'); el.placeholder = '';
         }
@@ -1862,7 +1957,6 @@
 
     function actualiserProfilEmploye() {
         if (!currentUser || currentUser.role !== 'employe') return;
-        
         const today = new Date().toISOString().split('T')[0];
         let totalJour = 0; let countVentes = 0; let htmlSalesList = "";
 
@@ -2267,7 +2361,6 @@
         });
     };
 
-    /* PRODUCTION INTERNE */
     document.getElementById('prodInterneForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (currentUser.role !== 'admin') return;
@@ -2330,12 +2423,9 @@
         if (currentUser.role !== 'admin') return;
         try {
             const snap = await getDocs(query(collection(db, "production_interne"), orderBy("createdAt", "desc")));
-            localProdInterne = [];
             let html = "";
             snap.forEach(d => {
                 const p = { id: d.id, ...d.data() };
-                localProdInterne.push(p);
-
                 const imgTag = p.imagePlantes ? `<img src="${p.imagePlantes}" class="prod-img-thumb" alt="plantes">` : `<div style="width:50px; height:50px; background:#e2e8f0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;">🌿</div>`;
 
                 html += `
@@ -2357,7 +2447,6 @@
         } catch (e) {}
     }
 
-    /* PRODUCTION GROSSISTES COMPLÈTE */
     document.getElementById('prodGrossisteForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (currentUser.role !== 'admin') return;
@@ -2395,11 +2484,9 @@
         if (currentUser.role !== 'admin') return;
         try {
             const snap = await getDocs(query(collection(db, "production_grossistes"), orderBy("dateCreation", "desc")));
-            localProdGrossistes = [];
             let html = "";
             snap.forEach(d => {
                 const g = { id: d.id, ...d.data() };
-                localProdGrossistes.push(g);
                 let badgeClass = g.statut === 'En cours' ? 'badge-status encours' : (g.statut === 'Prêt / Livré' ? 'badge-status pret' : 'badge-status attente');
                 const imgTag = g.imageProduit ? `<img src="${g.imageProduit}" class="prod-img-thumb" alt="produit">` : `<div style="width:50px; height:50px; background:#e2e8f0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;">🤝</div>`;
 
@@ -2451,11 +2538,9 @@
         if (currentUser.role !== 'admin') return;
         try {
             const snap = await getDocs(collection(db, "matieres_premieres"));
-            localMatieres = [];
             let html = "";
             snap.forEach(d => {
                 const m = { id: d.id, ...d.data() };
-                localMatieres.push(m);
                 html += `<div class="sale-item emp"><div><strong style="color:#0369a1;">🧪 ${m.nom}</strong><br><small>Stock : <strong>${m.quantite}</strong></small></div><div><button class="btn-action" style="background:#ef4444;" onclick="supprimerMatiere('${m.id}')">Suppr</button></div></div>`;
             });
             document.getElementById('matieresContainer').innerHTML = html || "<p style='text-align:center;'>Aucun Ingrédient.</p>";
@@ -2479,6 +2564,7 @@
         const poleP = document.getElementById('stockPole').value;
         const prixP = Number(document.getElementById('stockPrix').value);
         const qteP = Number(document.getElementById('stockQte').value);
+        const descP = document.getElementById('stockDesc').value.trim();
         const imageInput = document.getElementById('stockImageInput');
 
         let imageBase64 = "";
@@ -2490,13 +2576,13 @@
             if (editId) {
                 const existingItem = localStock.find(i => i.id === editId);
                 await setDoc(doc(db, "stock", editId), {
-                    pole: poleP, nom: nomP, prix: prixP, qte: qteP,
+                    pole: poleP, nom: nomP, prix: prixP, qte: qteP, description: descP,
                     image: imageBase64 || (existingItem ? existingItem.image || "" : "")
                 }, { merge: true });
                 alert("Article mis à jour !");
             } else {
-                await addDoc(collection(db, "stock"), { pole: poleP, nom: nomP, prix: prixP, qte: qteP, image: imageBase64 });
-                alert("Produit ajouté avec génération automatique du QR Code !");
+                await addDoc(collection(db, "stock"), { pole: poleP, nom: nomP, prix: prixP, qte: qteP, description: descP, image: imageBase64 });
+                alert("Produit ajouté avec succès !");
             }
             annulerEditStock();
             chargerStock();
@@ -2511,6 +2597,7 @@
         document.getElementById('stockNom').value = item.nom || '';
         document.getElementById('stockPrix').value = item.prix || '';
         document.getElementById('stockQte').value = item.qte || 0;
+        document.getElementById('stockDesc').value = item.description || '';
         document.getElementById('btnSubmitStock').textContent = "Enregistrer modification";
         document.getElementById('btnSubmitStock').className = "btn-update";
         document.getElementById('btnCancelEditStock').style.display = "block";
@@ -2973,7 +3060,7 @@
             }
             alert("Suivi enregistré !");
             chargerPatients();
-        } catch (err) { alert("Erreur."); }
+        } catch (err) {}
     };
 
     window.toggleDetails = (id) => {
@@ -3055,7 +3142,7 @@
             }
             annulerEditEmploye();
             chargerEmployes();
-        } catch (err) { alert("Erreur."); }
+        } catch (err) {}
     });
 
     async function chargerEmployes() {
