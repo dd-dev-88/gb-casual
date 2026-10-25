@@ -25,6 +25,7 @@
         .public-brand-sub { font-size: 10px; color: #64748b; font-weight: 600; }
         
         .header-actions-client { display: flex; gap: 6px; align-items: center; }
+        .btn-share-catalog { background: #25D366; color: white; border: none; padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: background 0.2s; }
         .btn-portal-admin { background: #1e3a8a; color: white; border: none; padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
         .btn-cart-toggle { background: #166534; color: white; border: none; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; position: relative; }
         .cart-badge-count { background: #ef4444; color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
@@ -144,7 +145,7 @@
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(8px); border-top: 1px solid #e2e8f0;
-            display: flex; justify-content: space-around; align-items: center;
+            display: flex; justify-around: space-around; align-items: center;
             padding: 8px 0; z-index: 999; box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
         }
         .bottom-nav-item {
@@ -357,6 +358,9 @@
                 </div>
             </div>
             <div class="header-actions-client">
+                <button class="btn-share-catalog" onclick="shareCatalog()">
+                    📲 Partager
+                </button>
                 <button class="btn-cart-toggle" onclick="toggleClientCartDrawer()">
                     🛒 Panier <span class="cart-badge-count" id="clientCartCount">0</span>
                 </button>
@@ -1414,6 +1418,24 @@
         chargerStock();
         chargerCommandesClients();
     });
+
+    /* 📲 FONCTION DE PARTAGE DU CATALOGUE CLIENT (Corrigée pour WhatsApp universel) */
+    window.shareCatalog = () => {
+        const catalogUrl = "https://dd-dev-88.github.io/gb-casual/";
+        const shareText = "Découvrez le catalogue officiel de GB Casual & Glory Herbal ! 🌿🛍️ Cliquez ici pour voir nos articles et commander : " + catalogUrl;
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'GB Casual & Glory Herbal',
+                text: 'Découvrez notre catalogue en ligne ! 🌿🛍️',
+                url: catalogUrl
+            }).catch((err) => {
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+            });
+        } else {
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+        }
+    };
 
     /* SYSTEME D'ONGLETS VITRINE STYLE LA SNEAK */
     window.filtrerVitrineCategorie = (cat, btnEl) => {
