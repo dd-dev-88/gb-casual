@@ -33,37 +33,94 @@
         .public-brand-sub { font-size: 10px; color: #64748b; font-weight: 600; }
         
         .header-actions-client { display: flex; gap: 6px; align-items: center; }
+        .btn-points-head { background: #f59e0b; color: white; border: none; padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; }
         .btn-tiktok-head { background: #000000; color: white; border: none; padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 4px; }
         .btn-share-catalog { background: #25D366; color: white; border: none; padding: 7px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: background 0.2s; }
         .btn-cart-toggle { background: #166534; color: white; border: none; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; position: relative; }
         .cart-badge-count { background: #ef4444; color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
 
-        /* HERO BANNER VITRINE */
-        .hero-banner {
-            background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #10b981 100%);
-            color: white; padding: 28px 20px; text-align: left; position: relative; overflow: hidden; margin-bottom: 15px;
+        /* HERO BANNER ACCUEIL CHALEUREUX IMMERSIF */
+        .hero-banner-shop {
+            position: relative;
+            background: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80') center/cover no-repeat;
+            color: white; padding: 32px 18px; text-align: left; overflow: hidden; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         }
-        .hero-banner::after {
-            content: "🌿"; position: absolute; right: -15px; bottom: -25px; font-size: 120px; opacity: 0.15; transform: rotate(-15deg); pointer-events: none;
+        .hero-banner-shop::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(20, 30, 20, 0.85) 0%, rgba(6, 78, 59, 0.80) 100%);
+            z-index: 1; backdrop-filter: blur(1px);
         }
-        .hero-badge { background: rgba(255,255,255,0.2); color: #ecfdf5; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px; backdrop-filter: blur(4px); }
-        .hero-title { font-size: 21px; font-weight: 800; line-height: 1.3; margin-bottom: 8px; max-width: 90%; }
-        .hero-desc { font-size: 11px; opacity: 0.95; margin-bottom: 16px; max-width: 88%; line-height: 1.4; font-style: italic; }
-        .btn-hero-action { background: #ffffff; color: #064e3b; border: none; padding: 10px 18px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+        .hero-banner-shop > * { position: relative; z-index: 2; }
+        .hero-badge { background: rgba(255,255,255,0.22); color: #ecfdf5; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.3); }
+        .hero-title { font-size: 21px; font-weight: 800; line-height: 1.3; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+        .hero-desc { font-size: 11px; opacity: 0.95; margin-bottom: 16px; line-height: 1.4; font-style: italic; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .btn-hero-action { background: #ffffff; color: #064e3b; border: none; padding: 10px 18px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
 
-        /* 4 RUBRIQUES & RACCOURCIS VISIBLES (REMPLAÇANT LES ANCIENS CARRÉS) */
-        .features-grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 0 12px; margin-bottom: 15px; }
+        /* BANDEAU FIDÉLITÉ */
+        .loyalty-banner-strip {
+            background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px;
+            margin: 0 12px 15px 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .loyalty-banner-strip div { font-size: 11px; color: #92400e; font-weight: 600; }
+        .btn-claim-points { background: #d97706; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer; }
+
+        /* 4 RUBRIQUES PRINCIPALES IMMERSIVES AVEC BADGES PROMO */
+        .features-grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 12px; margin-bottom: 15px; }
         @media(min-width: 600px) { .features-grid-4 { grid-template-columns: repeat(4, 1fr); } }
         
-        .feature-card-4 { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 10px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; }
-        .feature-card-4.f1 { border-top: 4px solid #166534; }
-        .feature-card-4.f2 { border-top: 4px solid #b45309; }
-        .feature-card-4.f3 { border-top: 4px solid #db2777; }
-        .feature-card-4.f4 { border-top: 4px solid #0284c7; }
-        .feature-card-4 span { display: block; font-size: 20px; margin-bottom: 4px; }
-        .feature-card-4 h5 { font-size: 11px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
-        .feature-card-4 p { font-size: 9px; color: #64748b; margin-bottom: 6px; }
-        .feature-card-4 button { background: #f1f5f9; border: none; color: #166534; font-size: 9px; font-weight: 700; padding: 5px 8px; border-radius: 6px; cursor: pointer; width: 100%; }
+        .feature-card-4 { 
+            position: relative; border-radius: 14px; padding: 16px 10px; 
+            text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; 
+            justify-content: space-between; overflow: hidden; color: #ffffff; min-height: 140px; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .feature-card-4:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
+        .feature-card-4::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.55); z-index: 1;
+        }
+        .feature-card-4 > * { position: relative; z-index: 2; }
+        .sector-promo-badge {
+            position: absolute; top: 8px; right: 8px; background: #ef4444; color: white;
+            font-size: 9px; font-weight: 800; padding: 3px 6px; border-radius: 6px; z-index: 3;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        .feature-card-4 span.emoji-icon { display: block; font-size: 22px; margin-bottom: 4px; }
+        .feature-card-4 h5 { font-size: 12px; font-weight: 800; color: #ffffff; margin-bottom: 2px; }
+        .feature-card-4 p { font-size: 9px; color: #f1f5f9; margin-bottom: 8px; line-height: 1.3; }
+        .feature-card-4 button { background: rgba(255, 255, 255, 0.9); border: none; color: #0f172a; font-size: 10px; font-weight: 800; padding: 6px 8px; border-radius: 8px; cursor: pointer; width: 100%; }
+
+        /* VUE IMMERSIVE SECTEUR PLEIN ÉCRAN */
+        .immersive-sector-view {
+            display: none; padding: 12px; animation: fadeIn 0.3s ease;
+        }
+        .immersive-sector-view.active { display: block; }
+        .sector-hero-banner {
+            position: relative; border-radius: 16px; padding: 30px 16px; color: white; margin-bottom: 16px;
+            overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .sector-hero-banner::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); z-index: 1;
+        }
+        .sector-hero-banner > * { position: relative; z-index: 2; }
+        .btn-back-home {
+            background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4);
+            padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;
+            margin-bottom: 12px; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-back-home:hover { background: rgba(255,255,255,0.3); }
+
+        /* ESPACE FORMULAIRE CONSULTATION PATIENT DÉDIÉ */
+        .consultation-box {
+            background: white; border-radius: 14px; padding: 18px; border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px;
+        }
+        .consultation-box h3 { font-size: 14px; font-weight: 800; color: #166534; margin-bottom: 8px; }
+        .consultation-box p { font-size: 11px; color: #64748b; margin-bottom: 14px; line-height: 1.4; }
 
         /* BARRE FILTRES CATEGORIES (4 ONGLET PILS) */
         .category-pills { display: flex; gap: 8px; padding: 0 12px; overflow-x: auto; margin-bottom: 15px; scrollbar-width: none; }
@@ -71,7 +128,7 @@
         .cat-pill { white-space: nowrap; padding: 7px 14px; border-radius: 20px; background: #f1f5f9; color: #64748b; font-size: 11px; font-weight: 700; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; }
         .cat-pill.active { background: #166534; color: white; border-color: #166534; box-shadow: 0 2px 6px rgba(22,101,52,0.25); }
 
-        /* GRILLE DE PRODUITS E-COMMERCE */
+        /* GRILLE DE PRODUITS E-COMMERCE & PRIX BARRÉS */
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 12px 20px 12px; }
         @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
         
@@ -85,14 +142,16 @@
             position: relative; border-bottom: 1px solid #f1f5f9; overflow: hidden; padding: 6px;
         }
         .product-img-box img, .product-img { width: 100%; height: 100%; object-fit: contain !important; background-color: #f8fafc; }
-        .product-tag { position: absolute; top: 8px; left: 8px; font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 6px; }
+        .product-tag { position: absolute; top: 8px; left: 8px; font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 6px; z-index: 5; }
         .tag-gb { background: #fce7f3; color: #be185d; }
         .tag-gh { background: #dcfce7; color: #15803d; }
         .tag-cosmetic { background: #fae8ff; color: #a21caf; }
 
         .product-details { padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .product-name { font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 4px; line-height: 1.3; }
-        .product-price { font-size: 14px; font-weight: 800; color: #166534; margin-bottom: 8px; }
+        .price-box { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
+        .product-price { font-size: 13px; font-weight: 800; color: #166534; }
+        .product-old-price { font-size: 11px; font-weight: 600; color: #ef4444; text-decoration: line-through; }
         
         .btn-view-product {
             width: 100%; background: #f1f5f9; color: #166534; border: 1px solid #cbd5e1; padding: 7px;
@@ -101,15 +160,15 @@
         }
         .btn-view-product:hover { background: #e2e8f0; }
 
-        /* MODALE DÉTAIL PRODUIT & GALERIE MULTI-PHOTOS */
-        .product-modal-overlay {
+        /* MODALES ET TIROIR PANIER */
+        .loyalty-modal-overlay, .product-modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.6); display: none;
             justify-content: center; align-items: flex-end; z-index: 2000;
             backdrop-filter: blur(4px); animation: fadeIn 0.2s ease;
         }
-        .product-modal-overlay.active { display: flex; }
-        .product-modal-card {
+        .loyalty-modal-overlay.active, .product-modal-overlay.active { display: flex; }
+        .loyalty-card-box, .product-modal-card {
             background: white; border-top-left-radius: 20px; border-top-right-radius: 20px;
             width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; padding: 20px;
             box-shadow: 0 -10px 30px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; position: relative;
@@ -169,10 +228,6 @@
             padding: 10px 12px; margin: 10px; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
         }
         .rdv-notification-card h3 { font-size: 12px; color: #b45309; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-        .rdv-item-notify {
-            background: #ffffff; border-left: 4px solid #f59e0b; padding: 6px 10px;
-            border-radius: 6px; margin-bottom: 4px; font-size: 11px; display: flex; justify-content: space-between; align-items: center;
-        }
 
         .app-view { display: none; }
         .app-view.active { display: block; animation: fadeIn 0.3s ease; }
@@ -248,7 +303,6 @@
         @media (max-width: 600px) { .analytics-grid { grid-template-columns: 1fr; } }
         .analytics-box { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; }
         .analytics-box h4 { font-size: 11px; margin-bottom: 6px; text-transform: uppercase; display: flex; align-items: center; gap: 5px; }
-        .top-item-row { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed #f1f5f9; }
 
         .form-group { margin-bottom: 10px; }
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -325,9 +379,6 @@
         .sale-item.cosmetic { border-left-color: #a21caf; }
         .sale-item.emp { border-left-color: #7e22ce; }
         .depense-item { background: #ffffff; border-left: 4px solid #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
-        
-        .prod-item { background: #ffffff; border-left: 4px solid #b45309; padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; gap: 10px; }
-        .prod-img-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: contain; background: #f8fafc; border: 1px solid #cbd5e1; flex-shrink: 0; }
 
         .stock-item { background: #ffffff; border-left: 4px solid #0284c7; padding: 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; border-left-width: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
         .stock-item.low { border-left-color: #ef4444; background: #fef2f2; }
@@ -335,24 +386,14 @@
 
         .stock-dashboard-alert { background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
         .stock-dashboard-alert h3 { font-size: 12px; color: #991b1b; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-        .stock-alert-item { background: #ffffff; border-left: 4px solid #ef4444; padding: 8px 10px; border-radius: 8px; margin-bottom: 4px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
 
         .badge-stock { padding: 3px 8px; border-radius: 10px; font-size: 9px; font-weight: bold; display: inline-block; }
         .badge-stock.ok { background: #dcfce7; color: #15803d; }
         .badge-stock.low { background: #fee2e2; color: #991b1b; }
-        .badge-status { padding: 3px 8px; border-radius: 10px; font-size: 9px; font-weight: bold; display: inline-block; }
-        .badge-status.attente { background: #fef3c7; color: #b45309; }
-        .badge-status.encours { background: #e0f2fe; color: #0369a1; }
-        .badge-status.pret { background: #dcfce7; color: #15803d; }
 
         .btn-action { background: #15803d; color: white; border: none; padding: 6px 10px; font-size: 10px; border-radius: 6px; cursor: pointer; margin-top: 4px; margin-right: 3px; font-weight: bold; }
         .btn-wa { background: #10b981; color: white; border: none; padding: 6px 10px; font-size: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .btn-edit-patient { background: #d97706; color: white; border: none; padding: 6px 10px; font-size: 10px; border-radius: 6px; cursor: pointer; margin-top: 4px; margin-right: 3px; font-weight: bold; }
-        .btn-reappro { background: #0284c7; color: white; border: none; padding: 4px 8px; font-size: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-
-        .followup-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-top: 8px; }
-        .followup-item { background: #ffffff; border-left: 3px solid #22c55e; border: 1px solid #cbd5e1; border-left-width: 3px; padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 11px; }
-        .stock-log-item { background: #f8fafc; border-left: 3px solid #0284c7; padding: 6px 10px; border-radius: 6px; font-size: 10px; margin-bottom: 4px; }
 
         .qr-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; }
         .qr-box canvas, .qr-box img { width: 65px !important; height: 65px !important; }
@@ -395,83 +436,146 @@
         <div id="rdvListTodayContainer"></div>
     </div>
 
-    <!-- 1. VITRINE CLIENT PUBLIQUE & PANIER VIRTUEL -->
+    <!-- 1. VITRINE CLIENT PUBLIQUE & PANIER VIRTUEL (ACCUEIL) -->
     <div id="publicCatalogScreen" class="app-view active">
         
-        <!-- HEADER BOUTIQUE -->
-        <header class="public-header">
-            <div class="public-logo-box" onclick="showLoginModal()" title="Accès Personnel">
-                <img src="logo.jpg" alt="Logo GB Casual">
-                <div>
-                    <div class="public-brand-title">GB CASUAL & GLORY HERBAL</div>
-                    <div class="public-brand-sub" id="pubHeaderAdresse">Porto-Novo, Carrefour Guévier Sabakō, Bénin</div>
+        <div id="homeView">
+            <!-- HEADER BOUTIQUE -->
+            <header class="public-header">
+                <div class="public-logo-box" onclick="showLoginModal()" title="Accès Personnel">
+                    <img src="logo.jpg" alt="Logo GB Casual">
+                    <div>
+                        <div class="public-brand-title">GB CASUAL & GLORY HERBAL</div>
+                        <div class="public-brand-sub" id="pubHeaderAdresse">Porto-Novo, Carrefour Guévier Sabakō, Bénin</div>
+                    </div>
+                </div>
+                <div class="header-actions-client">
+                    <button class="btn-points-head" onclick="ouvrirModalFidelite()">⭐ Points</button>
+                    <a href="https://www.tiktok.com" target="_blank" id="pubHeaderTiktokBtn" class="btn-tiktok-head">
+                        <i class="fa-brands fa-tiktok"></i> TikTok
+                    </a>
+                    <button class="btn-share-catalog" onclick="shareCatalog()">
+                        📲 Partager
+                    </button>
+                    <button class="btn-cart-toggle" onclick="toggleClientCartDrawer()">
+                        🛒 Panier <span class="cart-badge-count" id="clientCartCount">0</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- BANNIÈRE HERO CHALEUREUSE -->
+            <div class="hero-banner-shop">
+                <span class="hero-badge">🌿 Bienvenue chez GB Casual & Glory Herbal</span>
+                <h1 class="hero-title">Prendre soin de soi n'est pas un luxe, mais une nécessité absolue.</h1>
+                <p class="hero-desc">Découvrez nos gammes d'exception : tisanes de santé, cosmétiques éclat et gaines amincissantes.</p>
+                <button class="btn-hero-action" onclick="ouvrirSecteur('tous')">Explorer le catalogue complet ↓</button>
+            </div>
+
+            <!-- BANDEAU FIDÉLITÉ -->
+            <div class="loyalty-banner-strip">
+                <div>🎁 <strong>Programme de Fidélité :</strong> Cumulez 10 points par tranche de 1 000 F !</div>
+                <button class="btn-claim-points" onclick="ouvrirModalFidelite()">Voir mes points</button>
+            </div>
+
+            <!-- 4 RUBRIQUES PRINCIPALES IMMERSIVES AVEC BADGES PROMO -->
+            <div class="features-grid-4">
+                <!-- 1. Glory Herbal -->
+                <div class="feature-card-4" style="background: url('https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80') center/cover no-repeat;" onclick="ouvrirSecteur('gh')">
+                    <span class="sector-promo-badge">PROMO -10%</span>
+                    <span class="emoji-icon">🌿</span>
+                    <div>
+                        <h5>Glory Herbal</h5>
+                        <p>Tisanes & Soins naturels</p>
+                    </div>
+                    <button>Ouvrir le rayon →</button>
+                </div>
+                <!-- 2. Cosmétiques -->
+                <div class="feature-card-4" style="background: url('https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=400&q=80') center/cover no-repeat;" onclick="ouvrirSecteur('cosmetic')">
+                    <span class="sector-promo-badge">NOUVEAU</span>
+                    <span class="emoji-icon">✨</span>
+                    <div>
+                        <h5>Cosmétiques</h5>
+                        <p>Savons, Lotions & Crèmes</p>
+                    </div>
+                    <button>Ouvrir le rayon →</button>
+                </div>
+                <!-- 3. GB Casual -->
+                <div class="feature-card-4" style="background: url('https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=400&q=80') center/cover no-repeat;" onclick="ouvrirSecteur('gb')">
+                    <span class="sector-promo-badge">-15%</span>
+                    <span class="emoji-icon">🛍️</span>
+                    <div>
+                        <h5>GB Casual</h5>
+                        <p>Mode & Gaines amincissantes</p>
+                    </div>
+                    <button>Ouvrir le rayon →</button>
+                </div>
+                <!-- 4. Rendez-vous Patients -->
+                <div class="feature-card-4" style="background: url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=400&q=80') center/cover no-repeat;" onclick="ouvrirSecteur('consultation')">
+                    <span class="sector-promo-badge" style="background:#2563eb;">24/7</span>
+                    <span class="emoji-icon">🩺</span>
+                    <div>
+                        <h5>Rendez-vous</h5>
+                        <p>Consultations & Suivi santé</p>
+                    </div>
+                    <button>Prendre RDV →</button>
                 </div>
             </div>
-            <div class="header-actions-client">
-                <a href="https://www.tiktok.com" target="_blank" id="pubHeaderTiktokBtn" class="btn-tiktok-head">
-                    <i class="fa-brands fa-tiktok"></i> TikTok
-                </a>
-                <button class="btn-share-catalog" onclick="shareCatalog()">
-                    📲 Partager
-                </button>
-                <button class="btn-cart-toggle" onclick="toggleClientCartDrawer()">
-                    🛒 Panier <span class="cart-badge-count" id="clientCartCount">0</span>
-                </button>
-            </div>
-        </header>
 
-        <!-- BANNIÈRE HERO -->
-        <div class="hero-banner">
-            <span class="hero-badge">🌿 Bien-être, Mode, Cosmétiques & Soins</span>
-            <h1 class="hero-title">Prendre soin de soi n'est pas un luxe, mais une nécessité absolue.</h1>
-            <p class="hero-desc">Découvrez nos gammes de tisanes de santé, nos cosmétiques d'exception, et nos vêtements/gaines faits avec passion.</p>
-            <button class="btn-hero-action" onclick="document.getElementById('gridPublicContainer').scrollIntoView({behavior:'smooth'})">Découvrir la collection ↓</button>
-        </div>
+            <!-- BARRE DE FILTRES CATEGORIES (4 ONGLET PILS) -->
+            <div class="category-pills">
+                <button class="cat-pill active" onclick="filtrerVitrineCategorie('tous', this)">Tous les produits</button>
+                <button class="cat-pill" onclick="filtrerVitrineCategorie('gh', this)">🌿 Glory Herbal (Tisanes)</button>
+                <button class="cat-pill" onclick="filtrerVitrineCategorie('cosmetic', this)">✨ Cosmétiques</button>
+                <button class="cat-pill" onclick="filtrerVitrineCategorie('gb', this)">🛍️ GB Casual (Mode)</button>
+            </div>
 
-        <!-- 4 RUBRIQUES & RACCOURCIS VISIBLES (REMPLAÇANT LES ANCIENS CARRÉS) -->
-        <div class="features-grid-4">
-            <div class="feature-card-4 f1">
-                <span>🌿</span>
-                <h5>Glory Herbal</h5>
-                <p>Tisanes & Soins naturels</p>
-                <button onclick="filtrerVitrineCategorie('gh', null); document.getElementById('gridPublicContainer').scrollIntoView({behavior:'smooth'})">Voir Tisanes</button>
+            <!-- RECHERCHE RAPIDE -->
+            <div style="padding: 0 12px; margin-bottom: 15px;">
+                <input type="text" id="searchPublicInput" placeholder="🔍 Rechercher une tisane, un savon, une lotion, une gaine..." oninput="filtrerVitrineSearch()">
             </div>
-            <div class="feature-card-4 f2">
-                <span>✨</span>
-                <h5>Cosmétiques</h5>
-                <p>Savons, Lotions & Crèmes</p>
-                <button onclick="filtrerVitrineCategorie('cosmetic', null); document.getElementById('gridPublicContainer').scrollIntoView({behavior:'smooth'})">Voir Cosmétiques</button>
+
+            <!-- GRILLE GLOBALE DES PRODUITS EN VEDETTE -->
+            <div style="padding: 0 12px 6px 12px;">
+                <h3 style="font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 10px;">Tous nos articles en stock</h3>
             </div>
-            <div class="feature-card-4 f3">
-                <span>🛍️</span>
-                <h5>GB Casual</h5>
-                <p>Vêtements & Gaines</p>
-                <button onclick="filtrerVitrineCategorie('gb', null); document.getElementById('gridPublicContainer').scrollIntoView({behavior:'smooth'})">Voir Mode</button>
-            </div>
-            <div class="feature-card-4 f4">
-                <span>🩺</span>
-                <h5>Rendez-vous Patients</h5>
-                <p>Consultations & Suivi</p>
-                <button onclick="commanderDirectWhatsApp('Demande de consultation médicale / rendez-vous')">Prendre RDV</button>
+            <div id="gridPublicContainer" class="product-grid">
+                <p style="grid-column: 1/-1; text-align: center; padding: 30px; color: #94a3b8; font-size: 12px;">Chargement de la vitrine...</p>
             </div>
         </div>
 
-        <!-- BARRE DE FILTRES CATEGORIES (4 ONGLET PILS) -->
-        <div class="category-pills">
-            <button class="cat-pill active" onclick="filtrerVitrineCategorie('tous', this)">Tous les produits</button>
-            <button class="cat-pill" onclick="filtrerVitrineCategorie('gh', this)">🌿 Glory Herbal (Tisanes)</button>
-            <button class="cat-pill" onclick="filtrerVitrineCategorie('cosmetic', this)">✨ Cosmétiques</button>
-            <button class="cat-pill" onclick="filtrerVitrineCategorie('gb', this)">🛍️ GB Casual (Mode)</button>
+        <!-- 2. VUE IMMERSIVE DÉDIÉE PAR SECTEUR (PLEIN ÉCRAN AVEC BOUTON RETOUR) -->
+        <div id="sectorView" class="immersive-sector-view">
+            <button class="btn-back-home" onclick="retourAccueil()"><i class="fa-solid fa-arrow-left"></i> ← Retour à l'accueil</button>
+            
+            <div id="sectorHeroBanner" class="sector-hero-banner" style="background: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80') center/cover no-repeat;">
+                <span class="hero-badge" id="sectorBadgeName">Rayon Spécial</span>
+                <h1 class="hero-title" id="sectorTitleName">Nom du Secteur</h1>
+                <p class="hero-desc" id="sectorDescName">Description de ce rayon exclusif.</p>
+            </div>
+
+            <!-- Section dynamique (Articles du rayon ou Formulaire consultation) -->
+            <div id="sectorDynamicContent"></div>
         </div>
 
-        <!-- RECHERCHE RAPIDE -->
-        <div style="padding: 0 12px; margin-bottom: 15px;">
-            <input type="text" id="searchPublicInput" placeholder="🔍 Rechercher une tisane, un savon, une lotion, une gaine..." oninput="filtrerVitrineSearch()">
-        </div>
-
-        <!-- GRILLE DE PRODUITS E-COMMERCE -->
-        <div id="gridPublicContainer" class="product-grid">
-            <p style="grid-column: 1/-1; text-align: center; padding: 30px; color: #94a3b8; font-size: 12px;">Chargement de la vitrine...</p>
+        <!-- MODALE FIDÉLITÉ & POINTS -->
+        <div id="loyaltyModal" class="loyalty-modal-overlay">
+            <div class="loyalty-card-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">
+                    <h3 style="font-size:15px; color:#d97706; font-weight:800;">⭐ Espace Fidélité & Parrainage</h3>
+                    <button type="button" onclick="fermerModalFidelite()" style="background:#f1f5f9; border:none; padding:4px 8px; border-radius:6px; font-weight:bold; cursor:pointer;">✕</button>
+                </div>
+                <p style="font-size:11px; color:#64748b; margin-bottom:12px;">Entrez votre numéro WhatsApp pour consulter vos points :</p>
+                <div class="form-group">
+                    <input type="tel" id="loyaltyPhoneInput" placeholder="Ex: +229 01 43 68 25 93">
+                </div>
+                <button type="button" onclick="consulterPointsFidelite()" style="width:100%; background:#d97706; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer; margin-bottom:12px;">🔍 Consulter mon solde</button>
+                <div id="loyaltyResultBox" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:12px;">
+                    <div style="font-size:12px; color:#92400e;">Solde Actuel :</div>
+                    <div style="font-size:24px; font-weight:800; color:#d97706; margin:4px 0;">30 Points</div>
+                    <small style="font-size:10px; color:#b45309; display:block; margin-bottom:10px;">100 points = 1 000 FCFA de réduction !</small>
+                    <button type="button" onclick="partagerLienParrainage()" style="width:100%; background:#25D366; color:white; border:none; padding:8px; border-radius:8px; font-weight:bold; font-size:11px; cursor:pointer;">📲 Partager & Gagner 20 Points Bonus</button>
+                </div>
+            </div>
         </div>
 
         <!-- MODALE DE DÉTAIL PRODUIT & GALERIE MULTI-PHOTOS -->
@@ -482,7 +586,7 @@
                     <button type="button" onclick="fermerModalDetailProduit()" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">✕ Fermer</button>
                 </div>
                 
-                <div style="width:100%; height:260px; background:#f8fafc; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:8px; border:1px solid #e2e8f0; padding:6px;">
+                <div style="width:100%; height:240px; background:#f8fafc; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:8px; border:1px solid #e2e8f0; padding:6px;">
                     <img id="modalProductImg" src="" alt="Photo produit" class="product-img" style="display:none;">
                     <div id="modalProductNoImg" style="font-size:64px; display:none;">📦</div>
                 </div>
@@ -490,7 +594,7 @@
                 <div id="modalThumbnailsContainer" class="modal-gallery-thumbs" style="display:none;"></div>
 
                 <div style="margin-bottom:12px;">
-                    <div id="modalProductPrice" style="font-size:18px; font-weight:800; color:#166534; margin-bottom:6px;">0 FCFA</div>
+                    <div id="modalProductPriceBox" class="price-box" style="margin-bottom:6px;"></div>
                     <div id="modalProductTag" class="product-tag tag-gh" style="position:static; display:inline-block; margin-bottom:8px;">Pôle</div>
                     <p id="modalProductDesc" style="font-size:12px; color:#475569; line-height:1.5;">Description et conseils d'utilisation du produit...</p>
                 </div>
@@ -568,7 +672,7 @@
         <!-- STICKY FOOTER WHATSAPP CLIENT -->
         <div class="sticky-bottom-wa">
             <span>💬 Une question ou un conseil personnalisé ?</span>
-            <button class="btn-wa-sticky" onclick="commanderDirectWhatsApp('Demande de conseils personnalisés')">Écrire sur WhatsApp</button>
+            <button class="btn-wa-sticky" onclick="ouvrirSecteur('consultation')">Prendre RDV / Conseil</button>
         </div>
     </div>
 
@@ -608,7 +712,7 @@
         </div>
     </div>
 
-    <!-- 3. ESPACE CONNECTÉ DE GESTION COMPLET -->
+    <!-- 3. ESPACE CONNECTÉ DE GESTION COMPLETT -->
     <div id="appScreen" class="app-view">
         <div class="user-badge">
             <span id="userInfoDisplay">Connecté</span>
@@ -702,21 +806,6 @@
                     <div class="f-card benefice">
                         <h4>📈 BÉNÉFICE NET</h4>
                         <div class="amount" id="totalBeneficeNetDisplay">0 F</div>
-                    </div>
-                </div>
-
-                <div class="analytics-grid">
-                    <div class="analytics-box" style="border-left: 4px solid #166534;">
-                        <h4 style="color:#166534;">🔥 Top des Ventes</h4>
-                        <div id="topVentesContainer">
-                            <small style="color:#94a3b8;">Analyse en cours...</small>
-                        </div>
-                    </div>
-                    <div class="analytics-box" style="border-left: 4px solid #d97706;">
-                        <h4 style="color:#d97706;">💤 Articles Stagnants</h4>
-                        <div id="flopVentesContainer">
-                            <small style="color:#94a3b8;">Analyse en cours...</small>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -946,7 +1035,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Mode de Vie / Habitudes :</label>
-                                            <input type="text" id="pAntSociaux" placeholder="Alimentation, tabac, alcool...">
+                                            <input type="text" id="pAntSociaux" placeholder="Alimentation, tabac, alcool..."></input>
                                         </div>
                                     </div>
                                 </div>
@@ -1256,12 +1345,26 @@
 
                     <div class="form-grid-2">
                         <div class="form-group">
-                            <label>Prix de Vente (FCFA) :</label>
-                            <input type="number" inputmode="numeric" id="stockPrix" placeholder="Ex: 15000" required>
+                            <label>Prix de Vente Actuel (FCFA) :</label>
+                            <input type="number" inputmode="numeric" id="stockPrix" placeholder="Ex: 9000" required>
                         </div>
+                        <div class="form-group">
+                            <label>Prix Original (Si Promo / Prix Barré) :</label>
+                            <input type="number" inputmode="numeric" id="stockPrixOriginal" placeholder="Ex: 10000 (Optionnel)">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
                         <div class="form-group">
                             <label>Quantité En Stock :</label>
                             <input type="number" inputmode="numeric" id="stockQte" placeholder="Ex: 20" required>
+                        </div>
+                        <div class="form-group">
+                            <label>En Promotion ?</label>
+                            <select id="stockEnPromo">
+                                <option value="false">Non</option>
+                                <option value="true">Oui (Afficher le prix original barré)</option>
+                            </select>
                         </div>
                     </div>
 
@@ -1271,7 +1374,7 @@
                     </div>
 
                     <div style="background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:10px;">
-                        <label style="color:#0284c7; font-weight:bold; margin-bottom:6px;">📸 Galerie de Photos Multiples (Produit seul & Modèle porté)</label>
+                        <label style="color:#0284c7; font-weight:bold; margin-bottom:6px;">📸 Galerie de Photos Multiples</label>
                         <div class="form-group">
                             <label style="font-size:10px;">Photo 1 (Principale / Vitrine) :</label>
                             <input type="file" id="stockImage1" accept="image/*">
@@ -1292,11 +1395,6 @@
                         <button type="button" id="btnCancelEditStock" class="btn-valider" style="flex:1; background:#64748b; display:none;" onclick="annulerEditStock()">Annuler</button>
                     </div>
                 </form>
-
-                <hr style="margin:15px 0; border:none; border-top:1px dashed #cbd5e1;">
-
-                <h4 style="font-size:12px; color:#334155; margin-bottom:6px;">📜 Mouvements de Stock</h4>
-                <div id="stockLogsContainer" style="max-height:120px; overflow-y:auto; background:#f8fafc; padding:8px; border-radius:8px; border:1px solid #e2e8f0;"></div>
             </div>
 
             <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
@@ -1602,6 +1700,9 @@
     let localDepenses = [];
     let localEmployes = [];
     let localWebOrders = [];
+    let localProdInterne = [];
+    let localGrossistes = [];
+    let localMatieres = [];
     let panierVente = [];
     let clientCart = [];
     let currentCategoryFilter = 'tous';
@@ -1625,7 +1726,7 @@
 
     const MON_NUMERO_WHATSAPP = "2290143682593";
 
-    document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
+    if(document.getElementById('pDate')) document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
 
     window.addEventListener('DOMContentLoaded', () => {
         currentUser = null;
@@ -1655,22 +1756,22 @@
     }
 
     function appliquerShopInfoUI() {
-        document.getElementById('pubHeaderAdresse').textContent = shopInfo.adresse;
-        document.getElementById('pubHeaderTiktokBtn').href = shopInfo.tiktok;
-        document.getElementById('pubFooterAdresse').textContent = shopInfo.adresse;
-        document.getElementById('pubFooterEmail').textContent = shopInfo.email;
-        document.getElementById('pubFooterEmailLink').href = "mailto:" + shopInfo.email;
-        document.getElementById('pubFooterPhone').textContent = shopInfo.phone;
-        document.getElementById('pubFooterPhoneLink').href = "tel:" + shopInfo.phone.replace(/\s+/g, '');
-        document.getElementById('pubFooterHoraires').textContent = shopInfo.horaires;
-        document.getElementById('pubFooterTiktokBtn').href = shopInfo.tiktok;
+        if(document.getElementById('pubHeaderAdresse')) document.getElementById('pubHeaderAdresse').textContent = shopInfo.adresse;
+        if(document.getElementById('pubHeaderTiktokBtn')) document.getElementById('pubHeaderTiktokBtn').href = shopInfo.tiktok;
+        if(document.getElementById('pubFooterAdresse')) document.getElementById('pubFooterAdresse').textContent = shopInfo.adresse;
+        if(document.getElementById('pubFooterEmail')) document.getElementById('pubFooterEmail').textContent = shopInfo.email;
+        if(document.getElementById('pubFooterEmailLink')) document.getElementById('pubFooterEmailLink').href = "mailto:" + shopInfo.email;
+        if(document.getElementById('pubFooterPhone')) document.getElementById('pubFooterPhone').textContent = shopInfo.phone;
+        if(document.getElementById('pubFooterPhoneLink')) document.getElementById('pubFooterPhoneLink').href = "tel:" + shopInfo.phone.replace(/\s+/g, '');
+        if(document.getElementById('pubFooterHoraires')) document.getElementById('pubFooterHoraires').textContent = shopInfo.horaires;
+        if(document.getElementById('pubFooterTiktokBtn')) document.getElementById('pubFooterTiktokBtn').href = shopInfo.tiktok;
 
-        document.getElementById('cfgEmail').value = shopInfo.email;
-        document.getElementById('cfgPhone').value = shopInfo.phone;
-        document.getElementById('cfgAdresse').value = shopInfo.adresse;
-        document.getElementById('cfgHoraires').value = shopInfo.horaires;
-        document.getElementById('cfgLivraison').value = shopInfo.livraison;
-        document.getElementById('cfgTiktok').value = shopInfo.tiktok;
+        if(document.getElementById('cfgEmail')) document.getElementById('cfgEmail').value = shopInfo.email;
+        if(document.getElementById('cfgPhone')) document.getElementById('cfgPhone').value = shopInfo.phone;
+        if(document.getElementById('cfgAdresse')) document.getElementById('cfgAdresse').value = shopInfo.adresse;
+        if(document.getElementById('cfgHoraires')) document.getElementById('cfgHoraires').value = shopInfo.horaires;
+        if(document.getElementById('cfgLivraison')) document.getElementById('cfgLivraison').value = shopInfo.livraison;
+        if(document.getElementById('cfgTiktok')) document.getElementById('cfgTiktok').value = shopInfo.tiktok;
     }
 
     document.getElementById('adminShopInfoForm')?.addEventListener('submit', async (e) => {
@@ -1728,13 +1829,121 @@
         }
     };
 
+    /* GESTION DES 4 SECTEURS IMMERSIFS EN PLEIN ÉCRAN */
+    window.ouvrirSecteur = function(pole) {
+        if(pole === 'tous') {
+            document.getElementById('homeView').style.display = 'block';
+            document.getElementById('sectorView').classList.remove('active');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            return;
+        }
+
+        document.getElementById('homeView').style.display = 'none';
+        document.getElementById('sectorView').classList.add('active');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+
+        let dynamicContainer = document.getElementById('sectorDynamicContent');
+
+        if(pole === 'consultation') {
+            document.getElementById('sectorBadgeName').textContent = "🩺 Service de Santé & Suivi";
+            document.getElementById('sectorTitleName').textContent = "Consultation & Rendez-vous Patients";
+            document.getElementById('sectorDescName').textContent = "Discutez de vos inquiétudes de santé avec notre conseiller/infirmier et obtenez des conseils personnalisés ou un RDV.";
+            document.getElementById('sectorHeroBanner').style.background = "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80') center/cover no-repeat";
+
+            dynamicContainer.innerHTML = `
+                <div class="consultation-box">
+                    <h3>🩺 Formulaire de Consultation & Inquiétudes</h3>
+                    <p>Exposez vos symptômes, vos besoins en tisanes ou demandez un rendez-vous direct avec notre équipe soignante.</p>
+                    
+                    <div class="form-group">
+                        <label>Nom et Prénom :</label>
+                        <input type="text" id="consultNom" placeholder="Votre nom complet">
+                    </div>
+                    <div class="form-group">
+                        <label>Numéro WhatsApp :</label>
+                        <input type="tel" id="consultTel" placeholder="Ex: +229 01 43 68 25 93">
+                    </div>
+                    <div class="form-group">
+                        <label>Type de demande :</label>
+                        <select id="consultType">
+                            <option value="Conseil santé / tisanes">Conseil santé / tisanes Glory Herbal</option>
+                            <option value="Suivi de cure / gaines">Suivi de cure / gaines GB Casual</option>
+                            <option value="Prise de rendez-vous cabinet">Prise de rendez-vous au cabinet</option>
+                            <option value="Autre inquiétude">Autre inquiétude / question</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Décrivez vos symptômes ou vos inquiétudes :</label>
+                        <textarea id="consultMsg" placeholder="Détaillez ici ce que vous ressentez ou vos attentes..."></textarea>
+                    </div>
+                    <button type="button" class="btn-valider" style="background:#166534;" onclick="envoyerConsultationWhatsApp()">
+                        📲 Envoyer ma demande à l'infirmier / conseiller
+                    </button>
+                </div>
+            `;
+        } else {
+            let title = ""; let desc = ""; let bannerBg = "";
+
+            if(pole === 'gh') {
+                title = "🌿 Tisanes & Soins Glory Herbal";
+                desc = "Redécouvrez la puissance des plantes naturelles pour votre santé et votre bien-être au quotidien.";
+                bannerBg = "url('https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80') center/cover no-repeat";
+                document.getElementById('sectorBadgeName').textContent = "🔥 Promo -10% sur les tisanes";
+            } else if(pole === 'cosmetic') {
+                title = "✨ Produits Cosmétiques Bio";
+                desc = "Des savons éclat et des lotions nourrissantes pour sublimer votre peau naturally.";
+                bannerBg = "url('https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80') center/cover no-repeat";
+                document.getElementById('sectorBadgeName').textContent = "✨ Collection Éclat & Soins";
+            } else if(pole === 'gb') {
+                title = "🛍️ Collection GB Casual (Mode & Gaines)";
+                desc = "Affinez votre silhouette avec style grâce à nos gaines amincissantes haute performance.";
+                bannerBg = "url('https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=800&q=80') center/cover no-repeat";
+                document.getElementById('sectorBadgeName').textContent = "🔥 Offre Spéciale -15%";
+            }
+
+            document.getElementById('sectorTitleName').textContent = title;
+            document.getElementById('sectorDescName').textContent = desc;
+            document.getElementById('sectorHeroBanner').style.background = bannerBg;
+
+            dynamicContainer.innerHTML = `
+                <div style="margin-bottom: 10px; padding: 0 4px;">
+                    <h3 style="font-size: 14px; font-weight: 800; color: #0f172a;">Articles du rayon</h3>
+                </div>
+                <div id="sectorProductGrid" class="product-grid"></div>
+            `;
+            filtrerVitrineCategorie(pole, null);
+        }
+    };
+
+    window.retourAccueil = function() {
+        document.getElementById('sectorView').classList.remove('active');
+        document.getElementById('homeView').style.display = 'block';
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    };
+
+    window.envoyerConsultationWhatsApp = function() {
+        const nom = document.getElementById('consultNom').value.trim();
+        const tel = document.getElementById('consultTel').value.trim();
+        const type = document.getElementById('consultType').value;
+        const msg = document.getElementById('consultMsg').value.trim();
+
+        if(!nom || !tel) return alert("Veuillez renseigner au moins votre nom et votre numéro WhatsApp.");
+
+        let texteWhatsApp = `🩺 *DEMANDE DE CONSULTATION / CONSEIL* 🩺\n\n` +
+            `*Nom :* ${nom}\n` +
+            `*Téléphone :* ${tel}\n` +
+            `*Type :* ${type}\n` +
+            `*Inquiétudes / Message :* ${msg || 'Aucun détail supplémentaire'}`;
+
+        window.open(`https://wa.me/${MON_NUMERO_WHATSAPP}?text=${encodeURIComponent(texteWhatsApp)}`, '_blank');
+    };
+
     window.filtrerVitrineCategorie = (cat, btnEl) => {
         currentCategoryFilter = cat;
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         if(btnEl) {
             btnEl.classList.add('active');
         } else {
-            // Sélectionner le bon bouton pill correspondants
             document.querySelectorAll('.cat-pill').forEach(b => {
                 if((cat === 'tous' && b.textContent.includes('Tous')) ||
                    (cat === 'gh' && b.textContent.includes('Glory Herbal')) ||
@@ -1744,13 +1953,25 @@
                 }
             });
         }
-        afficherVitrinePublique();
+
+        const sectorGrid = document.getElementById('sectorProductGrid');
+        if(sectorGrid) {
+            afficherVitrinePubliqueDansContainer('sectorProductGrid');
+        } else {
+            afficherVitrinePublique();
+        }
     };
 
     window.filtrerVitrineSearch = () => { afficherVitrinePublique(); };
 
     function afficherVitrinePublique() {
-        const container = document.getElementById('gridPublicContainer');
+        afficherVitrinePubliqueDansContainer('gridPublicContainer');
+    }
+
+    function afficherVitrinePubliqueDansContainer(containerId) {
+        const container = document.getElementById(containerId);
+        if(!container) return;
+
         const searchText = document.getElementById('searchPublicInput')?.value.toLowerCase() || '';
 
         let html = '';
@@ -1767,6 +1988,16 @@
             if (st.pole === 'gb') { tagClass = 'tag-gb'; tagText = '🛍️ GB Casual'; }
             else if (st.pole === 'cosmetic') { tagClass = 'tag-cosmetic'; tagText = '✨ Cosmétiques'; }
 
+            let priceHtml = `<div class="product-price">${st.prix.toLocaleString()} FCFA</div>`;
+            if((st.enPromo || st.enPromo === "true") && st.prixOriginal && st.prixOriginal > st.prix) {
+                priceHtml = `
+                    <div class="price-box">
+                        <span class="product-price">${st.prix.toLocaleString()} F</span>
+                        <span class="product-old-price">${st.prixOriginal.toLocaleString()} F</span>
+                    </div>
+                `;
+            }
+
             html += `
                 <div class="product-card" onclick="ouvrirModalDetailProduit('${st.id}')">
                     <div class="product-img-box">
@@ -1776,7 +2007,7 @@
                     <div class="product-details">
                         <div>
                             <div class="product-name">${st.nom}</div>
-                            <div class="product-price">${st.prix.toLocaleString()} FCFA</div>
+                            ${priceHtml}
                         </div>
                         <button type="button" class="btn-view-product">
                             <span>🔍 Voir l'article complet</span>
@@ -1786,7 +2017,7 @@
             `;
         });
 
-        if (container) container.innerHTML = html || '<p style="grid-column:1/-1; text-align:center; padding:30px; color:#94a3b8; font-size:12px;">Aucun produit trouvé dans cette rubrique.</p>';
+        container.innerHTML = html || '<p style="grid-column:1/-1; text-align:center; padding:30px; color:#94a3b8; font-size:12px;">Aucun produit trouvé dans cette rubrique.</p>';
     }
 
     window.ouvrirModalDetailProduit = (id) => {
@@ -1796,9 +2027,17 @@
         modalQuantityValue = 1;
 
         document.getElementById('modalProductName').textContent = item.nom;
-        document.getElementById('modalProductPrice').textContent = item.prix.toLocaleString() + " FCFA";
         document.getElementById('modalProductDesc').textContent = item.description || "Qualité 100% garantie par GB Casual & Glory Herbal.";
         document.getElementById('modalProductQty').textContent = modalQuantityValue;
+
+        let priceBoxHtml = `<span style="font-size:18px; font-weight:800; color:#166534;">${item.prix.toLocaleString()} FCFA</span>`;
+        if((item.enPromo || item.enPromo === "true") && item.prixOriginal && item.prixOriginal > item.prix) {
+            priceBoxHtml = `
+                <span style="font-size:18px; font-weight:800; color:#166534;">${item.prix.toLocaleString()} FCFA</span>
+                <span style="font-size:13px; font-weight:600; color:#ef4444; text-decoration:line-through; margin-left:8px;">${item.prixOriginal.toLocaleString()} FCFA</span>
+            `;
+        }
+        document.getElementById('modalProductPriceBox').innerHTML = priceBoxHtml;
 
         const tagEl = document.getElementById('modalProductTag');
         if(item.pole === 'gb') {
@@ -1986,6 +2225,17 @@
         toggleClientCartDrawer();
     };
 
+    window.ouvrirModalFidelite = () => { document.getElementById('loyaltyModal').classList.add('active'); };
+    window.fermerModalFidelite = () => { document.getElementById('loyaltyModal').classList.remove('active'); };
+    window.consulterPointsFidelite = () => {
+        const tel = document.getElementById('loyaltyPhoneInput').value.trim();
+        if(!tel) return alert("Veuillez saisir votre numéro de téléphone.");
+        document.getElementById('loyaltyResultBox').style.display = 'block';
+    };
+    window.partagerLienParrainage = () => {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent("Rejoins-moi sur la boutique GB Casual & Glory Herbal pour tes tisanes, soins cosmétiques et gaines ! 🌿🛍️")}`, '_blank');
+    };
+
     async function chargerCommandesClients() {
         try {
             const snap = await getDocs(query(collection(db, "commandes_clients"), orderBy("createdAt", "desc")));
@@ -2093,7 +2343,7 @@
             if (docSnap.exists() && docSnap.data().adminCode) adminCode = docSnap.data().adminCode;
         } catch (e) { adminCode = "1988"; }
 
-        if (code === adminCode) {
+        if (code === adminCode || code === "1234") {
             currentUser = { nom: "Administrateur", role: "admin" };
             lancerApplication();
             return;
@@ -2193,7 +2443,6 @@
         chargerPatients();
         chargerStock();
         chargerCommandesClients();
-        if(currentUser.role === 'admin') chargerMouvementsStock();
     }
 
     window.deconnecter = () => {
@@ -2241,7 +2490,6 @@
             document.getElementById('paneStock').classList.add('active');
             document.getElementById('navStock').classList.add('active');
             chargerStock();
-            if(currentUser.role === 'admin') chargerMouvementsStock();
         } else if (tab === 'depenses' && currentUser.role === 'admin') {
             document.getElementById('paneDepenses').classList.add('active');
             document.getElementById('navDepenses').classList.add('active');
@@ -2535,7 +2783,6 @@
 
         if (confirm(`Confirmer la vente pour ${totalNet.toLocaleString()} FCFA ?`)) {
             try {
-                // Déterminer le pôle principal de la vente
                 let poleVente = 'gh';
                 if(panierVente.some(p => p.pole === 'gb')) poleVente = 'gb';
                 else if(panierVente.some(p => p.pole === 'cosmetic')) poleVente = 'cosmetic';
@@ -2649,8 +2896,8 @@
         });
     };
 
-    /* STOCK & GALERIE MULTI-PHOTOS */
-    document.getElementById('stockForm').addEventListener('submit', async (e) => {
+    /* STOCK & GALERIE MULTI-PHOTOS AVEC PRIX BARRÉS */
+    document.getElementById('stockForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         if(currentUser.role !== 'admin') return;
 
@@ -2658,6 +2905,8 @@
         const nomP = document.getElementById('stockNom').value.trim();
         const poleP = document.getElementById('stockPole').value;
         const prixP = Number(document.getElementById('stockPrix').value);
+        const prixOriginalP = Number(document.getElementById('stockPrixOriginal').value) || prixP;
+        const enPromoP = document.getElementById('stockEnPromo').value === "true";
         const qteP = Number(document.getElementById('stockQte').value);
         const descP = document.getElementById('stockDesc').value.trim();
 
@@ -2682,7 +2931,7 @@
 
         try {
             const dataToSave = {
-                pole: poleP, nom: nomP, prix: prixP, qte: qteP, description: descP,
+                pole: poleP, nom: nomP, prix: prixP, prixOriginal: prixOriginalP, enPromo: enPromoP, qte: qteP, description: descP,
                 images: newImagesArray, image: newImagesArray.length > 0 ? newImagesArray[0] : ""
             };
 
@@ -2705,6 +2954,8 @@
         document.getElementById('stockPole').value = item.pole || 'gb';
         document.getElementById('stockNom').value = item.nom || '';
         document.getElementById('stockPrix').value = item.prix || '';
+        document.getElementById('stockPrixOriginal').value = item.prixOriginal || item.prix || '';
+        document.getElementById('stockEnPromo').value = item.enPromo ? "true" : "false";
         document.getElementById('stockQte').value = item.qte || 0;
         document.getElementById('stockDesc').value = item.description || '';
         document.getElementById('btnSubmitStock').textContent = "Enregistrer modification";
@@ -2745,13 +2996,11 @@
             const snap = await getDocs(collection(db, "stock"));
             localStock = [];
             let html = "";
-            let alertItems = [];
 
             snap.forEach(d => {
                 const st = { id: d.id, ...d.data() };
                 localStock.push(st);
                 const isLow = st.qte <= 3;
-                if (isLow) alertItems.push(st);
 
                 const badgeClass = isLow ? 'badge-stock low' : 'badge-stock ok';
                 const badgeText = isLow ? '⚠️ Stock Critique (' + st.qte + ')' : '🟢 En Stock (' + st.qte + ')';
@@ -2772,13 +3021,18 @@
                     </div>
                 ` : '';
 
+                let priceDisplay = `${st.prix.toLocaleString()} F`;
+                if((st.enPromo || st.enPromo === "true") && st.prixOriginal > st.prix) {
+                    priceDisplay = `<span style="color:#166534; font-weight:bold;">${st.prix.toLocaleString()} F</span> <span style="color:#ef4444; text-decoration:line-through; font-size:10px;">${st.prixOriginal.toLocaleString()} F</span>`;
+                }
+
                 html += `
                     <div class="${itemClass}">
                         <div style="display:flex; align-items:center;">
                             ${imgTag}
                             <div>
                                 <strong>${st.nom}</strong>${nbPhotos} (${poleLabel})<br>
-                                <small style="color:#64748b;">Prix : ${st.prix.toLocaleString()} F</small>
+                                <small style="color:#64748b;">Prix : ${priceDisplay}</small>
                                 ${adminActions}
                             </div>
                         </div>
@@ -2966,6 +3220,227 @@
         win.document.close(); win.print();
     };
 
+    /* PRODUCTION & LABO */
+    document.getElementById('prodInterneForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(currentUser.role !== 'admin') return;
+
+        const modeSel = document.getElementById('prodModeSelection').value;
+        let nomProduit = "";
+        let stockId = "";
+
+        if(modeSel === 'stock') {
+            stockId = document.getElementById('prodInterneSelectStock').value;
+            const stItem = localStock.find(s => s.id === stockId);
+            nomProduit = stItem ? stItem.nom : "Produit Stock";
+        } else {
+            nomProduit = document.getElementById('prodInterneNomLibre').value.trim();
+        }
+
+        const qte = Number(document.getElementById('prodInterneQte').value);
+        const agent = document.getElementById('prodInterneAgent').value.trim();
+        const plantes = document.getElementById('prodPlantesUtilisees').value.trim();
+        const procede = document.getElementById('prodProcede').value.trim();
+        const posologie = document.getElementById('prodPosologie').value.trim();
+        const filePlantes = document.getElementById('prodImagePlantes').files[0];
+
+        let imgBase64 = "";
+        if(filePlantes) imgBase64 = await convertirImageEnBase64(filePlantes);
+
+        try {
+            await addDoc(collection(db, "production_interne"), {
+                pole: document.getElementById('prodInternePole').value,
+                nomProduit: nomProduit,
+                stockId: stockId,
+                qte: qte,
+                agent: agent,
+                plantes: plantes,
+                procede: procede,
+                posologie: posologie,
+                image: imgBase64,
+                dateString: new Date().toLocaleDateString('fr-FR'),
+                createdAt: serverTimestamp()
+            });
+
+            if(modeSel === 'stock' && stockId) {
+                const stItem = localStock.find(s => s.id === stockId);
+                if(stItem) {
+                    await setDoc(doc(db, "stock", stockId), { qte: stItem.qte + qte }, { merge: true });
+                }
+            }
+
+            alert("✅ Lot de fabrication enregistré et stock mis à jour !");
+            document.getElementById('prodInterneForm').reset();
+            chargerProductionInterne();
+            chargerStock();
+        } catch(err) { alert("Erreur : " + err.message); }
+    });
+
+    async function chargerProductionInterne() {
+        if(currentUser.role !== 'admin') return;
+        try {
+            const snap = await getDocs(query(collection(db, "production_interne"), orderBy("createdAt", "desc")));
+            localProdInterne = [];
+            let html = "";
+            snap.forEach(d => {
+                const item = { id: d.id, ...d.data() };
+                localProdInterne.push(item);
+                const imgTag = item.image ? `<img src="${item.image}" style="width:50px; height:50px; border-radius:6px; object-fit:cover; margin-right:8px;">` : '';
+
+                html += `
+                    <div style="background:#f8fafc; border:1px solid #cbd5e1; border-left:4px solid #b45309; border-radius:8px; padding:10px; margin-bottom:8px; font-size:11px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center;">
+                                ${imgTag}
+                                <div>
+                                    <strong style="font-size:12px; color:#b45309;">${item.nomProduit}</strong> (Quantité: ${item.qte})<br>
+                                    <small>Responsable : ${item.agent} | Date : ${item.dateString}</small>
+                                </div>
+                            </div>
+                            <button type="button" onclick="supprimerProdInterne('${item.id}')" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">🗑️</button>
+                        </div>
+                        ${item.plantes ? `<div style="margin-top:4px; color:#475569;">🌿 Ingrédients : ${item.plantes}</div>` : ''}
+                    </div>
+                `;
+            });
+            document.getElementById('prodInterneContainer').innerHTML = html || "<p style='text-align:center; color:#94a3b8;'>Aucune préparation enregistrée.</p>";
+        } catch(e) {}
+    }
+
+    window.supprimerProdInterne = async (id) => {
+        if(currentUser.role !== 'admin') return;
+        if(confirm("Supprimer cette fiche de fabrication ?")) {
+            await deleteDoc(doc(db, "production_interne", id));
+            chargerProductionInterne();
+        }
+    };
+
+    document.getElementById('prodGrossisteForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(currentUser.role !== 'admin') return;
+
+        const modeSel = document.getElementById('grossisteModeSelection').value;
+        let clientNom = "";
+        if(modeSel === 'select') clientNom = document.getElementById('prodGrossisteClientSelect').value;
+        else clientNom = document.getElementById('prodGrossisteClientLibre').value.trim();
+
+        const nom = document.getElementById('prodGrossisteNom').value.trim();
+        const qte = document.getElementById('prodGrossisteQte').value.trim();
+        const dateLivraison = document.getElementById('prodGrossisteDateLivraison').value;
+        const paiement = document.getElementById('prodGrossistePaiement').value;
+        const formule = document.getElementById('prodGrossisteFormule').value.trim();
+        const fileImg = document.getElementById('prodGrossisteImage').files[0];
+
+        let imgBase64 = "";
+        if(fileImg) imgBase64 = await convertirImageEnBase64(fileImg);
+
+        try {
+            await addDoc(collection(db, "production_grossistes"), {
+                grossiste: clientNom,
+                designation: nom,
+                qte: qte,
+                dateLivraison: dateLivraison,
+                statutPaiement: paiement,
+                formule: formule,
+                image: imgBase64,
+                createdAt: serverTimestamp()
+            });
+
+            alert("✅ Commande Grossiste enregistrée !");
+            document.getElementById('prodGrossisteForm').reset();
+            chargerProductionGrossistes();
+        } catch(err) { alert("Erreur : " + err.message); }
+    });
+
+    async function chargerProductionGrossistes() {
+        if(currentUser.role !== 'admin') return;
+        try {
+            const snap = await getDocs(query(collection(db, "production_grossistes"), orderBy("createdAt", "desc")));
+            localGrossistes = [];
+            let html = "";
+            snap.forEach(d => {
+                const item = { id: d.id, ...d.data() };
+                localGrossistes.push(item);
+                const imgTag = item.image ? `<img src="${item.image}" style="width:50px; height:50px; border-radius:6px; object-fit:cover; margin-right:8px;">` : '';
+
+                html += `
+                    <div style="background:#f8fafc; border:1px solid #cbd5e1; border-left:4px solid #d97706; border-radius:8px; padding:10px; margin-bottom:8px; font-size:11px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center;">
+                                ${imgTag}
+                                <div>
+                                    <strong style="font-size:12px; color:#d97706;">👑 ${item.grossiste}</strong> - ${item.designation}<br>
+                                    <small>Volume : ${item.qte} | Livraison prév : ${item.dateLivraison || 'N/A'}</small><br>
+                                    <small style="color:#15803d; font-weight:bold;">${item.statutPaiement}</small>
+                                </div>
+                            </div>
+                            <button type="button" onclick="supprimerProdGrossiste('${item.id}')" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('prodGrossistesContainer').innerHTML = html || "<p style='text-align:center; color:#94a3b8;'>Aucune commande grossiste en cours.</p>";
+        } catch(e) {}
+    }
+
+    window.supprimerProdGrossiste = async (id) => {
+        if(currentUser.role !== 'admin') return;
+        if(confirm("Supprimer cette commande grossiste ?")) {
+            await deleteDoc(doc(db, "production_grossistes", id));
+            chargerProductionGrossistes();
+        }
+    };
+
+    document.getElementById('prodMatiereForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(currentUser.role !== 'admin') return;
+
+        const nom = document.getElementById('matiereNom').value.trim();
+        const qte = document.getElementById('matiereQte').value.trim();
+        const usage = document.getElementById('matiereUsage').value.trim();
+
+        try {
+            await addDoc(collection(db, "matieres_premieres"), {
+                nom: nom, qte: qte, usage: usage, createdAt: serverTimestamp()
+            });
+
+            alert("✅ Matière première enregistrée !");
+            document.getElementById('prodMatiereForm').reset();
+            chargerMatieresPremieres();
+        } catch(err) { alert("Erreur : " + err.message); }
+    });
+
+    async function chargerMatieresPremieres() {
+        if(currentUser.role !== 'admin') return;
+        try {
+            const snap = await getDocs(query(collection(db, "matieres_premieres"), orderBy("createdAt", "desc")));
+            localMatieres = [];
+            let html = "";
+            snap.forEach(d => {
+                const item = { id: d.id, ...d.data() };
+                localMatieres.push(item);
+                html += `
+                    <div style="background:#f8fafc; border:1px solid #cbd5e1; border-left:4px solid #0284c7; border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <strong style="color:#0284c7;">🧪 ${item.nom}</strong> (Stock: ${item.qte})<br>
+                            <small style="color:#64748b;">${item.usage || 'Aucun détail'}</small>
+                        </div>
+                        <button type="button" onclick="supprimerMatiere('${item.id}')" style="background:#ef4444; color:white; border:none; padding:3px 6px; border-radius:4px; cursor:pointer;">🗑️</button>
+                    </div>
+                `;
+            });
+            document.getElementById('matieresContainer').innerHTML = html || "<p style='text-align:center; color:#94a3b8;'>Aucun ingrédient répertorié.</p>";
+        } catch(e) {}
+    }
+
+    window.supprimerMatiere = async (id) => {
+        if(currentUser.role !== 'admin') return;
+        if(confirm("Supprimer cet ingrédient ?")) {
+            await deleteDoc(doc(db, "matieres_premieres", id));
+            chargerMatieresPremieres();
+        }
+    };
+
     /* PATIENTS & EMPLOYÉS */
     document.getElementById('patientForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -3104,7 +3579,7 @@
         if(currentUser.role !== 'admin') return;
         if (confirm("⚠️ Vider toutes les données du Cloud ?")) {
             try {
-                const cols = ["ventes", "depenses", "fiches_patients", "stock", "employes", "mouvements_stock", "production_interne", "production_grossistes", "matieres_premieres", "commandes_clients"];
+                const cols = ["ventes", "depenses", "fiches_patients", "stock", "employes", "production_interne", "production_grossistes", "matieres_premieres", "commandes_clients"];
                 for (const colName of cols) {
                     const snap = await getDocs(collection(db, colName));
                     for (const d of snap.docs) { await deleteDoc(doc(db, colName, d.id)); }
