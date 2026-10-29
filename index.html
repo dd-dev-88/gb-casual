@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <!-- App Update Tag: SlateBattle-v1.1-ImageSync -->
+    <!-- App Update Tag: SlateBattle-v1.2-FullVitrine -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slate Battle - Multijoueur</title>
+    <title>Slate Battle - Le duel de mots</title>
     <!-- PeerJS pour la connexion en ligne -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
@@ -27,17 +27,17 @@
         .container {
             width: 100%;
             max-width: 480px;
-            background: rgba(30, 41, 59, 0.85);
+            background: rgba(30, 41, 59, 0.9);
             backdrop-filter: blur(10px);
-            padding: 24px;
+            padding: 20px;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.2);
             text-align: center;
         }
         h1 {
             font-size: 1.8rem;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             color: #38bdf8;
             font-weight: 800;
             letter-spacing: 1px;
@@ -46,25 +46,30 @@
         .subtitle {
             color: #94a3b8;
             font-size: 0.85rem;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .coins-display {
             background: rgba(250, 204, 21, 0.1);
             color: #facc15;
             border: 1px solid rgba(250, 204, 21, 0.3);
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .intro-showcase {
-            margin: 12px 0 16px 0;
-            border-radius: 14px;
+            margin: 10px 0;
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            background: #0b1120;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .intro-showcase img {
             width: 100%;
@@ -75,12 +80,12 @@
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 1rem;
+            padding: 10px 16px;
+            font-size: 0.95rem;
             font-weight: 600;
             border-radius: 12px;
             cursor: pointer;
-            margin: 8px 0;
+            margin: 6px 0;
             width: 100%;
             transition: all 0.25s ease;
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
@@ -103,8 +108,8 @@
         .btn-quit {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-            font-size: 0.85rem;
-            padding: 6px 12px;
+            font-size: 0.8rem;
+            padding: 6px 10px;
             width: auto;
             display: inline-block;
         }
@@ -112,23 +117,23 @@
             background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
             color: #090d16;
             font-weight: bold;
-            font-size: 0.85rem;
-            padding: 8px 12px;
+            font-size: 0.8rem;
+            padding: 6px 10px;
             border-radius: 8px;
             border: none;
             cursor: pointer;
-            margin: 8px 0;
+            margin: 6px 0;
             box-shadow: 0 4px 10px rgba(234, 179, 8, 0.3);
         }
         input[type="text"] {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
+            padding: 10px;
+            margin: 6px 0;
             border-radius: 12px;
             border: 2px solid #334155;
             background: #0b1120;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-align: center;
         }
         input[type="text"]:focus {
@@ -146,43 +151,43 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 10px 25px rgba(0,0,0,0.5);
             background-color: #12181f;
             background-image: linear-gradient(rgba(18,24,31,0.9), rgba(18,24,31,0.9)), repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(255,255,255,0.05) 19px, rgba(255,255,255,0.05) 20px), repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(255,255,255,0.05) 19px, rgba(255,255,255,0.05) 20px);
-            padding: 16px;
+            padding: 12px;
         }
 
         #themeDisplay {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #38bdf8;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
         #wordDisplay {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             letter-spacing: 6px;
-            margin: 10px 0;
+            margin: 8px 0;
             color: #facc15;
             font-weight: bold;
             text-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
         }
         #timerDisplay {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #f87171;
             font-weight: 700;
             background: rgba(248, 113, 113, 0.1);
-            padding: 4px 10px;
+            padding: 4px 8px;
             border-radius: 20px;
             display: inline-block;
         }
         .scoreboard {
             display: flex;
             justify-content: space-around;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             background: rgba(11, 17, 32, 0.8);
-            padding: 8px;
-            border-radius: 12px;
+            padding: 6px;
+            border-radius: 10px;
             border: 1px solid #334155;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
         }
         .scoreboard span {
@@ -190,19 +195,19 @@
         }
         .room-box {
             background: #0b1120;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 10px;
+            border-radius: 10px;
             color: #38bdf8;
             font-family: monospace;
-            font-size: 1rem;
-            margin: 10px 0;
+            font-size: 0.95rem;
+            margin: 8px 0;
             word-break: break-all;
             border: 1px solid #334155;
         }
         .status-badge {
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: #f59e0b;
             margin-right: 5px;
@@ -225,15 +230,15 @@
         .virtual-keyboard {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            margin-top: 12px;
+            gap: 4px;
+            margin-top: 10px;
         }
         .key-btn {
             background: #334155;
             color: white;
             border: none;
-            padding: 9px 0;
-            font-size: 0.9rem;
+            padding: 8px 0;
+            font-size: 0.85rem;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
@@ -251,16 +256,16 @@
         .taunts-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
+            gap: 4px;
             justify-content: center;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .taunt-btn {
             background: #1e293b;
             border: 1px solid #475569;
             color: #cbd5e1;
-            padding: 5px 8px;
-            font-size: 0.75rem;
+            padding: 4px 6px;
+            font-size: 0.7rem;
             border-radius: 6px;
             cursor: pointer;
         }
@@ -269,10 +274,10 @@
             color: white;
         }
         #chatLog {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #38bdf8;
-            height: 18px;
-            margin-bottom: 4px;
+            height: 16px;
+            margin-bottom: 2px;
             font-style: italic;
         }
     </style>
@@ -287,15 +292,16 @@
             <div class="coins-display">🪙 Pièces : <span id="playerCoins">50</span></div>
 
             <div class="intro-showcase">
-                <img src="image.jpg" alt="Duel en direct entre amis">
+                <img src="image.jpg" alt="Duel en direct entre amis" onerror="this.style.display='none'; document.getElementById('imgErrorMsg').style.display='block';">
+                <div id="imgErrorMsg" style="display:none; color: #f87171; font-size: 0.8rem; padding: 10px;">⚠️ Fichier image.jpg introuvable dans le dossier GitHub.</div>
             </div>
             
             <input type="text" id="playerNameInput" placeholder="Ton pseudo (ex: Dédé)..." maxlength="12">
             <button class="btn" id="localBtn">Jouer en solo</button>
             <button class="btn btn-secondary" id="hostBtn">Créer une partie (En ligne)</button>
             <button class="btn btn-secondary" id="joinBtn">Rejoindre une partie</button>
-            <div style="margin-top: 12px;">
-                <a href="https://wa.me/?text=Viens%20on%20joue%20à%20Slate%20Battle%20sur%20https://slate-battle-app.netlify.app" target="_blank" class="btn btn-whatsapp">💬 Inviter sur WhatsApp</a>
+            <div style="margin-top: 10px;">
+                <a href="https://wa.me/?text=Viens%20on%2520joue%20à%20Slate%20Battle%20sur%20https://slate-battle-app.netlify.app" target="_blank" class="btn btn-whatsapp">💬 Inviter sur WhatsApp</a>
             </div>
         </div>
 
@@ -304,8 +310,8 @@
             <h1>Slate Battle ✏️</h1>
             <p style="font-size: 0.85rem; color: #94a3b8;">Envoie ce code à ton ami :</p>
             <div class="room-box" id="myPeerId">Génération du code...</div>
-            <p style="font-size: 0.80rem; color: #f59e0b; margin-top: 8px;"><span class="status-badge" id="hostStatusBadge"></span><span id="hostStatusText">En attente de l'adversaire...</span></p>
-            <button class="btn btn-secondary" id="backFromHost" style="margin-top: 15px;">Retour</button>
+            <p style="font-size: 0.80rem; color: #f59e0b; margin-top: 6px;"><span class="status-badge" id="hostStatusBadge"></span><span id="hostStatusText">En attente de l'adversaire...</span></p>
+            <button class="btn btn-secondary" id="backFromHost" style="margin-top: 12px;">Retour</button>
         </div>
 
         <!-- ECRAN REJOINDRE -->
@@ -324,7 +330,7 @@
                 <div>Adversaire : <span id="opponentScore">0</span></div>
             </div>
             
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                 <span id="timerDisplay">⏳ 60s</span>
                 <button class="btn btn-quit" onclick="quitGame()">🚪 Quitter</button>
             </div>
@@ -333,7 +339,7 @@
             <div id="wordDisplay">_ _ _ _ _</div>
             <div id="chatLog"></div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div id="errorsDisplay" style="color: #cbd5e1; font-size: 0.85rem;">Erreurs : 0 / 6</div>
+                <div id="errorsDisplay" style="color: #cbd5e1; font-size: 0.8rem;">Erreurs : 0 / 6</div>
                 <button class="btn-bonus" onclick="buyHint()">💡 Indice (-20 🪙)</button>
             </div>
 
